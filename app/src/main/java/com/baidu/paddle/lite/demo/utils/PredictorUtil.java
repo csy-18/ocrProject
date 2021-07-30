@@ -1,4 +1,4 @@
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +9,9 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.baidu.paddle.lite.demo.ocr.OCRPredictorNative;
+import com.baidu.paddle.lite.demo.ocr.OcrResultModel;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,8 +21,8 @@ import java.util.Vector;
 
 import static android.graphics.Color.*;
 
-public class Predictor {
-    private static final String TAG = Predictor.class.getSimpleName();
+public class PredictorUtil {
+    private static final String TAG = PredictorUtil.class.getSimpleName();
     public boolean isLoaded = false;
     public int warmupIterNum = 1;
     public int inferIterNum = 1;
@@ -43,7 +46,7 @@ public class Predictor {
     protected float postprocessTime = 0;
 
 
-    public Predictor() {
+    public PredictorUtil() {
     }
 
     public boolean init(Context appCtx, String modelPath, String labelPath) {

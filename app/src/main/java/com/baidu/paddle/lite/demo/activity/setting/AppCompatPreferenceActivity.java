@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.activity.setting;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

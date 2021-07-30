@@ -1,4 +1,4 @@
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.ocr.demo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.baidu.paddle.lite.demo.utils.PredictorUtil;
+import com.baidu.paddle.lite.demo.ocr.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +38,7 @@ public class MiniActivity extends AppCompatActivity {
     protected Handler receiver = null; // Receive messages from worker thread
     protected Handler sender = null; // Send command to worker thread
     protected HandlerThread worker = null; // Worker thread to load&run model
-    protected volatile Predictor predictor = null;
+    protected volatile PredictorUtil predictorUtil = null;
 
     private String assetModelDirPath = "models/ocr_v2_for_cpu";
     private String assetlabelFilePath = "labels/ppocr_keys_v1.txt";
@@ -117,10 +120,10 @@ public class MiniActivity extends AppCompatActivity {
      * @return
      */
     private boolean onLoadModel() {
-        if (predictor == null) {
-            predictor = new Predictor();
+        if (predictorUtil == null) {
+            predictorUtil = new PredictorUtil();
         }
-        return predictor.init(this, assetModelDirPath, assetlabelFilePath);
+        return predictorUtil.init(this, assetModelDirPath, assetlabelFilePath);
     }
 
     /**
@@ -135,8 +138,8 @@ public class MiniActivity extends AppCompatActivity {
             InputStream imageStream = getAssets().open(assetImagePath);
             Bitmap image = BitmapFactory.decodeStream(imageStream);
             // Input is Bitmap
-            predictor.setInputImage(image);
-            return predictor.isLoaded() && predictor.runModel();
+            predictorUtil.setInputImage(image);
+            return predictorUtil.isLoaded() && predictorUtil.runModel();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -145,13 +148,13 @@ public class MiniActivity extends AppCompatActivity {
 
     private void onRunModelSuccessed() {
         Log.i(TAG, "onRunModelSuccessed");
-        textView.setText(predictor.outputResult);
-        imageView.setImageBitmap(predictor.outputImage);
+        textView.setText(predictorUtil.outputResult());
+        imageView.setImageBitmap(predictorUtil.outputImage());
     }
 
     private void onUnloadModel() {
-        if (predictor != null) {
-            predictor.releaseModel();
+        if (predictorUtil != null) {
+            predictorUtil.releaseModel();
         }
     }
 }

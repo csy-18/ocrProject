@@ -1,4 +1,4 @@
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.activity.setting;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 
 import androidx.appcompat.app.ActionBar;
+
+import com.baidu.paddle.lite.demo.ocr.R;
+import com.baidu.paddle.lite.demo.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

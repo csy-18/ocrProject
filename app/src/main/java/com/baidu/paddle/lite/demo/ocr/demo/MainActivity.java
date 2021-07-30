@@ -1,9 +1,8 @@
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.ocr.demo;
 
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,6 +35,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
+import com.baidu.paddle.lite.demo.utils.PredictorUtil;
+import com.baidu.paddle.lite.demo.ocr.R;
+import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity;
+import com.baidu.paddle.lite.demo.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private AssetManager assetManager =null;
 
-    protected Predictor predictor = new Predictor();
+    protected PredictorUtil predictorUtil = new PredictorUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onLoadModel() {
-        return predictor.init(MainActivity.this, modelPath, labelPath, cpuThreadNum,
+        return predictorUtil.init(MainActivity.this, modelPath, labelPath, cpuThreadNum,
                 cpuPowerMode,
                 inputColorFormat,
                 inputShape, inputMean,
@@ -262,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onRunModel() {
-        return predictor.isLoaded() && predictor.runModel();
+        return predictorUtil.isLoaded() && predictorUtil.runModel();
     }
 
     public void onLoadModelSuccessed() {
@@ -277,12 +281,12 @@ public class MainActivity extends AppCompatActivity {
     public void onRunModelSuccessed() {
         tvStatus.setText("STATUS: run model successed");
         // Obtain results and update UI
-        tvInferenceTime.setText("Inference time: " + predictor.inferenceTime() + " ms");
-        Bitmap outputImage = predictor.outputImage();
+        tvInferenceTime.setText("Inference time: " + predictorUtil.inferenceTime() + " ms");
+        Bitmap outputImage = predictorUtil.outputImage();
         if (outputImage != null) {
             ivInputImage.setImageBitmap(outputImage);
         }
-        tvOutputResult.setText(predictor.outputResult());
+        tvOutputResult.setText(predictorUtil.outputResult());
         tvOutputResult.scrollTo(0, 0);
     }
 
@@ -292,8 +296,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onImageChanged(Bitmap image) {
         // Rerun model if users pick test image from gallery or camera
-        if (image != null && predictor.isLoaded()) {
-            predictor.setInputImage(image);
+        if (image != null && predictorUtil.isLoaded()) {
+            predictorUtil.setInputImage(image);
             runModel();
         }
     }
@@ -323,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isLoaded = predictor.isLoaded();
+        boolean isLoaded = predictorUtil.isLoaded();
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -474,11 +478,11 @@ public class MainActivity extends AppCompatActivity {
         if(image == null) {
             tvStatus.setText("STATUS: image is not exists");
         }
-        else if (!predictor.isLoaded()){
+        else if (!predictorUtil.isLoaded()){
             tvStatus.setText("STATUS: model is not loaded");
         }else{
             tvStatus.setText("STATUS: run model ...... ");
-            predictor.setInputImage(image);
+            predictorUtil.setInputImage(image);
             runModel();
         }
     }
@@ -496,8 +500,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (predictor != null) {
-            predictor.releaseModel();
+        if (predictorUtil != null) {
+            predictorUtil.releaseModel();
         }
         worker.quit();
         super.onDestroy();

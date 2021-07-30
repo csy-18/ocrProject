@@ -1,4 +1,4 @@
-package com.baidu.paddle.lite.demo.ocr;
+package com.baidu.paddle.lite.demo.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

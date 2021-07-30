@@ -7,6 +7,9 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.Log
 import android.util.Size
 import android.widget.Toast
@@ -35,7 +38,9 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     lateinit var pbRunModel: ProgressDialog
-    companion object{
+    lateinit var work: Handler
+
+    companion object {
         val TAG = CameraActivity.javaClass.simpleName
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -56,6 +61,7 @@ class CameraActivity : AppCompatActivity() {
     private fun initViews() {
         if (allPermissionsGranted()) {
             startCamera()
+            initHandler()
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -65,6 +71,26 @@ class CameraActivity : AppCompatActivity() {
         }
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    private fun initHandler() {
+        work = object : Handler(Looper.getMainLooper()){
+            override fun handleMessage(msg: Message) {
+                when(msg.what){
+                    REQUEST_RUN_MODEL->{
+                        if (onRunModel()) {
+                            if (pbRunModel != null && pbRunModel.isShowing) {
+                                pbRunModel.dismiss()
+                            }
+                            onRunModelSuccessed()
+                            Log.i(TAG, "runModel: true")
+                        }else{
+                            Log.i(TAG, "runModel: false")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -117,15 +143,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun runModel() {
         pbRunModel = ProgressDialog.show(this, "", "running model...", false, false)
-        if (onRunModel()) {
-            if (pbRunModel != null && pbRunModel.isShowing) {
-                pbRunModel.dismiss()
-            }
-            onRunModelSuccessed()
-            Log.i(TAG, "runModel: true")
-        }else{
-            Log.i(TAG, "runModel: false")
-        }
+        work.sendEmptyMessage(REQUEST_RUN_MODEL)
     }
 
     fun onRunModel(): Boolean {
@@ -134,8 +152,12 @@ class CameraActivity : AppCompatActivity() {
 
     fun onRunModelSuccessed() {
         Log.i(TAG, "onRunModelSuccessed: ${predictor.outputResult()}")
-        startActivity(Intent(this,
-            ResultActivity::class.java))
+        startActivity(
+            Intent(
+                this,
+                ResultActivity::class.java
+            )
+        )
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -157,7 +179,7 @@ class CameraActivity : AppCompatActivity() {
                 }
 
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(1280,720))
+                .setTargetResolution(Size(1280, 720))
                 .build()
 
             // 默认选择前置摄像头

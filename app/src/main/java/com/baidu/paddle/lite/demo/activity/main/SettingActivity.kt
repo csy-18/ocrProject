@@ -32,8 +32,8 @@ class SettingActivity : AppCompatActivity() {
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
                     GET_VERSION -> {
-                        val version = OdooUtils.getVersion()
-                        Log.i(TAG, "initViews: $version")
+                        Log.i(TAG, "handleMessage: GET_VERSION")
+
                     }
                 }
             }
@@ -42,7 +42,10 @@ class SettingActivity : AppCompatActivity() {
 
     private fun initViews() {
         binding.button4.setOnClickListener {
-            work.sendEmptyMessage(GET_VERSION)
+            Thread{
+                val version = OdooUtils.getVersion()
+                Log.i(TAG, "initViews: $version")
+            }.start()
         }
     }
 }

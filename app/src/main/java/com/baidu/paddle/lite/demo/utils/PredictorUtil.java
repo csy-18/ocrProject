@@ -9,6 +9,9 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.baidu.paddle.lite.demo.ocr.OCRPredictorNative;
 import com.baidu.paddle.lite.demo.ocr.OcrResultModel;
 
@@ -41,7 +44,7 @@ public class PredictorUtil {
     protected float scoreThreshold = 0.1f;
     protected Bitmap inputImage = null;
     protected Bitmap outputImage = null;
-    protected volatile String outputResult = "";
+    protected volatile MutableLiveData<List<String>> outputResult = new MutableLiveData<>();
     protected float preprocessTime = 0;
     protected float postprocessTime = 0;
 
@@ -248,7 +251,6 @@ public class PredictorUtil {
         return true;
     }
 
-
     public boolean isLoaded() {
         return paddlePredictor != null && isLoaded;
     }
@@ -281,7 +283,7 @@ public class PredictorUtil {
         return outputImage;
     }
 
-    public String outputResult() {
+    public LiveData<List<String>> outputResult() {
         return outputResult;
     }
 
@@ -318,7 +320,7 @@ public class PredictorUtil {
     }
 
     private void drawResults(ArrayList<OcrResultModel> results) {
-        StringBuffer outputResultSb = new StringBuffer("");
+        List<String> outputResultList = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
             OcrResultModel result = results.get(i);
             StringBuilder sb = new StringBuilder("");
@@ -329,9 +331,10 @@ public class PredictorUtil {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
             Log.i(TAG, sb.toString()); // show LOG in Logcat panel
-            outputResultSb.append(i + 1).append(": ").append(result.getLabel()).append("\n");
+            outputResultList.add(result.getLabel());
         }
-        outputResult = outputResultSb.toString();
+        outputResult.postValue(outputResultList);
+//        outputResult = outputResultSb.toString();
         outputImage = inputImage;
         Canvas canvas = new Canvas(outputImage);
         Paint paintFillAlpha = new Paint();

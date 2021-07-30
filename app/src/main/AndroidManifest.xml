@@ -18,25 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.baidu.paddle.lite.demo.activity.main.SettingActivity"></activity>
-        <activity android:name="com.baidu.paddle.lite.demo.activity.login.LoginActivity" >
+        <activity
+            android:name="com.baidu.paddle.lite.demo.activity.login.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.baidu.paddle.lite.demo.activity.main.SettingActivity" />
+        <activity android:name="com.baidu.paddle.lite.demo.activity.login.LoginActivity" />
         <activity android:name="com.baidu.paddle.lite.demo.activity.result.ResultActivity" />
-        <activity android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity">
-
-        </activity> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
-        <activity android:name=".demo.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity" /> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
+        <activity android:name=".demo.MainActivity" />
         <activity
             android:name="com.baidu.paddle.lite.demo.activity.setting.SettingsActivity"
             android:label="Settings" />

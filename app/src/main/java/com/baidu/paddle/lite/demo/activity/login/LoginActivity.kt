@@ -7,8 +7,9 @@ import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
 import com.baidu.paddle.lite.demo.activity.main.SettingActivity
 import com.baidu.paddle.lite.demo.ocr.R
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityLoginBinding
+import com.sychen.basic.activity.BaseActivity
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

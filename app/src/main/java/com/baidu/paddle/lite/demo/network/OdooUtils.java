@@ -23,7 +23,6 @@ public class OdooUtils {
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
-
         // 获取版本信息
         final Map<String, String> info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
         final Gson gson = new Gson();

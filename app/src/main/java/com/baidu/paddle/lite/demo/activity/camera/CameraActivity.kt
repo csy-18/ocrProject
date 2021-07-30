@@ -1,19 +1,20 @@
 package com.baidu.paddle.lite.demo.activity.camera
 
 import android.Manifest
+import android.R
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -22,18 +23,23 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.baidu.paddle.lite.demo.activity.result.ResultActivity
+import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityCameraBinding
+import com.baidu.paddle.lite.demo.ocr.demo.MainActivity
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.sychen.basic.activity.ActivityCollector
+import com.sychen.basic.activity.BaseActivity
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class CameraActivity : AppCompatActivity() {
+class CameraActivity : BaseActivity() {
     lateinit var binding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -48,6 +54,7 @@ class CameraActivity : AppCompatActivity() {
         const val RESPONSE_RUN_MODEL_SUCCESSED = 2
         const val RESPONSE_RUN_MODEL_FAILED = 3
         const val REQUEST_RUN_MODEL = 1
+        const val OPEN_GALLERY_REQUEST_CODE = 0
     }
 
 
@@ -70,21 +77,58 @@ class CameraActivity : AppCompatActivity() {
             )
         }
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
+        binding.photoAlbum.setOnClickListener { getPhotoAlbum() }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+    /**
+     * 从相册获取照片
+     */
+    private fun getPhotoAlbum() {
+        if (requestAllPermissions()) {
+            openGallery()
+        }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, null)
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        startActivityForResult(intent, OPEN_GALLERY_REQUEST_CODE)
+    }
+
+    private fun requestAllPermissions(): Boolean {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                ),
+                0
+            )
+            return false
+        }
+        return true
+    }
+
     private fun initHandler() {
-        work = object : Handler(Looper.getMainLooper()){
+        work = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
-                when(msg.what){
-                    REQUEST_RUN_MODEL->{
+                when (msg.what) {
+                    REQUEST_RUN_MODEL -> {
                         if (onRunModel()) {
-                            if (pbRunModel != null && pbRunModel.isShowing) {
+                            if (pbRunModel.isShowing) {
                                 pbRunModel.dismiss()
                             }
                             onRunModelSuccessed()
                             Log.i(TAG, "runModel: true")
-                        }else{
+                        } else {
+                            onRunModelFailed()
                             Log.i(TAG, "runModel: false")
                         }
                     }
@@ -93,12 +137,13 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+
     /**
      * 拍照
      */
     private fun takePhoto() {
         // 获得有关可修改图像捕获用例的稳定参考
-        var imageCapture = imageCapture ?: return
+        val imageCapture = imageCapture ?: return
         // 创建带时间戳的输出文件以保存图像
         val photoFile = File(
             this.cacheDir,
@@ -141,6 +186,9 @@ class CameraActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     * 运行模型
+     */
     private fun runModel() {
         pbRunModel = ProgressDialog.show(this, "", "running model...", false, false)
         work.sendEmptyMessage(REQUEST_RUN_MODEL)
@@ -158,6 +206,18 @@ class CameraActivity : AppCompatActivity() {
                 ResultActivity::class.java
             )
         )
+    }
+
+    private fun onRunModelFailed() {
+        if (pbRunModel.isShowing) {
+            pbRunModel.dismiss()
+        }
+        AlertDialog.Builder(this)
+            .setTitle("OCR模型出错")
+            .setMessage("需要重启软件重新初始化OCR模型")
+            .setNegativeButton("确定") { dialog, which ->
+                ActivityCollector.finishAll()
+            }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -179,7 +239,7 @@ class CameraActivity : AppCompatActivity() {
                 }
 
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(1280, 720))
+                .setTargetResolution(Size(400, 400))
                 .build()
 
             // 默认选择前置摄像头
@@ -196,7 +256,6 @@ class CameraActivity : AppCompatActivity() {
             }
         }, ContextCompat.getMainExecutor(this))
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
@@ -215,6 +274,33 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                MainActivity.OPEN_GALLERY_REQUEST_CODE -> {
+                    if (data == null) {
+                        return
+                    }
+                    try {
+                        val resolver = contentResolver
+                        val uri = data.data
+                        val image = MediaStore.Images.Media.getBitmap(resolver, uri)
+                        val proj = arrayOf(MediaStore.Images.Media.DATA)
+                        val cursor = managedQuery(uri, proj, null, null, null)
+                        cursor.moveToFirst()
+                        if (image != null) {
+                            //运行模型
+                            predictor.setInputImage(image)
+                            runModel()
+                        }
+                    } catch (e: IOException) {
+                        Log.e(TAG, e.toString())
+                    }
+                }
+            }
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()

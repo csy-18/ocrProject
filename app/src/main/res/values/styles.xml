@@ -22,4 +22,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar"><!--这里一定要没有状态栏的主题-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <!--<item name="windowActionBar">false</item>--><!--去掉状态栏-->
+        <item name="android:windowFullscreen">true</item><!--充满全屏-->
+        <item name="android:windowIsTranslucent">true</item><!--透明-->
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+
 </resources>

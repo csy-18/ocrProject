@@ -148,7 +148,7 @@ public class MiniActivity extends AppCompatActivity {
 
     private void onRunModelSuccessed() {
         Log.i(TAG, "onRunModelSuccessed");
-        textView.setText(predictorUtil.outputResult());
+//        textView.setText(predictorUtil.outputResult());
         imageView.setImageBitmap(predictorUtil.outputImage());
     }
 

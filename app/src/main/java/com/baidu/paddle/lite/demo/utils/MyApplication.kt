@@ -21,6 +21,10 @@ class MyApplication : Application() {
         var inputStd = floatArrayOf()
         var scoreThreshold = 0.1f
         var predictor = PredictorUtil()
+
+        fun log(message: String) {
+            Log.i(TAG, message)
+        }
     }
 
     override fun onCreate() {
@@ -114,7 +118,7 @@ class MyApplication : Application() {
             // 加载模型
             if (onLoadModel()) {
                 Log.i(TAG, "initModel: 模型加载成功")
-            }else{
+            } else {
                 Log.i(TAG, "initModel: 模型加载失败")
             }
         }

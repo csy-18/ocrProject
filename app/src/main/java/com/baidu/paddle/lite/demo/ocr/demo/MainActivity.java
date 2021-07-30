@@ -1,6 +1,7 @@
 package com.baidu.paddle.lite.demo.ocr.demo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected PredictorUtil predictorUtil = new PredictorUtil();
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -286,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         if (outputImage != null) {
             ivInputImage.setImageBitmap(outputImage);
         }
-        tvOutputResult.setText(predictorUtil.outputResult());
+//        tvOutputResult.setText(predictorUtil.outputResult());
         tvOutputResult.scrollTo(0, 0);
     }
 

@@ -1,0 +1,12 @@
+# ninja log v5
+429	1501	649341074	CMakeFiles/Native.dir/predictor_input.cpp.o	db55e531cbb6f365
+385	1509	649341074	CMakeFiles/Native.dir/predictor_output.cpp.o	e39752ff24bb43d9
+326	1752	649341074	CMakeFiles/Native.dir/ppredictor.cpp.o	4423162a9fe2d645
+1	2673	649341075	CMakeFiles/Native.dir/ocr_clipper.cpp.o	fa997501e3eec7c5
+192	2697	649341075	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	699b61af8ca6c955
+264	3355	649341075	CMakeFiles/Native.dir/preprocess.cpp.o	2756d9ec70e6c917
+111	3391	649341075	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	3cd2ed7a4c5a4c17
+158	3473	649341076	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	c2baace0d46b76b2
+32	3549	649341076	CMakeFiles/Native.dir/native.cpp.o	fdfd21dbd0448edd
+62	3566	649341076	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	3c19e468f2e56a8d
+3566	4341	649341076	D:/GithubSpace/ocrProject/app/build/intermediates/cmake/debug/obj/arm64-v8a/libNative.so	6eb9251c7a4b645

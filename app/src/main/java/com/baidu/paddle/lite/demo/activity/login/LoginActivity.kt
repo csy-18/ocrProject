@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
+import com.baidu.paddle.lite.demo.activity.main.OcrMainActivity
 import com.baidu.paddle.lite.demo.activity.main.SettingActivity
 import com.baidu.paddle.lite.demo.ocr.R
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityLoginBinding
@@ -24,6 +25,9 @@ class LoginActivity : BaseActivity() {
         }
         binding.button3.setOnClickListener {
             startActivity(Intent(this,SettingActivity::class.java))
+        }
+        binding.loginBtn.setOnClickListener {
+            startActivity(Intent(this,OcrMainActivity::class.java))
         }
     }
 }

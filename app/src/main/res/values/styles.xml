@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -26,10 +26,10 @@
 
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowNoTitle">true</item><!--无标题-->
-        <item name="windowActionBar">false</item><!--去掉状态栏-->
-        <item name="android:windowFullscreen">true</item><!--充满全屏-->
-        <item name="android:windowIsTranslucent">true</item><!--透明-->
+<!--        <item name="android:windowNoTitle">true</item>&lt;!&ndash;无标题&ndash;&gt;-->
+<!--        <item name="windowActionBar">false</item>&lt;!&ndash;去掉状态栏&ndash;&gt;-->
+<!--        <item name="android:windowFullscreen">true</item>&lt;!&ndash;充满全屏&ndash;&gt;-->
+<!--        <item name="android:windowIsTranslucent">true</item>&lt;!&ndash;透明&ndash;&gt;-->
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:windowTranslucentStatus">true</item><!--可以页面拉伸到状态栏顶部-->
         <item name="android:windowTranslucentNavigation">true</item><!--可以页面拉伸到虚拟按键底部-->

@@ -2,6 +2,7 @@ package com.baidu.paddle.lite.demo.activity.camera
 
 import android.Manifest
 import android.R
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
@@ -29,6 +30,7 @@ import com.baidu.paddle.lite.demo.activity.result.ResultActivity
 import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityCameraBinding
 import com.baidu.paddle.lite.demo.ocr.demo.MainActivity
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.loadModelStatus
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.showToast
@@ -71,6 +73,7 @@ class CameraActivity : BaseActivity() {
         initViews()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initViews() {
         if (allPermissionsGranted()) {
             startCamera()
@@ -84,6 +87,13 @@ class CameraActivity : BaseActivity() {
         }
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         binding.photoAlbum.setOnClickListener { getPhotoAlbum() }
+        loadModelStatus.observe(this, {
+            when (it) {
+                true -> binding.info.text = "模型初始化成功\n可以进行扫码操作"
+                false -> binding.info.text = "模型初始化失败，请检查运行设置，或联系开发人员"
+            }
+        })
+
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -254,7 +264,7 @@ class CameraActivity : BaseActivity() {
                 }
 
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(400, 400))
+                .setTargetResolution(Size(700, 700))
                 .build()
 
             // 默认选择前置摄像头

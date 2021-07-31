@@ -6,12 +6,16 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import com.baidu.paddle.lite.demo.ocr.R
 
 class MyApplication : Application() {
+
+
     companion object {
         const val TAG = "MyApplication"
 
+        val loadModelStatus: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
         // 物体检测的模型设置
         var modelPath = ""
         var labelPath = ""
@@ -36,6 +40,7 @@ class MyApplication : Application() {
         fun String.logi() {
             Log.i(TAG, this)
         }
+
         fun String.loge() {
             Log.e(TAG, this)
         }
@@ -130,11 +135,8 @@ class MyApplication : Application() {
             inputStd = input_std
             scoreThreshold = score_threshold
             // 加载模型
-            if (onLoadModel()) {
-                Log.i(TAG, "initModel: 模型加载成功")
-            } else {
-                Log.i(TAG, "initModel: 模型加载失败")
-            }
+            val onLoadModel = onLoadModel()
+            loadModelStatus.value = onLoadModel
         }
     }
 

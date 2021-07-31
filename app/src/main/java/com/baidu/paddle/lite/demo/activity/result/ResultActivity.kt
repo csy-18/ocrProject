@@ -1,26 +1,18 @@
 package com.baidu.paddle.lite.demo.activity.result
 
-import android.content.Context
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityResultBinding
 import com.baidu.paddle.lite.demo.utils.FileUtils
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.showToast
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.sychen.basic.activity.BaseActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ResultActivity : BaseActivity() {
@@ -49,6 +41,7 @@ class ResultActivity : BaseActivity() {
                 layoutManager =
                     LinearLayoutManager(this@ResultActivity, LinearLayoutManager.VERTICAL, false)
                 adapter = recyclerViewAdapter
+                setItemTouch(this)
             }
         })
         binding.saveInputBtn.setOnClickListener {
@@ -58,6 +51,7 @@ class ResultActivity : BaseActivity() {
         }
         binding.saveUploadBtn.setOnClickListener {
             predictor.outputResult().observe(this, { outResult ->
+                "$outResult.size".logi()
                 when (outResult.size) {
                     0 -> {
                         "没有结果不能保存".logi()
@@ -68,15 +62,41 @@ class ResultActivity : BaseActivity() {
                     }
                     else -> {
                         "外部文件是否可写入${FileUtils().isExternalStorageWritable()}".logi()
-                        outResult.forEach {
-                            FileUtils().getPublicAlbumStorageDir(it)
-                        }
+//                        outResult.forEach {
+//                            FileUtils().getPublicAlbumStorageDir(it)
+//                        }
                     }
                 }
             })
         }
+        setModelStatus()
     }
 
+    private fun setItemTouch(recyclerView: RecyclerView) {
+        ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START or ItemTouchHelper.END) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                "序号${viewHolder.adapterPosition}".logi()
+                predictor.outputResult.value?.removeAt(viewHolder.adapterPosition)
+                recyclerViewAdapter.notifyDataSetChanged()
+            }
+        }).attachToRecyclerView(recyclerView)
+    }
+
+    private fun setModelStatus() {
+        val inferenceTime = predictor.inferenceTime()
+        val stringBuffer = StringBuffer()
+        stringBuffer.append("运行时间：").append(inferenceTime).append("毫秒").append("\n")
+        binding.runModelStatus.text = stringBuffer
+    }
 
 
 }

@@ -45,7 +45,7 @@ class SettingActivity : AppCompatActivity() {
             Thread{
                 val client = XmlRpcClient()
                 val config = XmlRpcClientConfigImpl()
-                val version = OdooUtils.authenticate(client,config)
+                val version = OdooUtils.getVersion()
                 Log.i(TAG, "initViews: $version")
             }.start()
         }

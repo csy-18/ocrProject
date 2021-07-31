@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorAccent</item>
     </style>
 
     <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
@@ -23,12 +25,14 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar"><!--这里一定要没有状态栏的主题-->
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowNoTitle">true</item><!--无标题-->
-        <!--<item name="windowActionBar">false</item>--><!--去掉状态栏-->
+        <item name="windowActionBar">false</item><!--去掉状态栏-->
         <item name="android:windowFullscreen">true</item><!--充满全屏-->
         <item name="android:windowIsTranslucent">true</item><!--透明-->
         <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowTranslucentStatus">true</item><!--可以页面拉伸到状态栏顶部-->
+        <item name="android:windowTranslucentNavigation">true</item><!--可以页面拉伸到虚拟按键底部-->
     </style>
 
 

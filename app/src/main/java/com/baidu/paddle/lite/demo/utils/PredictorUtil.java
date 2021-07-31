@@ -44,7 +44,7 @@ public class PredictorUtil {
     protected float scoreThreshold = 0.1f;
     protected Bitmap inputImage = null;
     protected Bitmap outputImage = null;
-    protected volatile MutableLiveData<List<String>> outputResult = new MutableLiveData<>();
+    public volatile MutableLiveData<List<String>> outputResult = new MutableLiveData<>();
     protected float preprocessTime = 0;
     protected float postprocessTime = 0;
 

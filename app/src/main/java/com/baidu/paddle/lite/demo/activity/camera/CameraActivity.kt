@@ -2,10 +2,12 @@ package com.baidu.paddle.lite.demo.activity.camera
 
 import android.Manifest
 import android.R
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
@@ -22,16 +24,20 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.baidu.paddle.lite.demo.activity.result.ResultActivity
 import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityCameraBinding
 import com.baidu.paddle.lite.demo.ocr.demo.MainActivity
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.showToast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.sychen.basic.activity.ActivityCollector
 import com.sychen.basic.activity.BaseActivity
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -90,12 +96,19 @@ class CameraActivity : BaseActivity() {
         }
     }
 
+    /**
+     * 打开相册
+     */
     private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, null)
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
         startActivityForResult(intent, OPEN_GALLERY_REQUEST_CODE)
     }
 
+    /**
+     * 请求拍照权限
+     */
     private fun requestAllPermissions(): Boolean {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
@@ -121,15 +134,17 @@ class CameraActivity : BaseActivity() {
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
                     REQUEST_RUN_MODEL -> {
-                        if (onRunModel()) {
-                            if (pbRunModel.isShowing) {
-                                pbRunModel.dismiss()
+                        lifecycleScope.launch {
+                            if (onRunModel()) {
+                                if (pbRunModel.isShowing) {
+                                    pbRunModel.dismiss()
+                                }
+                                onRunModelSuccessed()
+                                "图片识别成功".logi()
+                            } else {
+                                onRunModelFailed()
+                                "图片识别失败".logi()
                             }
-                            onRunModelSuccessed()
-                            Log.i(TAG, "runModel: true")
-                        } else {
-                            onRunModelFailed()
-                            Log.i(TAG, "runModel: false")
                         }
                     }
                 }
@@ -199,7 +214,7 @@ class CameraActivity : BaseActivity() {
     }
 
     fun onRunModelSuccessed() {
-        Log.i(TAG, "onRunModelSuccessed: ${predictor.outputResult()}")
+        "onRunModelSuccessed: ${predictor.outputResult()}".logi()
         startActivity(
             Intent(
                 this,
@@ -265,11 +280,7 @@ class CameraActivity : BaseActivity() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
-                Toast.makeText(
-                    this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                "用户未授予的权限.".showToast(this)
             }
         }
     }
@@ -278,29 +289,26 @@ class CameraActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                MainActivity.OPEN_GALLERY_REQUEST_CODE -> {
-                    if (data == null) {
-                        return
-                    }
-                    try {
-                        val resolver = contentResolver
-                        val uri = data.data
-                        val image = MediaStore.Images.Media.getBitmap(resolver, uri)
-                        val proj = arrayOf(MediaStore.Images.Media.DATA)
-                        val cursor = managedQuery(uri, proj, null, null, null)
-                        cursor.moveToFirst()
-                        if (image != null) {
+                OPEN_GALLERY_REQUEST_CODE -> {
+                    if (resultCode == Activity.RESULT_OK && data != null) {
+                        data.data?.let {
+                            val bitmap = getBitmapFromUri(uri = it)
                             //运行模型
-                            predictor.setInputImage(image)
+                            predictor.setInputImage(bitmap)
                             runModel()
                         }
-                    } catch (e: IOException) {
-                        Log.e(TAG, e.toString())
                     }
+
                 }
             }
         }
     }
+
+    private fun getBitmapFromUri(uri: Uri) = contentResolver
+        .openFileDescriptor(uri, "r")?.use {
+            BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
+        }
+
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()

@@ -1,8 +1,11 @@
 package com.baidu.paddle.lite.demo.utils
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import android.preference.PreferenceManager
 import android.util.Log
+import android.widget.Toast
 import com.baidu.paddle.lite.demo.ocr.R
 
 class MyApplication : Application() {
@@ -24,6 +27,17 @@ class MyApplication : Application() {
 
         fun log(message: String) {
             Log.i(TAG, message)
+        }
+
+        fun String.showToast(context: Context) {
+            Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+        }
+
+        fun String.logi() {
+            Log.i(TAG, this)
+        }
+        fun String.loge() {
+            Log.e(TAG, this)
         }
     }
 

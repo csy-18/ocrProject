@@ -46,9 +46,9 @@ class ResultListAdapter(val resultList: List<String>) :
         val context = holder.itemView.context
         with(holder.itemView) {
             this.findViewById<TextView>(R.id.textView2).text = result
-            this.findViewById<Button>(R.id.button6).setOnClickListener {
-                saveFile(context,result)
-            }
+//            this.findViewById<Button>(R.id.button6).setOnClickListener {
+//                saveFile(context,result)
+//            }
             this.findViewById<Button>(R.id.button5).setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.set_edit, null)
                 val editText = view.findViewById<EditText>(R.id.update_edit)
@@ -56,36 +56,13 @@ class ResultListAdapter(val resultList: List<String>) :
                     .setTitle("修改")
                     .setView(view)
                     .setPositiveButton("确认"){dialog,which->
-                        saveFile(context,editText.text.toString())
+//                        saveFile(context,editText.text.toString())
                     }
                     .create().show()
             }
         }
     }
 
-    fun saveFile(context: Context,content:String) {
-        GlobalScope.launch {
-            savePhoto(context)
-        }
-        val FILENAME = SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()) + ".txt"
-
-        var fos: FileOutputStream? = null
-        try {
-            fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE)
-            fos?.write(content.toByteArray())
-            fos?.close()
-            Toast.makeText(context,"保存成功",Toast.LENGTH_SHORT).show()
-            context.startActivity(Intent(context,CameraActivity::class.java))
-        } catch (e: FileNotFoundException) {
-            Toast.makeText(context,"保存失败",Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
-        } catch (e: IOException) {
-            Toast.makeText(context,"保存失败",Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
-        }
-    }
 
     private suspend fun savePhoto(context: Context) {
         withContext(Dispatchers.IO) {

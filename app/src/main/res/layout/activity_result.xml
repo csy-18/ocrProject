@@ -76,6 +76,7 @@
         android:backgroundTint="@color/colorAccent"
         android:text="@string/save"
         android:textColor="@color/white"
+        android:textSize="@dimen/btn_size"
         app:layout_constraintBottom_toBottomOf="@+id/input_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/input_edit_text" />
@@ -91,23 +92,23 @@
         android:backgroundTint="@color/colorAccent"
         android:text="@string/save_upload"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/btn_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/out_result" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:title="扫描结果"
-        app:titleTextColor="@color/white"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="扫描结果"
+        app:titleTextColor="@color/white" />
 
     <TextView
         android:id="@+id/textView7"
@@ -129,5 +130,19 @@
         android:text="TextView"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <Button
+        android:id="@+id/out_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/edit_style"
+        android:backgroundTint="@color/red"
+        android:text="@string/out_result"
+        android:textColor="@color/white"
+        android:textSize="@dimen/btn_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,14 +20,9 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        binding.button2.setOnClickListener {
-            startActivity(Intent(this,CameraActivity::class.java))
-        }
-        binding.button3.setOnClickListener {
-            startActivity(Intent(this,SettingActivity::class.java))
-        }
         binding.loginBtn.setOnClickListener {
             startActivity(Intent(this,OcrMainActivity::class.java))
+            finish()
         }
     }
 }

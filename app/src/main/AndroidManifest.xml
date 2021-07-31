@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.baidu.paddle.lite.demo.activity.main.OcrMainActivity"></activity>
+        <activity
+            android:name="com.baidu.paddle.lite.demo.activity.main.OcrMainActivity"
+            android:launchMode="singleInstance" />
         <activity
             android:name="com.baidu.paddle.lite.demo.activity.login.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -32,7 +34,8 @@
         <activity android:name="com.baidu.paddle.lite.demo.activity.main.SettingActivity" />
         <activity android:name="com.baidu.paddle.lite.demo.activity.login.LoginActivity" />
         <activity android:name="com.baidu.paddle.lite.demo.activity.result.ResultActivity" />
-        <activity android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity" /> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
+        <activity android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity"
+            android:launchMode="singleInstance"/> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
         <activity android:name=".demo.MainActivity" />
         <activity
             android:name="com.baidu.paddle.lite.demo.activity.setting.SettingsActivity"

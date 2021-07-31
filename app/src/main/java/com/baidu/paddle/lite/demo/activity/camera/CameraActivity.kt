@@ -239,10 +239,11 @@ class CameraActivity : BaseActivity() {
         }
         AlertDialog.Builder(this)
             .setTitle("OCR模型出错")
-            .setMessage("需要重启软件重新初始化OCR模型")
+            .setMessage("需要从内存清除，请从任务管理器关闭该软件并重新启动")
             .setNegativeButton("确定") { dialog, which ->
                 ActivityCollector.finishAll()
             }
+            .show()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -319,11 +320,11 @@ class CameraActivity : BaseActivity() {
             BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
         }
 
+    @SuppressLint("RestrictedApi")
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-        if (predictor != null) {
-            predictor.releaseModel()
-        }
+//        predictor.releaseModel()
+        imageCapture?.onDetached()
     }
 }

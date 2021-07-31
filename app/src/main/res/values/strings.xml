@@ -25,6 +25,7 @@
 
     <string name="take_photo">扫码</string>
     <string name="save">保存</string>
+    <string name="out_result">退出扫描</string>
     <string name="save_upload">保存并上传</string>
     <string name="in_stock">入库扫码</string>
     <string name="out_stock">出库扫码</string>

@@ -1,10 +1,12 @@
 package com.baidu.paddle.lite.demo.activity.result
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.baidu.paddle.lite.demo.activity.main.OcrMainActivity
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityResultBinding
 import com.baidu.paddle.lite.demo.utils.FileUtils
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
@@ -45,7 +47,11 @@ class ResultActivity : BaseActivity() {
             }
         })
         binding.saveInputBtn.setOnClickListener {
-            val text = binding.inputEditText.text.toString()
+            val text = binding.inputEditText.text.toString().trim()
+            if (text.equals("") || text == "") {
+                "未输入数据！".showToast(this)
+                return@setOnClickListener
+            }
             predictor.outputResult.value?.add(text)
             recyclerViewAdapter.notifyDataSetChanged()
         }
@@ -68,6 +74,10 @@ class ResultActivity : BaseActivity() {
                     }
                 }
             })
+        }
+        binding.outResult.setOnClickListener {
+            startActivity(Intent(this, OcrMainActivity::class.java))
+            finish()
         }
         setModelStatus()
     }

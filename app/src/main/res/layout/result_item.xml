@@ -28,6 +28,7 @@
         android:backgroundTint="#D84315"
         android:textColor="@color/white"
         android:text="修改"
+        android:textSize="@dimen/btn_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

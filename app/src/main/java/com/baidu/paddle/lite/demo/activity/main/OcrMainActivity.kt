@@ -23,7 +23,10 @@ class OcrMainActivity : AppCompatActivity() {
         binding.inStock.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
-            startActivity(Intent(this, CameraActivity::class.java))
+            it.postDelayed({
+                startActivity(Intent(this, CameraActivity::class.java))
+            },500)
+
         }
     }
 

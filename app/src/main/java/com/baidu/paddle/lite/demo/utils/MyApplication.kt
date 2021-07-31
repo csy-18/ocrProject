@@ -149,4 +149,9 @@ class MyApplication : Application() {
             inputStd, scoreThreshold
         )
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        predictor.releaseModel()
+    }
 }

@@ -26,6 +26,7 @@ open class BaseActivity : AppCompatActivity() {
         ActivityCollector.removeActivity(this)
         EventBus.getDefault().unregister(this)
     }
+
     //接收消息
     @Subscribe(threadMode = ThreadMode.MAIN)
     open fun onMessageEvent(event: MessageEvent) {

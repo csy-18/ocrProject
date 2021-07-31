@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white"/>
+    <!-- 整体的背景颜色 -->
+    <item>
+        <color android:color="@color/white"/>
+    </item>
+    <!-- 顶部 -->
     <item>
         <bitmap android:gravity="center"
-            android:src="@drawable/benzivg"/>
+            android:src="@drawable/skyscraper_3184798_1920"/>
+    </item>
+    <!-- 底部 -->
+    <item>
+        <bitmap android:gravity="center|center_horizontal"
+            android:src="@drawable/plex_5"/>
     </item>
 </layer-list>
+

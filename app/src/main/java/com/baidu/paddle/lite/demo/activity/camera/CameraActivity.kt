@@ -190,7 +190,7 @@ class CameraActivity : BaseActivity() {
      * 运行模型
      */
     private fun runModel() {
-        pbRunModel = ProgressDialog.show(this, "", "running model...", false, false)
+        pbRunModel = ProgressDialog.show(this, "", "正在识别中", false, false)
         work.sendEmptyMessage(REQUEST_RUN_MODEL)
     }
 

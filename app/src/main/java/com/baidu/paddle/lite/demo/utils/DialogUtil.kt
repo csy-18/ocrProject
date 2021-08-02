@@ -37,8 +37,8 @@ object DialogUtil {
         }
     }
 
-    fun progressBarDialog(context: Context, progressRate: Int) {
-        Dialog(context, R.style.DialogTheme).apply {
+    fun progressBarDialog(activity: Activity) : Dialog{
+        return Dialog(activity, R.style.DialogTheme).apply {
             setContentView(R.layout.progress_dialog)
             window!!.apply {
                 setGravity(Gravity.CENTER)
@@ -47,11 +47,7 @@ object DialogUtil {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
             }
-            if (progressRate == DONE) {
-                dismiss()
-            } else {
-                show()
-            }
+            create()
         }
     }
 }

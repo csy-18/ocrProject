@@ -324,7 +324,11 @@ public class PredictorUtil {
         List<String> outputResultList = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
             OcrResultModel result = results.get(i);
-            StringBuilder sb = new StringBuilder("");
+            if (result.getConfidence()<0.8) {
+                Log.i(TAG, "置信度低于0.8: "+result.getLabel());
+                continue;
+            }
+            StringBuilder sb = new StringBuilder();
             sb.append(result.getLabel());
             sb.append(" ").append(result.getConfidence());
             sb.append("; Points: ");
@@ -333,6 +337,7 @@ public class PredictorUtil {
             }
             Log.i(TAG, sb.toString()); // show LOG in Logcat panel
             result.getLabel().replace(REGEX_CHINESE,"");
+            Log.i(TAG, "内容："+result.getLabel()+"置信度："+result.getConfidence());
             outputResultList.add(result.getLabel());
         }
         outputResult.postValue(outputResultList);

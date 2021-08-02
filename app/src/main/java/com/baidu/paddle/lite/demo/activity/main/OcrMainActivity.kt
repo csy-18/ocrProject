@@ -1,5 +1,6 @@
 package com.baidu.paddle.lite.demo.activity.main
 
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,7 +26,7 @@ class OcrMainActivity : AppCompatActivity() {
         Bundle()
     }
     private lateinit var work: Handler
-
+    lateinit var dialog: Dialog
     companion object {
         var UID = -1
         const val LOAD_RECEIPTS_SUCCESS = 0
@@ -65,12 +66,14 @@ class OcrMainActivity : AppCompatActivity() {
     }
 
     private fun loadRecSceneFailed() {
+        dialog.dismiss()
         val alertDialog = DialogUtil.alertDialog("错误", this)
         alertDialog.create()
         alertDialog.show()
     }
 
     private fun loadRecSceneSuccess() {
+        dialog.dismiss()
         val intent = Intent(this, RecinSceneActivity::class.java)
         bundle.getString("REC_SCENE_INFO")
         intent.putExtras(bundle)
@@ -79,12 +82,14 @@ class OcrMainActivity : AppCompatActivity() {
 
 
     private fun loadReceiptsFailed() {
+        dialog.dismiss()
         val alertDialog = DialogUtil.alertDialog("错误", this)
         alertDialog.create()
         alertDialog.show()
     }
 
     private fun loadReceiptsSuccess() {
+        dialog.dismiss()
         val intent = Intent(this, ReceiptsActivity::class.java)
         bundle.getString("RECEIPTS_INFO")
         intent.putExtras(bundle)
@@ -92,6 +97,7 @@ class OcrMainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        dialog = DialogUtil.progressBarDialog(this)
         binding.toolbar2.apply {
             inflateMenu(R.menu.menu_action_options)
             setOnMenuItemClickListener{ item->
@@ -102,6 +108,7 @@ class OcrMainActivity : AppCompatActivity() {
             }
         }
         binding.inStock.setOnClickListener {
+            dialog.show()
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
             it.postDelayed({
@@ -109,8 +116,6 @@ class OcrMainActivity : AppCompatActivity() {
                     val receipts = OdooUtils.getReceipts()
                     when (receipts.size) {
                         0 -> {
-                            receipts.toString().logi()
-                            "用户id-$UID".logi()
                             work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
                         }
                         else -> {
@@ -123,6 +128,7 @@ class OcrMainActivity : AppCompatActivity() {
 
         }
         binding.imageView4.setOnClickListener {
+            dialog.show()
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
             it.postDelayed({

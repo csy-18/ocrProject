@@ -23,7 +23,6 @@
         android:layout_margin="8dp"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorAccent"
-        android:progressDrawable="@drawable/card_back"
         android:progressTint="@color/colorAccent" />
 
     <View

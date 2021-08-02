@@ -1,5 +1,6 @@
 package com.baidu.paddle.lite.demo.activity.result
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -140,8 +141,16 @@ class ResultActivity : BaseActivity() {
             }
         }
         binding.outResult.setOnClickListener {
-            startActivity(Intent(this, OcrMainActivity::class.java))
-            finish()
+            AlertDialog.Builder(this)
+                .setTitle("退出扫码")
+                .setNegativeButton("取消"){dialog, which ->
+
+                }
+                .setPositiveButton("确认") { dialog, which ->
+                    startActivity(Intent(this, OcrMainActivity::class.java))
+                    finish()
+                }
+                .create().show()
         }
         setModelStatus()
     }

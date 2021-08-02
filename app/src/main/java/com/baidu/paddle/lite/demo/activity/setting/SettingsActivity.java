@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // Initialized pre-installed models
+        // 已初始化的预装模型
         preInstalledModelPaths = new ArrayList<String>();
         preInstalledLabelPaths = new ArrayList<String>();
         preInstalledImagePaths = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         preInstalledInputMeans = new ArrayList<String>();
         preInstalledInputStds = new ArrayList<String>();
         preInstalledScoreThresholds = new ArrayList<String>();
-        // Add ssd_mobilenet_v1_pascalvoc_for_cpu
+        // 添加 ssd_mobilenet_v1_pascalvoc_for_cpu
         preInstalledModelPaths.add(getString(R.string.MODEL_PATH_DEFAULT));
         preInstalledLabelPaths.add(getString(R.string.LABEL_PATH_DEFAULT));
         preInstalledImagePaths.add(getString(R.string.IMAGE_PATH_DEFAULT));
@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         preInstalledInputStds.add(getString(R.string.INPUT_STD_DEFAULT));
         preInstalledScoreThresholds.add(getString(R.string.SCORE_THRESHOLD_DEFAULT));
 
-        // Setup UI components
+        // 设置 UI 组件
         lpChoosePreInstalledModel =
                 (ListPreference) findPreference(getString(R.string.CHOOSE_PRE_INSTALLED_MODEL_KEY));
         String[] preInstalledModelNames = new String[preInstalledModelPaths.size()];

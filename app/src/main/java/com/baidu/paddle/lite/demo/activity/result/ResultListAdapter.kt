@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +16,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
 import com.baidu.paddle.lite.demo.ocr.R
 import com.baidu.paddle.lite.demo.utils.MyApplication
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.TAG
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
 import kotlinx.coroutines.*
 import java.io.FileNotFoundException
@@ -46,16 +50,21 @@ class ResultListAdapter(val resultList: List<String>) :
         val context = holder.itemView.context
         with(holder.itemView) {
             this.findViewById<TextView>(R.id.textView2).text = result
+            this.findViewById<TextView>(R.id.index_reslt_list).text = (position+1).toString()
 //            this.findViewById<Button>(R.id.button6).setOnClickListener {
 //                saveFile(context,result)
 //            }
             this.findViewById<Button>(R.id.button5).setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.set_edit, null)
                 val editText = view.findViewById<EditText>(R.id.update_edit)
+                editText.setText(result)
                 AlertDialog.Builder(context)
                     .setTitle("修改")
                     .setView(view)
-                    .setPositiveButton("确认"){dialog,which->
+                    .setPositiveButton("确认") { dialog, which ->
+                        val text = editText.text.toString()
+                        text.logi()
+                        predictor.outputResult.value?.get(position)?.replace(result,text)
 //                        saveFile(context,editText.text.toString())
                     }
                     .create().show()
@@ -69,10 +78,12 @@ class ResultListAdapter(val resultList: List<String>) :
             /**
              * API29之前可以使用
              */
-            if ((MediaStore.Images.Media.insertImage(context.contentResolver,
-                    predictor.outputImage() ,
+            if ((MediaStore.Images.Media.insertImage(
+                    context.contentResolver,
+                    predictor.outputImage(),
                     "",
-                    "") == null)
+                    ""
+                ) == null)
             ) {
                 Toast.makeText(context, "存储失败", Toast.LENGTH_SHORT).show()
             } else {
@@ -87,9 +98,11 @@ class ResultListAdapter(val resultList: List<String>) :
                     ContentValues()
                 ) ?: kotlin.run {
                     MainScope().launch {
-                        Toast.makeText(context,
+                        Toast.makeText(
+                            context,
                             "存储失败",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     return@withContext
                 }
@@ -100,9 +113,11 @@ class ResultListAdapter(val resultList: List<String>) :
                     }
                 } else {
                     MainScope().launch {
-                        Toast.makeText(context,
+                        Toast.makeText(
+                            context,
                             "存储失败",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

@@ -288,7 +288,8 @@ public class MainActivity extends AppCompatActivity {
         if (outputImage != null) {
             ivInputImage.setImageBitmap(outputImage);
         }
-//        tvOutputResult.setText(predictorUtil.outputResult());
+//        predictorUtil.outputResult()
+//        tvOutputResult.setText();
         tvOutputResult.scrollTo(0, 0);
     }
 

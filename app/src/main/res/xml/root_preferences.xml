@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/messages_header">
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/db_entries"
+            app:entryValues="@array/db_values"
+            app:key="@string/db_title"
+            app:title="@string/db_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/server_entries"
+            app:entryValues="@array/server_values"
+            app:key="@string/server_title"
+            app:title="@string/server_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

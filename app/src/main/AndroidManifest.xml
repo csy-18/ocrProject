@@ -20,6 +20,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name="com.baidu.paddle.lite.demo.activity.setting.SetDBActivity"
+            android:label="@string/title_activity_set_dbactivity"></activity>
+        <activity android:name="com.baidu.paddle.lite.demo.activity.receptioninscene.RecinSceneActivity" />
+        <activity android:name="com.baidu.paddle.lite.demo.activity.receipts.ReceiptsActivity" />
+        <activity
             android:name="com.baidu.paddle.lite.demo.activity.main.OcrMainActivity"
             android:launchMode="singleInstance" />
         <activity
@@ -31,11 +36,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.baidu.paddle.lite.demo.activity.main.SettingActivity" />
+        <activity android:name="com.baidu.paddle.lite.demo.activity.setting.SettingActivity" />
         <activity android:name="com.baidu.paddle.lite.demo.activity.login.LoginActivity" />
         <activity android:name="com.baidu.paddle.lite.demo.activity.result.ResultActivity" />
-        <activity android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity"
-            android:launchMode="singleInstance"/> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
+        <activity
+            android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity"
+            android:launchMode="singleInstance" /> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
         <activity android:name=".demo.MainActivity" />
         <activity
             android:name="com.baidu.paddle.lite.demo.activity.setting.SettingsActivity"

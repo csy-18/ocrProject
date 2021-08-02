@@ -27,7 +27,38 @@
     <string name="save">保存</string>
     <string name="out_result">退出扫描</string>
     <string name="save_upload">保存并上传</string>
-    <string name="in_stock">入库扫码</string>
-    <string name="out_stock">出库扫码</string>
+    <string name="in_stock">物资入库</string>
+    <string name="out_stock">项目现场接收清点</string>
+    <string name="tips">温馨提示</string>
+    <string name="ok">确定</string>
+    <string name="dialog_progress">正在加载</string>
+    <string name="please_wait">请稍后</string>
+    <string name="building_id">楼栋编号</string>
+    <string name="building_name">楼栋</string>
+    <string name="order_date">单据日期</string>
+    <string name="order_name">单据编号</string>
+    <string name="order_id">订单号</string>
+    <string name="partner_id">供应商编号</string>
+    <string name="partner_name">供应商</string>
+    <string name="user_id">经办人</string>
+    <string name="buy_state">付款状态</string>
+    <string name="MY_DATA">MyData</string>
+    <string name="title_activity_set_dbactivity">SetDBActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="db_title">数据库</string>
+    <string name="server_title">服务器</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
 

@@ -1,5 +1,8 @@
 package com.baidu.paddle.lite.demo.network;
 
+import android.util.Log;
+
+import com.baidu.paddle.lite.demo.utils.SharedPreferencesUtil;
 import com.google.gson.Gson;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -8,23 +11,34 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class OdooUtils {
-    private static final String url = "http://demo.gooderp.org:8888",
-            db = "demo.gooderp.org",
-            username = "demo",
-            password = "demo";
+    public static String
+            TAG = OdooUtils.class.getName(),
+            url = "http://114.67.113.2:8069",
+            db = "xinshengteng",
+            username,
+            password,
+            uid;
 
+    //获取版本
     public static String getVersion() throws XmlRpcException, MalformedURLException {
+        Map<String, String> info = new HashMap<>();
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
         // 获取版本信息
-        final Map<String, String> info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
+        try {
+            info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final Gson gson = new Gson();
         return gson.toJson(info);
     }
@@ -41,28 +55,108 @@ public class OdooUtils {
         return uid;
     }
 
-    // 获取uid的partner
-    public static List<Object> getPartner() throws MalformedURLException, XmlRpcException {
+    //用户登录
+    public static int userLogin(String username, String password) throws MalformedURLException {
+        int uid = -1;
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
+        try {
+            uid = (int) client.execute(config, "authenticate", Arrays.asList(
+                    db, username, password, Collections.emptyMap()));
+            Log.i(TAG, "userLogin: " + uid);
+        } catch (Exception e) {
+            Log.i(TAG, "userLogin: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return uid;
+    }
 
+    // 获取入库清单
+    public static List<Object> getReceipts(int uid) throws MalformedURLException, XmlRpcException {
+        List<Object> info = new ArrayList<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
                 setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
             }});
         }};
-        int uid = authenticate(client, config);
-        return Arrays.asList((Object[]) models.execute(
-                "execute_kw", Arrays.asList(db, uid, password, "res.partner", "search",
-                        Arrays.asList(Arrays.asList(Arrays.asList("is_company", "=", true)))
-                )));
+        try {
+            info = Arrays.asList((Object[]) models.execute(
+                    "execute_kw", Arrays.asList(db, uid, password, "buy.receipt", "search_read",
+                            Arrays.asList(Arrays.asList(Arrays.asList("state", "=", "draft")), Arrays.asList(
+                                    "id",
+                                    "state",
+                                    "date",
+                                    "name",
+                                    "order_id",
+                                    "partner_id",
+                                    "user_id",
+                                    "building_id",
+                                    "warehouse_id"))
+                    )));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+
+
+    public static String uploadRec(Integer uid, Integer receiptId, String result) {
+        Map<String, String> resultMap = new HashMap<>();
+        try {
+            XmlRpcClient models = new XmlRpcClient() {{
+                setConfig(new XmlRpcClientConfigImpl() {{
+                    setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+                }});
+            }};
+            resultMap = (Map<String, String>) models.execute("execute_kw", Arrays.asList(
+                    db,
+                    uid,
+                    password,
+                    "buy.receipt", "process_barcode",
+                    Arrays.asList(Arrays.asList(receiptId), result)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final Gson gson = new Gson();
+        return gson.toJson(resultMap);
+    }
+
+    public static List<Object> getSendOrders(Integer uid) throws MalformedURLException {
+        List<Object> info = new ArrayList<>();
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        try {
+            info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password, "wh.internal", "search_read", Arrays.asList(Arrays.asList(Arrays.asList("state", "=", "draft"), Arrays.asList("is_open", "=", true), Arrays.asList("origin", "=", "material_project_out")), Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+
+
+    public static String uploadRecScene(Integer uid, Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
+        Map<String, String> resultMap = new HashMap<>();
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        try {
+            resultMap = (Map<String, String>) models.execute("execute_kw", Arrays.asList(db, uid, password, "wh.internal", "process_barcode", Arrays.asList(orderId, content, warehouseId)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        return gson.toJson(resultMap);
     }
 
     public static void main(String[] args) {
         try {
             System.out.println(OdooUtils.getVersion());
-            System.out.println(OdooUtils.getPartner());
         } catch (XmlRpcException | MalformedURLException e) {
             e.printStackTrace();
         }

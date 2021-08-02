@@ -31,6 +31,7 @@ public class PredictorUtil {
     public int inferIterNum = 1;
     public int cpuThreadNum = 4;
     public String cpuPowerMode = "LITE_POWER_HIGH";
+    private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
     public String modelPath = "";
     public String modelName = "";
     protected OCRPredictorNative paddlePredictor = null;
@@ -331,6 +332,7 @@ public class PredictorUtil {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
             Log.i(TAG, sb.toString()); // show LOG in Logcat panel
+            result.getLabel().replace(REGEX_CHINESE,"");
             outputResultList.add(result.getLabel());
         }
         outputResult.postValue(outputResultList);

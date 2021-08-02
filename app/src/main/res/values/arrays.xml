@@ -48,4 +48,23 @@
         <item>BGR</item>
         <item>RGB</item>
     </string-array>
+    <!-- Reply Preference -->
+    <string-array name="db_entries">
+        <item>xinshengteng</item>
+    </string-array>
+    <string-array name="server_entries">
+        <item>http://114.67.113.2:8069</item>
+        <item>http://localhost:8300</item>
+        <item>https://erp.ixzyj.net</item>
+    </string-array>
+
+    <string-array name="db_values">
+        <item>xinshengteng</item>
+    </string-array>
+
+    <string-array name="server_values">
+        <item>http://114.67.113.2:8069</item>
+        <item>http://localhost:8300</item>
+        <item>https://erp.ixzyj.net</item>
+    </string-array>
 </resources>

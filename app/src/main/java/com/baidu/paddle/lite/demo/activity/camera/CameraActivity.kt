@@ -51,6 +51,9 @@ class CameraActivity : BaseActivity() {
     lateinit var binding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+    private val bundle by lazy {
+        Bundle()
+    }
     lateinit var pbRunModel: ProgressDialog
     lateinit var work: Handler
 
@@ -70,14 +73,18 @@ class CameraActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initHandler()
         initViews()
     }
 
     @SuppressLint("SetTextI18n")
     private fun initViews() {
+        binding.toolbar3.apply {
+            title = intent.extras?.getString("TOOLBAR_TITLE")
+        }
+        cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
             startCamera()
-            initHandler()
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -94,7 +101,6 @@ class CameraActivity : BaseActivity() {
             }
         })
 
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     /**
@@ -225,12 +231,32 @@ class CameraActivity : BaseActivity() {
 
     fun onRunModelSuccessed() {
         "onRunModelSuccessed: ${predictor.outputResult()}".logi()
-        startActivity(
-            Intent(
-                this,
-                ResultActivity::class.java
-            )
-        )
+        val flag = intent.extras?.getInt("FLAG")!!
+        when (flag) {
+            1 -> toResultActivityWithRec()
+            2 -> toResultActivityWithRecScene()
+        }
+    }
+
+    private fun toResultActivityWithRecScene() {
+        bundle.apply {
+            putInt("ORDER_ID", intent.extras?.getInt("ORDER_ID")!!)
+            putInt("FLAG", intent.extras?.getInt("FLAG")!!)
+            putInt("WAREHOUSE_ID", intent.extras?.getInt("WAREHOUSE_ID")!!)
+            val intent = Intent(this@CameraActivity, ResultActivity::class.java)
+            intent.putExtras(this)
+            startActivity(intent)
+        }
+    }
+
+    private fun toResultActivityWithRec() {
+        bundle.apply {
+            putInt("RECEIPTS_ID", intent.extras?.getInt("RECEIPTS_ID")!!)
+            putInt("FLAG", intent.extras?.getInt("FLAG")!!)
+            val intent = Intent(this@CameraActivity, ResultActivity::class.java)
+            intent.putExtras(this)
+            startActivity(intent)
+        }
     }
 
     private fun onRunModelFailed() {
@@ -324,7 +350,6 @@ class CameraActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-//        predictor.releaseModel()
         imageCapture?.onDetached()
     }
 }

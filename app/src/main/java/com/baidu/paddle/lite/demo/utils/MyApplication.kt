@@ -14,8 +14,11 @@ class MyApplication : Application() {
 
     companion object {
         const val TAG = "MyApplication"
-
+        var _context: Application? = null
+        val isDebug = true
+        const val DONE = 1
         val loadModelStatus: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+
         // 物体检测的模型设置
         var modelPath = ""
         var labelPath = ""
@@ -44,10 +47,15 @@ class MyApplication : Application() {
         fun String.loge() {
             Log.e(TAG, this)
         }
+
+        fun getContext(): Context {
+            return _context!!
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
+        _context = this
         initModel()
     }
 

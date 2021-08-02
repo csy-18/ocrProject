@@ -2,4 +2,7 @@
 <resources>
     <dimen name="main_font_size" >40sp</dimen>
     <dimen name="btn_size" >18sp</dimen>
+    <dimen name="USER_ID_VALUE_DEFAULT" >-1</dimen>
+    <dimen name="Receipts_Item_Font_Size" >18sp</dimen>
+    <dimen name="Receipts_Item_Title_Font_Size" >20sp</dimen>
 </resources>

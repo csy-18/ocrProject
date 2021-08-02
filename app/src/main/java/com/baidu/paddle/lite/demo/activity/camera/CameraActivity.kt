@@ -27,9 +27,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.baidu.paddle.lite.demo.activity.result.ResultActivity
-import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityCameraBinding
-import com.baidu.paddle.lite.demo.ocr.demo.MainActivity
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.flagPage
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.loadModelStatus
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.predictor
@@ -41,7 +40,6 @@ import com.sychen.basic.activity.ActivityCollector
 import com.sychen.basic.activity.BaseActivity
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -231,8 +229,7 @@ class CameraActivity : BaseActivity() {
 
     fun onRunModelSuccessed() {
         "onRunModelSuccessed: ${predictor.outputResult()}".logi()
-        val flag = intent.extras?.getInt("FLAG")!!
-        when (flag) {
+        when (flagPage) {
             1 -> toResultActivityWithRec()
             2 -> toResultActivityWithRecScene()
         }

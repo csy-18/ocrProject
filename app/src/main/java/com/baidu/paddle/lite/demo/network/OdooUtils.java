@@ -21,14 +21,14 @@ import java.util.Map;
 public class OdooUtils {
     public static String
             TAG = OdooUtils.class.getName(),
-            url = "http://114.67.113.2:8069",
-            db = "xinshengteng",
+            url,
+            db,
+            uid,
             username,
-            password,
-            uid;
+            password;
 
     //获取版本
-    public static String getVersion() throws XmlRpcException, MalformedURLException {
+    public static String getVersion() throws MalformedURLException {
         Map<String, String> info = new HashMap<>();
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
@@ -73,7 +73,7 @@ public class OdooUtils {
     }
 
     // 获取入库清单
-    public static List<Object> getReceipts(int uid) throws MalformedURLException, XmlRpcException {
+    public static List<Object> getReceipts() throws MalformedURLException {
         List<Object> info = new ArrayList<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
@@ -101,7 +101,7 @@ public class OdooUtils {
     }
 
 
-    public static String uploadRec(Integer uid, Integer receiptId, String result) {
+    public static String uploadRec(Integer receiptId, String result) {
         Map<String, String> resultMap = new HashMap<>();
         try {
             XmlRpcClient models = new XmlRpcClient() {{
@@ -122,7 +122,7 @@ public class OdooUtils {
         return gson.toJson(resultMap);
     }
 
-    public static List<Object> getSendOrders(Integer uid) throws MalformedURLException {
+    public static List<Object> getSendOrders() throws MalformedURLException {
         List<Object> info = new ArrayList<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
@@ -138,7 +138,7 @@ public class OdooUtils {
     }
 
 
-    public static String uploadRecScene(Integer uid, Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
+    public static String uploadRecScene( Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
         Map<String, String> resultMap = new HashMap<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
@@ -157,7 +157,7 @@ public class OdooUtils {
     public static void main(String[] args) {
         try {
             System.out.println(OdooUtils.getVersion());
-        } catch (XmlRpcException | MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }

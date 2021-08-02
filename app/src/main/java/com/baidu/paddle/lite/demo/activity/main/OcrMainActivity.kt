@@ -9,6 +9,7 @@ import android.os.Message
 import android.view.animation.AnimationUtils
 import com.baidu.paddle.lite.demo.activity.receipts.ReceiptsActivity
 import com.baidu.paddle.lite.demo.activity.receptioninscene.RecinSceneActivity
+import com.baidu.paddle.lite.demo.activity.setting.SettingsActivity
 import com.baidu.paddle.lite.demo.network.OdooUtils
 import com.baidu.paddle.lite.demo.ocr.R
 import com.baidu.paddle.lite.demo.ocr.databinding.ActivityOcrMainBinding
@@ -37,7 +38,7 @@ class OcrMainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOcrMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        UID = SharedPreferencesUtil.sharedPreferencesLoad<Int>("USER_ID") as Int
+        UID = SharedPreferencesUtil.sharedPreferencesLoad("USER_ID", -1) as Int
         initHandler()
         initViews()
     }
@@ -64,6 +65,9 @@ class OcrMainActivity : AppCompatActivity() {
     }
 
     private fun loadRecSceneFailed() {
+        val alertDialog = DialogUtil.alertDialog("错误", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loadRecSceneSuccess() {
@@ -75,13 +79,9 @@ class OcrMainActivity : AppCompatActivity() {
 
 
     private fun loadReceiptsFailed() {
-        Thread {
-            Looper.prepare()
-            val alertDialog = DialogUtil.alertDialog( "用户名信息错误",this)
-            alertDialog.create()
-            alertDialog.show()
-            Looper.loop()
-        }.start()
+        val alertDialog = DialogUtil.alertDialog("错误", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loadReceiptsSuccess() {
@@ -92,15 +92,25 @@ class OcrMainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        binding.toolbar2.apply {
+            inflateMenu(R.menu.menu_action_options)
+            setOnMenuItemClickListener{ item->
+                when(item?.itemId){
+                    R.id.settings->startActivity(Intent(this@OcrMainActivity,SettingsActivity::class.java))
+                }
+                true
+            }
+        }
         binding.inStock.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
             it.postDelayed({
-                "用户id-$UID".logi()
                 Thread {
-                    val receipts = OdooUtils.getReceipts(UID)
+                    val receipts = OdooUtils.getReceipts()
                     when (receipts.size) {
                         0 -> {
+                            receipts.toString().logi()
+                            "用户id-$UID".logi()
                             work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
                         }
                         else -> {
@@ -118,7 +128,7 @@ class OcrMainActivity : AppCompatActivity() {
             it.postDelayed({
                 "用户id-$UID".logi()
                 Thread {
-                    val order = OdooUtils.getSendOrders(UID)
+                    val order = OdooUtils.getSendOrders()
                     when (order.size) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)

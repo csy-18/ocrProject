@@ -64,7 +64,9 @@ class ResultListAdapter(val resultList: List<String>) :
                     .setPositiveButton("确认") { dialog, which ->
                         val text = editText.text.toString()
                         text.logi()
-                        predictor.outputResult.value?.get(position)?.replace(result,text)
+                        predictor.outputResult.value?.remove(result)
+                        predictor.outputResult.value?.add(text)
+                        predictor.outputResult.value?.get(position)?.logi()
 //                        saveFile(context,editText.text.toString())
                     }
                     .create().show()

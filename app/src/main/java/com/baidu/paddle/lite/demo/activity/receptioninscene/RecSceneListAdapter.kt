@@ -11,6 +11,8 @@ import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
 import com.baidu.paddle.lite.demo.network.model.ReceiptsModelItem
 import com.baidu.paddle.lite.demo.network.model.ReceptioninSceneItem
 import com.baidu.paddle.lite.demo.ocr.R
+import com.baidu.paddle.lite.demo.utils.MyApplication
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.flagPage
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 
 class RecSceneListAdapter(val resultList: List<ReceptioninSceneItem>) :
@@ -37,9 +39,9 @@ class RecSceneListAdapter(val resultList: List<ReceptioninSceneItem>) :
             setOnClickListener {
                 bundle.apply {
                     putString("TOOLBAR_TITLE","现场接收清点扫码")
-                    putInt("FLAG",2)
                     putInt("ORDER_ID",result.id)
                     putInt("WAREHOUSE_ID",result.warehouse_id[0].toString().toFloat().toInt())
+                    flagPage = 2
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)
                     context.startActivity(intent)

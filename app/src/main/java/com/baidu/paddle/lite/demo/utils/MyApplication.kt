@@ -3,20 +3,22 @@ package com.baidu.paddle.lite.demo.utils
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.baidu.paddle.lite.demo.network.OdooUtils
 import com.baidu.paddle.lite.demo.ocr.R
 
 class MyApplication : Application() {
-
 
     companion object {
         const val TAG = "MyApplication"
         var _context: Application? = null
         val isDebug = true
         const val DONE = 1
+        var flagPage = -1
         val loadModelStatus: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
 
         // 物体检测的模型设置
@@ -57,6 +59,20 @@ class MyApplication : Application() {
         super.onCreate()
         _context = this
         initModel()
+        initServerAndDb()
+    }
+
+    private fun initServerAndDb() {
+        val server = SharedPreferencesUtil.sharedPreferencesLoad(
+            getString(R.string.SERVER_ADDRESS),
+            getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT)
+        )
+        val db = SharedPreferencesUtil.sharedPreferencesLoad(
+            getString(R.string.DB_ADDRESS),
+            getString(R.string.DB_ADDRESS_VALUE_DEFAULT)
+        )
+        OdooUtils.url = server.toString()
+        OdooUtils.db = db.toString()
     }
 
     private fun initModel() {

@@ -1,7 +1,6 @@
 package com.baidu.paddle.lite.demo.activity.setting
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -28,25 +27,36 @@ class SetDBActivity : BaseActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            dbSet()
-            serviceSet()
+            initDb()
+            initServer()
         }
 
-        private fun serviceSet() {
+        private fun initServer() {
+            val server = findPreference<ListPreference>(getString(R.string.server_title))
+            server?.value.toString().logi()
+            setServer()
+        }
+
+        private fun initDb() {
+            serDb()
+        }
+
+        private fun setServer() {
             val server = findPreference<ListPreference>(getString(R.string.server_title))
             server?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference, newValue ->
-                    SharedPreferencesUtil.sharedPreferencesSave("SERVER",newValue.toString())
+                    SharedPreferencesUtil.sharedPreferencesSave(getString(R.string.SERVER_ADDRESS),newValue.toString())
                     OdooUtils.url = newValue.toString()
                     true
                 }
         }
 
-        private fun dbSet() {
+        private fun serDb() {
             val db = findPreference<ListPreference>(getString(R.string.db_title))
             db?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference, newValue ->
-                    SharedPreferencesUtil.sharedPreferencesSave("DB",newValue.toString())
+                    SharedPreferencesUtil.sharedPreferencesSave(getString(R.string.DB_ADDRESS),newValue.toString())
+                    OdooUtils.db = newValue.toString()
                     true
                 }
         }

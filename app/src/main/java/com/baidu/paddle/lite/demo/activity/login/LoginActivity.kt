@@ -58,12 +58,14 @@ class LoginActivity : BaseActivity() {
 
     private fun loginSuccess() {
         binding.progressBarLogin.visibility = View.INVISIBLE
+        OdooUtils.uid = USER_ID.toString()
+        OdooUtils.username = binding.userNameEdit.text.toString()
+        OdooUtils.password = binding.pwdEdit.text.toString()
         val checked = binding.checkBox.isChecked
         when (checked) {
             true -> checkedTrue()
             false -> checkedFalse()
         }
-        "是否选中$checked".logi()
     }
 
     private fun checkedFalse() {
@@ -107,14 +109,14 @@ class LoginActivity : BaseActivity() {
         }
         binding.progressBarLogin.visibility = View.INVISIBLE
         val loginIsChecked =
-            SharedPreferencesUtil.sharedPreferencesLoad<Boolean>("LOGIN_ISCHECKED")
+            SharedPreferencesUtil.sharedPreferencesLoad("LOGIN_ISCHECKED",false)
         when (loginIsChecked) {
             true -> {
                 binding.userNameEdit.setText(
-                    SharedPreferencesUtil.sharedPreferencesLoad<String>("USER_NAME").toString()
+                    SharedPreferencesUtil.sharedPreferencesLoad("USER_NAME","").toString()
                 )
                 binding.pwdEdit.setText(
-                    SharedPreferencesUtil.sharedPreferencesLoad<String>("PASS_WORD").toString()
+                    SharedPreferencesUtil.sharedPreferencesLoad("PASS_WORD","").toString()
                 )
                 binding.checkBox.isChecked = true
             }

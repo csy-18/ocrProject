@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
 import com.baidu.paddle.lite.demo.network.model.ReceiptsModelItem
 import com.baidu.paddle.lite.demo.ocr.R
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.flagPage
 
 class ReceiptsListAdapter(val resultList: List<ReceiptsModelItem>) :
     RecyclerView.Adapter<ReceiptsListAdapter.ReceiptsListViewHolder>() {
@@ -32,13 +33,12 @@ class ReceiptsListAdapter(val resultList: List<ReceiptsModelItem>) :
             this.findViewById<TextView>(R.id.order_name).text = result.name
             this.findViewById<TextView>(R.id.order_id).text = result.order_id[1].toString()
             this.findViewById<TextView>(R.id.partner_name).text = result.partner_id[1].toString()
-            this.findViewById<TextView>(R.id.user).text = result.user_id[1].toString()
             this.findViewById<TextView>(R.id.date).text = result.date
             setOnClickListener {
                 bundle.apply {
                     putInt("RECEIPTS_ID", result.id)
                     putString("TOOLBAR_TITLE","物资入库扫码")
-                    putInt("FLAG",1)
+                    flagPage = 1
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)
                     context.startActivity(intent)

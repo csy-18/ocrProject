@@ -1,4 +1,3 @@
-
 package com.baidu.paddle.lite.demo.utils
 
 import android.annotation.SuppressLint
@@ -12,7 +11,7 @@ import com.google.gson.reflect.TypeToken
 import kotlin.collections.ArrayList
 
 @SuppressLint("StaticFieldLeak", "CommitPrefEdits")
-object  SharedPreferencesUtil {
+object SharedPreferencesUtil {
     private var mContext: Context = getContext()
     var shp: SharedPreferences
     var editor: SharedPreferences.Editor
@@ -34,9 +33,9 @@ object  SharedPreferencesUtil {
     inline fun <reified T : Any> sharedPreferencesSave(key: String, value: T) = when (T::class) {
         String::class -> editor.putString(key, value.toString()).apply()
         Int::class -> editor.putInt(key, value.toString().toInt()).apply()
-        Boolean::class -> editor.putBoolean(key,value.toString().toBoolean()).apply()
-        Float::class -> editor.putFloat(key,value.toString().toFloat()).apply()
-        Long::class -> editor.putLong(key,value.toString().toLong()).apply()
+        Boolean::class -> editor.putBoolean(key, value.toString().toBoolean()).apply()
+        Float::class -> editor.putFloat(key, value.toString().toFloat()).apply()
+        Long::class -> editor.putLong(key, value.toString().toLong()).apply()
         ArrayList<String>()::class -> editor.putString(key, Gson().toJson(value)).apply()
         else -> throw IllegalArgumentException("不支持的类型: ${T::class.java}")
     }
@@ -50,12 +49,12 @@ object  SharedPreferencesUtil {
         return Gson().fromJson(data, object : TypeToken<List<Long>>() {}.type)
     }
 
-    inline fun <reified T : Any> sharedPreferencesLoad(key: String) = when (T::class) {
-        String::class -> shp.getString(key,"")
-        Int::class -> shp.getInt(key,0)
-        Boolean::class -> shp.getBoolean(key,false)
-        Float::class -> shp.getFloat(key,0f)
-        Long::class -> shp.getLong(key,0L)
+    inline fun <reified T : Any> sharedPreferencesLoad(key: String, defValue: T) = when (T::class) {
+        String::class -> shp.getString(key, defValue.toString())
+        Int::class -> shp.getInt(key, defValue.toString().toInt())
+        Boolean::class -> shp.getBoolean(key, defValue.toString().toBoolean())
+        Float::class -> shp.getFloat(key, defValue.toString().toFloat())
+        Long::class -> shp.getLong(key, defValue.toString().toLong())
         else -> throw IllegalArgumentException("不支持的类型: ${T::class.java}")
     }
 }

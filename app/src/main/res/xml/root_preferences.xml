@@ -1,23 +1,24 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
 
-        <ListPreference
-            app:defaultValue="xinshengteng"
-            app:entries="@array/db_entries"
-            app:entryValues="@array/db_values"
-            app:key="@string/db_title"
-            app:title="@string/db_title"
-            app:useSimpleSummaryProvider="true" />
+    <ListPreference
+        app:defaultValue="xinshengteng"
+        app:entries="@array/db_entries"
+        app:entryValues="@array/db_values"
+        android:icon="@drawable/ic_dbbrain"
+        app:key="@string/db_title"
+        app:title="@string/db_title"
+        app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="http://114.67.113.2:8069"
-            app:entries="@array/server_entries"
-            app:entryValues="@array/server_values"
-            app:key="@string/server_title"
-            app:title="@string/server_title"
-            app:useSimpleSummaryProvider="true" />
+    <ListPreference
+        app:defaultValue="http://114.67.113.2:8069"
+        app:entries="@array/server_entries"
+        app:entryValues="@array/server_values"
+        android:icon="@drawable/ic_server"
+        app:key="@string/server_title"
+        app:title="@string/server_title"
+        app:useSimpleSummaryProvider="true" />
 
-    </PreferenceCategory>
 
 </PreferenceScreen>

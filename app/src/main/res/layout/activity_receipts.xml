@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.baidu.paddle.lite.demo.activity.receipts.ReceiptsActivity">
+    tools:context="net.ixzyj.activity.receipts.ReceiptsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="采购入库单"
+        app:title="@string/app_name"
         app:titleTextColor="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView

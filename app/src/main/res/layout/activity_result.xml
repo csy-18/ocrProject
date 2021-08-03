@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ddd"
-    tools:context="com.baidu.paddle.lite.demo.activity.result.ResultActivity">
+    tools:context="net.ixzyj.activity.result.ResultActivity">
 
     <ImageView
         android:id="@+id/imgResult"
@@ -48,7 +48,7 @@
 
     <TextView
         android:id="@+id/run_model_status"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"

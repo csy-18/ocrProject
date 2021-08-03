@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">鑫昇腾物资管理系统</string>
+    <string name="app_name">物资清点</string>
     <string name="CHOOSE_PRE_INSTALLED_MODEL_KEY">CHOOSE_PRE_INSTALLED_MODEL_KEY</string>
     <string name="ENABLE_CUSTOM_SETTINGS_KEY">ENABLE_CUSTOM_SETTINGS_KEY</string>
     <string name="MODEL_PATH_KEY">MODEL_PATH_KEY</string>

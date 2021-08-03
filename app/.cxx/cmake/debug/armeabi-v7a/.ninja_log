@@ -1,12 +1,12 @@
 # ninja log v5
-410	1532	649341069	CMakeFiles/Native.dir/predictor_output.cpp.o	4c90b8591a843d60
-469	1555	649341069	CMakeFiles/Native.dir/predictor_input.cpp.o	7033727019b7295d
-351	1933	649341069	CMakeFiles/Native.dir/ppredictor.cpp.o	d09da87a6ccfff1d
-252	2756	649341070	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	e5f50fd79087d038
-36	2976	649341070	CMakeFiles/Native.dir/ocr_clipper.cpp.o	1494a67b107a9018
-130	3475	649341071	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	b5e3893dcef51b63
-308	3513	649341071	CMakeFiles/Native.dir/preprocess.cpp.o	63847089f9cac885
-188	3597	649341071	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	fd096969e6dc2ef9
-0	3622	649341071	CMakeFiles/Native.dir/native.cpp.o	750deb3696a31d10
-73	3722	649341071	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	7c477dac0243bf60
-3722	4541	649341072	D:/GithubSpace/ocrProject/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libNative.so	a4579d294543dc98
+309	1471	649674452	CMakeFiles/Native.dir/predictor_input.cpp.o	7033727019b7295d
+363	1534	649674452	CMakeFiles/Native.dir/predictor_output.cpp.o	4c90b8591a843d60
+249	1840	649674452	CMakeFiles/Native.dir/ppredictor.cpp.o	d09da87a6ccfff1d
+165	2703	649674453	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	e5f50fd79087d038
+1	3029	649674453	CMakeFiles/Native.dir/ocr_clipper.cpp.o	1494a67b107a9018
+37	3309	649674453	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	b5e3893dcef51b63
+426	3459	649674454	CMakeFiles/Native.dir/preprocess.cpp.o	63847089f9cac885
+120	3522	649674454	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	fd096969e6dc2ef9
+70	3648	649674454	CMakeFiles/Native.dir/native.cpp.o	750deb3696a31d10
+202	3770	649674454	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	7c477dac0243bf60
+3770	4867	649674455	D:/GithubSpace/ocrProject/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libNative.so	a4579d294543dc98

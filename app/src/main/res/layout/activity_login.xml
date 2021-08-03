@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.baidu.paddle.lite.demo.activity.login.LoginActivity">
+    tools:context="net.ixzyj.activity.login.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -41,7 +41,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="登录"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/white" >
+
+        <ImageView
+            android:id="@+id/set"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_sliders_h"
+            android:layout_marginEnd="20dp"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <EditText
         android:id="@+id/user_Name_edit"
@@ -72,7 +81,6 @@
         android:ems="10"
         android:hint="请输入密码"
         android:inputType="textPassword"
-        android:text="sh76yKR;hnbaGacLU.kT2YFQpf"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
         android:textSize="20sp"
@@ -98,4 +106,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

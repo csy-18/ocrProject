@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.baidu.paddle.lite.demo.ocr">
+    package="net.ixzyj.ocr">
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <application
-        android:name="com.baidu.paddle.lite.demo.utils.MyApplication"
+        android:name="net.ixzyj.utils.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
@@ -18,21 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.baidu.paddle.lite.demo.activity.setting.FileActivity"></activity>
+        <activity android:name="net.ixzyj.activity.setting.FileActivity"></activity>
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.setting.SetDBActivity"
+            android:name="net.ixzyj.activity.setting.SetDBActivity"
             android:label="@string/title_activity_set_dbactivity" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.receptioninscene.RecinSceneActivity"
+            android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
             android:launchMode="singleInstance" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.receipts.ReceiptsActivity"
+            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
             android:launchMode="singleInstance" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.main.OcrMainActivity"
+            android:name="net.ixzyj.activity.main.OcrMainActivity"
             android:launchMode="singleInstance" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.login.SplashActivity"
+            android:name="net.ixzyj.activity.login.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,21 +40,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.baidu.paddle.lite.demo.activity.login.LoginActivity" />
+        <activity android:name="net.ixzyj.activity.login.LoginActivity" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.result.ResultActivity"
+            android:name="net.ixzyj.activity.result.ResultActivity"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.camera.CameraActivity"
-            android:launchMode="singleInstance" /> <!-- to test MiniActivity, change this to com.baidu.paddle.lite.demo.ocr.demo.MiniActivity -->
+            android:name="net.ixzyj.activity.camera.CameraActivity"
+            android:launchMode="singleInstance" /> <!-- to test MiniActivity, change this to net.ixzyj.demo.ocr.demo.MiniActivity -->
         <activity
-            android:name="com.baidu.paddle.lite.demo.activity.setting.SettingsActivity"
+            android:name="net.ixzyj.activity.setting.SettingsActivity"
             android:label="Settings" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.baidu.paddle.lite.demo.ocr.fileprovider"
+            android:authorities="net.ixzyj.ocr.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

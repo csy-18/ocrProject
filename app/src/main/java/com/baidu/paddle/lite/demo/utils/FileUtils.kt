@@ -2,9 +2,11 @@ package com.baidu.paddle.lite.demo.utils
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Environment
 import com.baidu.paddle.lite.demo.activity.camera.CameraActivity
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.loge
+import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.logi
 import com.baidu.paddle.lite.demo.utils.MyApplication.Companion.showToast
 import java.io.File
 import java.io.FileNotFoundException
@@ -16,7 +18,8 @@ import java.util.*
 
 class FileUtils {
     companion object {
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd"
+        private const val FILENAME_FORMAT_PHOTO = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 
     /* 检查外部存储是否可用于读写 */
@@ -31,37 +34,80 @@ class FileUtils {
         return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
     }
 
-    fun getPublicAlbumStorageDir(albumName: String?): File? {
-        // 获取用户公共图片目录的目录。
-        val file = File(
-            Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS
-            ), albumName
-        )
-        if (!file.mkdirs()) {
-            "Directory not created".loge()
+    fun createRootDirComm(resultDirList: List<String>, bitmap: Bitmap) {
+        if (isExternalStorageWritable()) {
+            val root =
+                File(Environment.getExternalStorageDirectory(), File.separator + "ixzyj_net")
+            val dateDir = SimpleDateFormat(
+                FILENAME_FORMAT, Locale.CHINESE
+            ).format(System.currentTimeMillis())
+            try {
+                if (!root.exists()) {
+                    root.mkdirs()
+                }
+
+                val datedir = File(root.absolutePath, dateDir)
+                if (!datedir.exists()) {
+                    datedir.mkdirs()
+                }
+                resultDirList.forEach { resultDir ->
+                    val photoFos = FileOutputStream(
+                        File(
+                            datedir.absolutePath,
+                            File.separator + resultDir + ".jpg"
+                        )
+                    ).use {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it).run {
+                            it.flush()
+                            it.close()
+                        }
+                    }
+                    val resultdir = File(datedir.absolutePath, File.separator + resultDir + ".txt")
+                    FileOutputStream(resultdir)
+                }
+            } catch (e: FileNotFoundException) {
+                "不能访问".logi()
+            } catch (e: IOException) {
+                e.message?.logi()
+            }
         }
-        return file
     }
+    fun createRootDir(resultDirList: List<String>, bitmap: Bitmap,context: Context) {
+        if (isExternalStorageWritable()) {
+            val root =
+                File(context.getExternalFilesDir(null), File.separator + "ixzyj_net")
+            val dateDir = SimpleDateFormat(
+                FILENAME_FORMAT, Locale.CHINESE
+            ).format(System.currentTimeMillis())
+            try {
+                if (!root.exists()) {
+                    root.mkdirs()
+                }
 
-    fun saveFile(context: Context, fileName: String) {
-        val fos: FileOutputStream
-        val 文件夹 = SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()).toString()
-
-        try {
-            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-            fos.write(fileName.toByteArray())
-            fos.close()
-            "保存成功".showToast(context)
-            context.startActivity(Intent(context, CameraActivity::class.java))
-        } catch (e: FileNotFoundException) {
-            "保存失败".showToast(context)
-            e.printStackTrace()
-        } catch (e: IOException) {
-            "保存失败".showToast(context)
-            e.printStackTrace()
+                val datedir = File(root.absolutePath, dateDir)
+                if (!datedir.exists()) {
+                    datedir.mkdirs()
+                }
+                resultDirList.forEach { resultDir ->
+                    val photoFos = FileOutputStream(
+                        File(
+                            datedir.absolutePath,
+                            File.separator + resultDir + ".jpg"
+                        )
+                    ).use {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it).run {
+                            it.flush()
+                            it.close()
+                        }
+                    }
+                    val resultdir = File(datedir.absolutePath, File.separator + resultDir + ".txt")
+                    FileOutputStream(resultdir)
+                }
+            } catch (e: FileNotFoundException) {
+                "不能访问".logi()
+            } catch (e: IOException) {
+                e.message?.logi()
+            }
         }
     }
 }

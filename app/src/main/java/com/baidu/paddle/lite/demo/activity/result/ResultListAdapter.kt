@@ -67,7 +67,6 @@ class ResultListAdapter(val resultList: List<String>) :
                         predictor.outputResult.value?.remove(result)
                         predictor.outputResult.value?.add(text)
                         predictor.outputResult.value?.get(position)?.logi()
-//                        saveFile(context,editText.text.toString())
                     }
                     .create().show()
             }

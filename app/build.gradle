@@ -15,12 +15,12 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions -Wno-format"
-                arguments '-DANDROID_PLATFORM=android-23', '-DANDROID_STL=c++_shared' ,"-DANDROID_ARM_NEON=TRUE"
+                arguments '-DANDROID_PLATFORM=android-23', '-DANDROID_STL=c++_shared', "-DANDROID_ARM_NEON=TRUE"
             }
         }
         ndk {
             // abiFilters "arm64-v8a", "armeabi-v7a"
-            abiFilters   "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a"
             ldLibs "jnigraphics"
         }
     }
@@ -75,8 +75,8 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     //glide图片库
     implementation 'com.github.bumptech.glide:glide:4.12.0'
-
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha02'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "androidx.core:core-ktx:+"
@@ -94,11 +94,11 @@ def archives = [
         ],
         [
                 'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ocr_v2_for_cpu.tar.gz',
-                'dest' : 'src/main/assets/models'
+                'dest': 'src/main/assets/models'
         ],
         [
                 'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ch_dict.tar.gz',
-                'dest' : 'src/main/assets/labels'
+                'dest': 'src/main/assets/labels'
         ]
 ]
 

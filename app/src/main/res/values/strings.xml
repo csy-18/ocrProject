@@ -53,7 +53,7 @@
     <string name="db_title">数据库</string>
     <string name="server_title">服务器</string>
 
-<!--    初始化服务器地址和数据库-->
+    <!--    初始化服务器地址和数据库-->
     <string name="SERVER_ADDRESS">ServerAddress</string>
     <string name="SERVER_ADDRESS_VALUE_DEFAULT">http://114.67.113.2:8069</string>
     <string name="DB_ADDRESS">DbAddress</string>

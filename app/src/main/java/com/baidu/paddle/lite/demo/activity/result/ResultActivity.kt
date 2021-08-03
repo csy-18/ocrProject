@@ -1,11 +1,15 @@
 package com.baidu.paddle.lite.demo.activity.result
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.graphics.Bitmap
+import android.os.*
+import android.text.InputType
+import android.text.method.DigitsKeyListener
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,12 +30,17 @@ import com.baidu.paddle.lite.demo.utils.SharedPreferencesUtil
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.sychen.basic.activity.BaseActivity
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 
 class ResultActivity : BaseActivity() {
     lateinit var binding: ActivityResultBinding
     lateinit var recyclerViewAdapter: ResultListAdapter
     lateinit var work: Handler
+    lateinit var dialog: Dialog
 
     companion object {
         var TAG = ResultActivity.javaClass.name
@@ -71,11 +80,12 @@ class ResultActivity : BaseActivity() {
         predictor.outputResult().observe(this, { outResult ->
             when (outResult.size) {
                 0 -> {
+                    dialog.dismiss()
                     "没有结果不能保存".showToast(this)
                 }
                 else -> {
-                    Thread{
-                        uploadRecScene(outResult,orderId!!,warehouseId!!)
+                    Thread {
+                        uploadRecScene(outResult, orderId!!, warehouseId!!)
                     }.start()
                 }
             }
@@ -86,9 +96,9 @@ class ResultActivity : BaseActivity() {
         val bundle = intent.extras
         val receiptsId = bundle?.getInt("RECEIPTS_ID")
         predictor.outputResult().observe(this, { outResult ->
-            "$outResult.size".logi()
             when (outResult.size) {
                 0 -> {
+                    dialog.dismiss()
                     "没有结果不能保存".showToast(this)
                 }
                 else -> {
@@ -105,7 +115,12 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        binding.imgResult.isFocusable = true
+        dialog = DialogUtil.progressBarDialog(this)
+        binding.inputEditText.apply {
+            val digits = "0123456789-"
+            inputType = InputType.TYPE_CLASS_TEXT
+            setRawInputType(InputType.TYPE_CLASS_NUMBER)
+        }
         Glide.with(this)
             .load(predictor.outputImage())
             .into(binding.imgResult)
@@ -135,6 +150,7 @@ class ResultActivity : BaseActivity() {
             recyclerViewAdapter.notifyDataSetChanged()
         }
         binding.saveUploadBtn.setOnClickListener {
+            dialog.show()
             when (flagPage) {
                 1 -> work.sendEmptyMessage(FROM_REC)
                 2 -> work.sendEmptyMessage(FROM_REC_SCENE)
@@ -143,10 +159,11 @@ class ResultActivity : BaseActivity() {
         binding.outResult.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("退出扫码")
-                .setNegativeButton("取消"){dialog, which ->
-
+                .setNegativeButton("取消") { dialog, which ->
+                    dialog.dismiss()
                 }
                 .setPositiveButton("确认") { dialog, which ->
+                    dialog.dismiss()
                     startActivity(Intent(this, OcrMainActivity::class.java))
                     finish()
                 }
@@ -181,13 +198,13 @@ class ResultActivity : BaseActivity() {
         binding.runModelStatus.text = stringBuffer
     }
 
-    private fun uploadRecScene(resultList: List<String>,orderId:Int,warehousedId:Int) {
+    private fun uploadRecScene(resultList: List<String>, orderId: Int, warehousedId: Int) {
         val errorList = arrayListOf<String>()
         val successList = arrayListOf<String>()
-        resultList.forEach { result->
+        resultList.forEach { result ->
             val genElscodeCkCode = genElscodeCkCode(result)
             val uploadResult = OdooUtils.uploadRecScene(orderId, genElscodeCkCode, warehousedId)
-            if (uploadResult==null){
+            if (uploadResult == null) {
                 errorList.add("上传失败")
             }
             val resultModel = Gson().fromJson(uploadResult, ResultModel::class.java)
@@ -202,12 +219,15 @@ class ResultActivity : BaseActivity() {
         }
         if (successList.size == resultList.size) {
             Looper.prepare()
+            dialog.dismiss()
             "上传成功".showToast(this)
+            saveFiles(resultList, predictor.outputImage())
             startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
             Looper.loop()
         } else {
             val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
             Looper.prepare()
+            dialog.dismiss()
             DialogUtil.alertDialog(message, this)
             Looper.loop()
         }
@@ -219,7 +239,7 @@ class ResultActivity : BaseActivity() {
         resultList.forEach { result ->
             val genElscodeCkCode = genElscodeCkCode(result)
             val uploadResult = OdooUtils.uploadRec(receiptsId, genElscodeCkCode)
-            if (uploadResult==null){
+            if (uploadResult == null) {
                 errorList.add("上传失败")
             }
             val resultModel = Gson().fromJson(uploadResult, ResultModel::class.java)
@@ -234,15 +254,25 @@ class ResultActivity : BaseActivity() {
         }
         if (successList.size == resultList.size) {
             Looper.prepare()
+            dialog.dismiss()
             "上传成功".showToast(this)
+            saveFiles(resultList, predictor.outputImage())
             startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
             Looper.loop()
         } else {
             val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
             Looper.prepare()
+            dialog.dismiss()
             DialogUtil.alertDialog(message, this)
             Looper.loop()
         }
+    }
+
+    private fun saveFiles(resultDirList: List<String>, bitmap: Bitmap) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
+            FileUtils().createRootDir(resultDirList, bitmap,this)
+        }
+        FileUtils().createRootDirComm(resultDirList, bitmap)
     }
 
 

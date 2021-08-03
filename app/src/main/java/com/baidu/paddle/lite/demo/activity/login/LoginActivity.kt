@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.baidu.paddle.lite.demo.activity.main.OcrMainActivity
+import com.baidu.paddle.lite.demo.activity.setting.FileActivity
 import com.baidu.paddle.lite.demo.activity.setting.SetDBActivity
 import com.baidu.paddle.lite.demo.network.OdooUtils
 import com.baidu.paddle.lite.demo.network.OdooUtils.userLogin
@@ -102,6 +103,9 @@ class LoginActivity : BaseActivity() {
                 when (item?.itemId) {
                     R.id.set_menu -> {
                         startActivity(Intent(this@LoginActivity,SetDBActivity::class.java))
+                    }
+                    R.id.set_file ->{
+                        startActivity(Intent(this@LoginActivity,FileActivity::class.java))
                     }
                 }
                 isDebug

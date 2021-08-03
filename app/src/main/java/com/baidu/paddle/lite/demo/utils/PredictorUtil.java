@@ -355,6 +355,9 @@ public class PredictorUtil {
         paint.setStyle(Paint.Style.STROKE);
 
         for (OcrResultModel result : results) {
+            if(result.getConfidence()<0.8){
+                continue;
+            }
             Path path = new Path();
             List<Point> points = result.getPoints();
             path.moveTo(points.get(0).x, points.get(0).y);

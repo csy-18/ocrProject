@@ -34,6 +34,7 @@ public class PredictorUtil {
     public int cpuThreadNum = 4;
     public String cpuPowerMode = "LITE_POWER_HIGH";
     private static String REGEX_CHINESE = "[a-zA-WYZ_\\u4e00-\\u9fa5]";// 中文正则
+    //    private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
     public String modelPath = "";
     public String modelName = "";
     protected OCRPredictorNative paddlePredictor = null;
@@ -326,6 +327,13 @@ public class PredictorUtil {
         List<String> outputResultList = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
             OcrResultModel result = results.get(i);
+            result.setLabel(result.getLabel().replaceAll(REGEX_CHINESE, ""));
+            if ((result.getLabel().equals(""))) {
+                continue;
+            }
+            if ((result.getLabel().length()<9||result.getLabel().length()>13)){
+                continue;
+            }
             if (result.getConfidence() < 0.8) {
                 Log.i(TAG, "置信度低于0.8: " + result.getLabel());
                 continue;
@@ -338,7 +346,6 @@ public class PredictorUtil {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
             Log.i(TAG, sb.toString()); // show LOG in Logcat panel
-            result.setLabel(result.getLabel().replace(REGEX_CHINESE, ""));
             if (result.getLabel().length() > 11) {
                 result.setLabel(result.getLabel().subSequence(0, 11).toString());
             }
@@ -346,7 +353,6 @@ public class PredictorUtil {
             outputResultList.add(result.getLabel());
         }
         outputResult.postValue(outputResultList);
-//        outputResult = outputResultSb.toString();
         outputImage = inputImage;
         Canvas canvas = new Canvas(outputImage);
         Paint paintFillAlpha = new Paint();
@@ -365,6 +371,13 @@ public class PredictorUtil {
         textPaint.setTextAlign(Paint.Align.CENTER);
         int index = 1;
         for (OcrResultModel result : results) {
+            result.setLabel(result.getLabel().replaceAll(REGEX_CHINESE, ""));
+            if ((result.getLabel().equals(""))) {
+                continue;
+            }
+            if ((result.getLabel().length()<8||result.getLabel().length()>13)){
+                continue;
+            }
             if (result.getConfidence() < 0.8) {
                 continue;
             }
@@ -375,7 +388,7 @@ public class PredictorUtil {
                 Point p = points.get(i);
                 path.lineTo(p.x, p.y);
             }
-            canvas.drawText(String.valueOf(index),points.get(0).x, points.get(0).y,textPaint);
+            canvas.drawText(String.valueOf(index), points.get(0).x, points.get(0).y, textPaint);
             canvas.drawPath(path, paint);
             canvas.drawPath(path, paintFillAlpha);
             index++;

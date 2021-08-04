@@ -3,6 +3,7 @@ package net.ixzyj.activity.result
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,22 +39,26 @@ class ResultListAdapter(val resultList: List<String>) :
             }
             resultIndex.apply {
                 text = (position+1).toString()
+                setTextColor(Color.parseColor("#427ccd"))
             }
             updateBtn.apply {
                 visibility = View.INVISIBLE
                 setOnClickListener {
                     val view = LayoutInflater.from(context).inflate(R.layout.set_edit, null)
                     val editText = view.findViewById<EditText>(R.id.update_edit)
-                    editText.setText(result)
+                    editText.apply {
+                        setText(result)
+                        inputType = InputType.TYPE_CLASS_TEXT
+                        setRawInputType(InputType.TYPE_CLASS_NUMBER)
+                    }
                     AlertDialog.Builder(context)
                         .setTitle("修改")
                         .setView(view)
                         .setPositiveButton("确认") { dialog, which ->
-                            val text = editText.text.toString()
-                            text.logi()
-                            predictor.outputResult.value?.remove(result)
-                            predictor.outputResult.value?.add(text)
-                            predictor.outputResult.value?.get(position)?.logi()
+                            val newValue = editText.text.toString()
+                            predictor.outputResult.value?.removeAt(position)
+                            predictor.outputResult.value?.add(position,newValue)
+                            notifyDataSetChanged()
                         }
                         .create().show()
                 }

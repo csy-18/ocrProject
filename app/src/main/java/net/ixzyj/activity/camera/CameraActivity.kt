@@ -20,7 +20,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import coil.load
 import net.ixzyj.activity.result.ResultActivity
 import net.ixzyj.ocr.databinding.ActivityCameraBinding
 import net.ixzyj.utils.MyApplication.Companion.flagPage
@@ -36,6 +38,7 @@ import com.sychen.basic.activity.BaseActivity
 import kotlinx.coroutines.launch
 import net.ixzyj.activity.receipts.ReceiptsActivity
 import net.ixzyj.network.model.ReceptioninScene
+import net.ixzyj.ocr.R
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,8 +49,12 @@ class CameraActivity : BaseActivity() {
     lateinit var binding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+
     private val bundle by lazy {
         Bundle()
+    }
+    private val flashLightState by lazy {
+        MutableLiveData(false)
     }
     lateinit var pbRunModel: ProgressDialog
     lateinit var work: Handler
@@ -77,9 +84,13 @@ class CameraActivity : BaseActivity() {
         binding.toolbar3.apply {
             title = intent.extras?.getString("TOOLBAR_TITLE")
             setNavigationOnClickListener {
-                when(flagPage){
-                    1->{startActivity(Intent(this@CameraActivity,ReceiptsActivity::class.java))}
-                    2->{startActivity(Intent(this@CameraActivity,ReceptioninScene::class.java))}
+                when (flagPage) {
+                    1 -> {
+                        startActivity(Intent(this@CameraActivity, ReceiptsActivity::class.java))
+                    }
+                    2 -> {
+                        startActivity(Intent(this@CameraActivity, ReceptioninScene::class.java))
+                    }
                 }
             }
         }
@@ -93,6 +104,7 @@ class CameraActivity : BaseActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+        binding.flashLight.setOnClickListener { changeFlashLightState() }
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         binding.photoAlbum.setOnClickListener { getPhotoAlbum() }
         loadModelStatus.observe(this, {
@@ -102,6 +114,16 @@ class CameraActivity : BaseActivity() {
             }
         })
 
+    }
+
+    private fun changeFlashLightState() {
+        flashLightState.value = flashLightState.value?.not()
+        flashLightState.observe(this,{
+            when(it){
+                true-> binding.flashLight.load(R.drawable.ic_baseline_flash_on_24){}
+                false-> binding.flashLight.load(R.drawable.ic_baseline_flash_off_24){}
+            }
+        })
     }
 
     /**
@@ -173,9 +195,14 @@ class CameraActivity : BaseActivity() {
     /**
      * 拍照
      */
+    @SuppressLint("RestrictedApi")
     private fun takePhoto() {
         // 获得有关可修改图像捕获用例的稳定参考
         val imageCapture = imageCapture ?: return
+        // 闪光灯设置
+        flashLightState.observe(this,{
+            imageCapture.camera?.cameraControl?.enableTorch(it)
+        })
         // 创建带时间戳的输出文件以保存图像
         val photoFile = File(
             this.cacheDir,
@@ -185,7 +212,6 @@ class CameraActivity : BaseActivity() {
         )
         // 创建包含文件+元数据的输出选项对象
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
         // 设置图像捕捉监听器，该功能在拍照后触发
         imageCapture.takePicture(
             outputOptions,

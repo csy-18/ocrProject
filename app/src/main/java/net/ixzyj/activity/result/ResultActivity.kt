@@ -31,6 +31,7 @@ class ResultActivity : BaseActivity() {
     lateinit var binding: ActivityResultBinding
     lateinit var recyclerViewAdapter: ResultListAdapter
     lateinit var work: Handler
+    lateinit var viewHandler: Handler
     lateinit var dialog: Dialog
 
     companion object {
@@ -38,6 +39,7 @@ class ResultActivity : BaseActivity() {
         var userId = -1
         const val FROM_REC = 1
         const val FROM_REC_SCENE = 2
+        const val RECYCLER_VIEW_CHANGED = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +61,13 @@ class ResultActivity : BaseActivity() {
                     FROM_REC_SCENE -> {
                         fromRecScene()
                     }
+                }
+            }
+        }
+        viewHandler = object : Handler(mainLooper){
+            override fun handleMessage(msg: Message) {
+                when(msg.what){
+                    RECYCLER_VIEW_CHANGED->recyclerViewAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -199,7 +208,20 @@ class ResultActivity : BaseActivity() {
         val errorList = arrayListOf<String>()
         val successList = arrayListOf<String>()
         resultList.forEach { result ->
-            val genElscodeCkCode = genElscodeCkCode(result)
+            if (result.length!=11){
+                Looper.prepare()
+                dialog.dismiss()
+                DialogUtil.alertDialog("存在数据不符合要求,请检查后上传",this)
+                Looper.loop()
+            }
+            val sequence = result.subSequence(0,10).toString()
+            val genElscodeCkCode = genElscodeCkCode(sequence)
+            if (genElscodeCkCode(sequence)!=result){
+                Looper.prepare()
+                dialog.dismiss()
+                DialogUtil.alertDialog("校验结果与铭牌不符\n请移除该铭牌:$result",this)
+                Looper.loop()
+            }
             val uploadResult = OdooUtils.uploadRecScene(orderId, genElscodeCkCode, warehousedId)
             if (uploadResult == null) {
                 errorList.add("上传失败")
@@ -208,7 +230,6 @@ class ResultActivity : BaseActivity() {
             when (resultModel.result) {
                 "200" -> {
                     successList.add(result)
-//                    predictor.outputResult.value?.remove(result)
                 }
                 "500" -> errorList.add(result)
                 else -> errorList.add(result)
@@ -234,11 +255,20 @@ class ResultActivity : BaseActivity() {
         val errorList = arrayListOf<String>()
         val successList = arrayListOf<String>()
         resultList.forEach { result ->
-            "原始数据:$result".logi()
-            val sequence = result.subSequence(0,10)
-            "数据保留前10位:$sequence".logi()
-            val genElscodeCkCode = genElscodeCkCode(sequence.toString())
-            "校验结果:$genElscodeCkCode".logi()
+            if (result.length!=11){
+                Looper.prepare()
+                dialog.dismiss()
+                DialogUtil.alertDialog("存在数据不符合要求,请检查后上传",this)
+                Looper.loop()
+            }
+            val sequence = result.subSequence(0,10).toString()
+            val genElscodeCkCode = genElscodeCkCode(sequence)
+            if (genElscodeCkCode(sequence)!=result){
+                Looper.prepare()
+                dialog.dismiss()
+                DialogUtil.alertDialog("校验结果与铭牌不符\n请移除该铭牌:$result",this)
+                Looper.loop()
+            }
             val uploadResult = OdooUtils.uploadRec(receiptsId, genElscodeCkCode)
             if (uploadResult == null) {
                 errorList.add("上传失败")
@@ -248,30 +278,25 @@ class ResultActivity : BaseActivity() {
             when (resultModel.result) {
                 "200" -> {
                     successList.add(result)
-//                    predictor.outputResult.value?.remove(result)
                 }
                 "500" -> errorList.add(result)
                 else -> errorList.add(result)
             }
-            "===================".logi()
         }
-        "successList$successList".logi()
-        "errorList$errorList".logi()
-        "===================".logi()
-//        if (successList.size == resultList.size) {
-//            Looper.prepare()
-//            dialog.dismiss()
-//            "上传成功".showToast(this)
-//            saveFiles(resultList, predictor.outputImage())
-//            startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
-//            Looper.loop()
-//        } else {
-//            val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
-//            Looper.prepare()
-//            dialog.dismiss()
-//            DialogUtil.alertDialog(message, this)
-//            Looper.loop()
-//        }
+        if (successList.size == resultList.size) {
+            Looper.prepare()
+            dialog.dismiss()
+            "上传成功".showToast(this)
+            saveFiles(resultList, predictor.outputImage())
+            startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
+            Looper.loop()
+        } else {
+            val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
+            Looper.prepare()
+            dialog.dismiss()
+            DialogUtil.alertDialog(message, this)
+            Looper.loop()
+        }
     }
 
     private fun saveFiles(resultDirList: List<String>, bitmap: Bitmap) {

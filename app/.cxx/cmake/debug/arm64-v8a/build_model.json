@@ -187,7 +187,6 @@
       "project": {
         "compilerSettingsCacheFolder": "D:\\GithubSpace\\ocrProject\\.cxx",
         "cxxFolder": "D:\\GithubSpace\\ocrProject\\.cxx",
-        "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
         "isBuildOnlyTargetAbiEnabled": true,
         "isCmakeBuildCohabitationEnabled": false,
         "isNativeCompilerSettingsCacheEnabled": false,
@@ -211,6 +210,7 @@
     "objFolder": "D:\\GithubSpace\\ocrProject\\app\\build\\intermediates\\cmake\\debug\\obj",
     "variantName": "debug",
     "validAbiList": [
+      "ARMEABI_V7A",
       "ARM64_V8A"
     ],
     "prefabDirectory": "D:\\GithubSpace\\ocrProject\\app\\.cxx\\cmake\\debug\\prefab",

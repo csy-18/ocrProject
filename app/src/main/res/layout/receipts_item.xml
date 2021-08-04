@@ -52,7 +52,7 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/building_id" />
 
@@ -65,7 +65,8 @@
         android:text="TextView"
         android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/order_id"
         app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintStart_toEndOf="@+id/order_id"
         app:layout_constraintTop_toTopOf="@+id/order_id" />
@@ -76,7 +77,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/partner_name" />
 

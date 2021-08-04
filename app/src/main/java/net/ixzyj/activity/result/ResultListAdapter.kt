@@ -1,8 +1,10 @@
 package net.ixzyj.activity.result
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
+import android.os.Handler
+import android.os.Message
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +14,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.ixzyj.ocr.R
-import net.ixzyj.utils.MyApplication.Companion.logi
+import net.ixzyj.utils.CodeUtils
 import net.ixzyj.utils.MyApplication.Companion.predictor
 
-class ResultListAdapter(val resultList: List<String>) :
+class ResultListAdapter(val resultList: List<String>, val handler: Handler) :
     RecyclerView.Adapter<ResultListAdapter.ResultListViewHolder>() {
-
-    companion object {
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultListViewHolder {
         return ResultListViewHolder(
@@ -38,7 +36,7 @@ class ResultListAdapter(val resultList: List<String>) :
                 setTextColor(Color.parseColor("#427ccd"))
             }
             resultIndex.apply {
-                text = (position+1).toString()
+                text = (position + 1).toString()
                 setTextColor(Color.parseColor("#427ccd"))
             }
             updateBtn.apply {
@@ -57,24 +55,35 @@ class ResultListAdapter(val resultList: List<String>) :
                         .setPositiveButton("确认") { dialog, which ->
                             val newValue = editText.text.toString()
                             predictor.outputResult.value?.removeAt(position)
-                            predictor.outputResult.value?.add(position,newValue)
+                            predictor.outputResult.value?.add(position, newValue)
                             notifyDataSetChanged()
                         }
                         .create().show()
                 }
             }
-            if (result.length!=11){
+            var verify = false
+            if (result.length > 10) {
+                val sequence = result.subSequence(0, 10).toString()
+                val genElscodeCkCode = CodeUtils.genElscodeCkCode(sequence)
+                verify = genElscodeCkCode.equals(result)
+            }
+            if (result.length != 11 || !verify) {
                 resultText.setTextColor(Color.parseColor("#dddddd"))
                 resultIndex.setTextColor(Color.parseColor("#dddddd"))
                 updateBtn.visibility = View.VISIBLE
+                val message = Message()
+                message.what = ResultActivity.RESULT_ADAPTER
+                message.obj = position+1
+                handler.sendMessage(message)
             }
         }
     }
+
     override fun getItemCount(): Int = resultList.size
 
-    class ResultListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val  resultText = itemView.findViewById<TextView>(R.id.text_result_list)
-        val  resultIndex = itemView.findViewById<TextView>(R.id.index_reslt_list)
-        val  updateBtn = itemView.findViewById<Button>(R.id.update_btn)
+    class ResultListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val resultText = itemView.findViewById<TextView>(R.id.text_result_list)
+        val resultIndex = itemView.findViewById<TextView>(R.id.index_reslt_list)
+        val updateBtn = itemView.findViewById<Button>(R.id.update_btn)
     }
 }

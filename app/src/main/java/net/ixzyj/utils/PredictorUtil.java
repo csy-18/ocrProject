@@ -375,7 +375,7 @@ public class PredictorUtil {
             if ((result.getLabel().equals(""))) {
                 continue;
             }
-            if ((result.getLabel().length()<8||result.getLabel().length()>13)){
+            if ((result.getLabel().length()<9||result.getLabel().length()>13)){
                 continue;
             }
             if (result.getConfidence() < 0.8) {

@@ -98,13 +98,13 @@ class OcrMainActivity : AppCompatActivity() {
     private fun initViews() {
         dialog = DialogUtil.progressBarDialog(this)
         binding.toolbar2.apply {
-            inflateMenu(R.menu.menu_action_options)
-            setOnMenuItemClickListener{ item->
-                when(item?.itemId){
-                    R.id.settings->startActivity(Intent(this@OcrMainActivity,SettingsActivity::class.java))
-                }
-                true
-            }
+//            inflateMenu(R.menu.menu_action_options)
+//            setOnMenuItemClickListener{ item->
+//                when(item?.itemId){
+//                    R.id.settings->startActivity(Intent(this@OcrMainActivity,SettingsActivity::class.java))
+//                }
+//                true
+//            }
         }
         binding.inStock.setOnClickListener {
             dialog.show()

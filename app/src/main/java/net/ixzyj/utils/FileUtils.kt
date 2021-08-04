@@ -46,11 +46,12 @@ class FileUtils {
                 if (!datedir.exists()) {
                     datedir.mkdirs()
                 }
+                var index = 1
                 resultDirList.forEach { resultDir ->
                     val photoFos = FileOutputStream(
                         File(
                             datedir.absolutePath,
-                            File.separator + resultDir + ".jpg"
+                            File.separator + resultDir+"___$index"+ ".jpg"
                         )
                     ).use {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it).run {
@@ -60,6 +61,7 @@ class FileUtils {
                     }
                     val resultdir = File(datedir.absolutePath, File.separator + resultDir + ".txt")
                     FileOutputStream(resultdir)
+                    index++
                 }
             } catch (e: FileNotFoundException) {
                 "不能访问".logi()
@@ -84,11 +86,12 @@ class FileUtils {
                 if (!datedir.exists()) {
                     datedir.mkdirs()
                 }
+                var index = 1
                 resultDirList.forEach { resultDir ->
                     val photoFos = FileOutputStream(
                         File(
                             datedir.absolutePath,
-                            File.separator + resultDir + ".jpg"
+                            File.separator + resultDir +"___$index"+ ".jpg"
                         )
                     ).use {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it).run {
@@ -98,6 +101,7 @@ class FileUtils {
                     }
                     val resultdir = File(datedir.absolutePath, File.separator + resultDir + ".txt")
                     FileOutputStream(resultdir)
+                    index++
                 }
             } catch (e: FileNotFoundException) {
                 "不能访问".logi()

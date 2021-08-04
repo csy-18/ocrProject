@@ -128,7 +128,13 @@ public class OdooUtils {
             }});
         }};
         try {
-            info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password, "wh.internal", "search_read", Arrays.asList(Arrays.asList(Arrays.asList("state", "=", "draft"), Arrays.asList("is_open", "=", true), Arrays.asList("origin", "=", "material_project_out")), Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
+            info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password,
+                    "wh.internal", "search_read",
+                    Arrays.asList(
+                            Arrays.asList(Arrays.asList("state", "=", "draft"),
+                            Arrays.asList("is_open", "=", true),
+                            Arrays.asList("origin", "=", "material_project_out")),
+                            Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +150,10 @@ public class OdooUtils {
             }});
         }};
         try {
-            resultMap = (Map<String, String>) models.execute("execute_kw", Arrays.asList(db, uid, password, "wh.internal", "process_barcode", Arrays.asList(orderId, content, warehouseId)));
+            resultMap = (Map<String, String>) models.execute("execute_kw",
+                    Arrays.asList(db, uid, password,
+                            "wh.internal", "process_barcode",
+                            Arrays.asList(orderId, content, warehouseId)));
         } catch (Exception e) {
             e.printStackTrace();
         }

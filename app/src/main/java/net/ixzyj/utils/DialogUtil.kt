@@ -12,7 +12,6 @@ import net.ixzyj.ocr.databinding.AlertDialogBinding
 import net.ixzyj.ocr.databinding.PhotoDialogBinding
 
 object DialogUtil {
-    var dialog: Dialog? = null
 
     fun alertDialog(message: String,activity: Activity): Dialog {
         val alertDialogBinding =
@@ -21,7 +20,7 @@ object DialogUtil {
         val alertContent = alertDialogBinding.alertContent
         val dialogConfirm = alertDialogBinding.dialogConfirm
         return Dialog(activity, R.style.DialogTheme).apply {
-            alertContent.setText(message)
+            alertContent.text = message
             setContentView(view)
             window!!.apply {
                 setGravity(Gravity.CENTER)

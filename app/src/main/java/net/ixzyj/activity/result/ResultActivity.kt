@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.*
 import android.text.InputType
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,15 +32,22 @@ class ResultActivity : BaseActivity() {
     lateinit var binding: ActivityResultBinding
     lateinit var recyclerViewAdapter: ResultListAdapter
     lateinit var work: Handler
-    lateinit var viewHandler: Handler
+    lateinit var netHandler: Handler
+    lateinit var adapterHandler: Handler
     lateinit var dialog: Dialog
+
+    val viewModel by lazy {
+        ViewModelProvider(this).get(ResultViewModel::class.java)
+    }
 
     companion object {
         var TAG = ResultActivity.javaClass.name
         var userId = -1
         const val FROM_REC = 1
         const val FROM_REC_SCENE = 2
-        const val RECYCLER_VIEW_CHANGED = 3
+        const val UPLOAD_SUCCESS_RESULT = 3
+        const val UPLOAD_REC_SCENE_RESULT = 4
+        const val RESULT_ADAPTER = 5
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +72,24 @@ class ResultActivity : BaseActivity() {
                 }
             }
         }
-        viewHandler = object : Handler(mainLooper){
+        netHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
-                when(msg.what){
-                    RECYCLER_VIEW_CHANGED->recyclerViewAdapter.notifyDataSetChanged()
+                when (msg.what) {
+                    UPLOAD_SUCCESS_RESULT -> {
+                        val resultModel =
+                            Gson().fromJson(msg.obj.toString(), ResultModel::class.java)
+                        uploadResult(resultModel)
+                    }
+                }
+            }
+        }
+        adapterHandler = object : Handler(mainLooper) {
+            override fun handleMessage(msg: Message) {
+                when (msg.what) {
+                    RESULT_ADAPTER -> {
+                        val index = msg.obj
+                        index.toString().logi()
+                    }
                 }
             }
         }
@@ -85,7 +107,16 @@ class ResultActivity : BaseActivity() {
                 }
                 else -> {
                     Thread {
-                        uploadRecScene(outResult, orderId!!, warehouseId!!)
+                        val stringBuffer = StringBuffer()
+                        outResult.forEach {
+                            stringBuffer.append(it).append("\n")
+                        }
+                        val uploadResult =
+                            OdooUtils.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
+                        val message = Message()
+                        message.obj = uploadResult
+                        message.what = UPLOAD_SUCCESS_RESULT
+                        netHandler.sendMessage(message)
                     }.start()
                 }
             }
@@ -103,7 +134,15 @@ class ResultActivity : BaseActivity() {
                 }
                 else -> {
                     Thread {
-                        uploadRec(outResult, receiptsId!!)
+                        val stringBuffer = StringBuffer()
+                        outResult.forEach {
+                            stringBuffer.append(it).append("\n")
+                        }
+                        val uploadResult = OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                        val message = Message()
+                        message.obj = uploadResult
+                        message.what = UPLOAD_SUCCESS_RESULT
+                        netHandler.sendMessage(message)
                     }.start()
                 }
             }
@@ -115,23 +154,23 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun initViews() {
+        "初始化视图".logi()
         dialog = DialogUtil.progressBarDialog(this)
         binding.imgResult.apply {
+            Glide.with(this)
+                .load(predictor.outputImage())
+                .into(this)
             setOnClickListener {
-                    DialogUtil.photoDialog(this@ResultActivity, predictor.outputImage())
-                        .show()
+                DialogUtil.photoDialog(this@ResultActivity, predictor.outputImage())
+                    .show()
             }
         }
         binding.inputEditText.apply {
-            val digits = "0123456789-"
             inputType = InputType.TYPE_CLASS_TEXT
             setRawInputType(InputType.TYPE_CLASS_NUMBER)
         }
-        Glide.with(this)
-            .load(predictor.outputImage())
-            .into(binding.imgResult)
         predictor.outputResult().observe(this, {
-            recyclerViewAdapter = ResultListAdapter(it)
+            recyclerViewAdapter = ResultListAdapter(it, adapterHandler)
             recyclerViewAdapter.notifyDataSetChanged()
             binding.listResult.apply {
                 layoutManager =
@@ -156,6 +195,7 @@ class ResultActivity : BaseActivity() {
             recyclerViewAdapter.notifyDataSetChanged()
         }
         binding.saveUploadBtn.setOnClickListener {
+            "上传按钮点击".logi()
             dialog.show()
             when (flagPage) {
                 1 -> work.sendEmptyMessage(FROM_REC)
@@ -199,109 +239,54 @@ class ResultActivity : BaseActivity() {
 
     private fun setModelStatus() {
         val inferenceTime = predictor.inferenceTime()
-        val stringBuffer = StringBuffer()
-        stringBuffer.append("运行时间：").append(inferenceTime).append("毫秒").append("\n")
-        binding.runModelStatus.text = stringBuffer
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("运行时间：").append(inferenceTime).append("毫秒").append("\n")
+        stringBuilder.append("以下数据不合格,请修改后上传：\n")
+        var index = 1
+        val resultList = predictor.outputResult().value
+        resultList?.forEach {
+            var verify = false
+            if (it.length > 10) {
+                val sequence = it.subSequence(0, 10).toString()
+                val genElscodeCkCode = genElscodeCkCode(sequence)
+                verify = genElscodeCkCode.equals(it)
+            }
+            if (it.length != 11 || !verify) {
+                index.toString().logi()
+                it.logi()
+                stringBuilder.append("序号:").append("$index,").append("内容:").append(it).append("\n")
+            }
+            index++
+        }
+        binding.runModelStatus.text = stringBuilder
     }
 
-    private fun uploadRecScene(resultList: List<String>, orderId: Int, warehousedId: Int) {
-        val errorList = arrayListOf<String>()
-        val successList = arrayListOf<String>()
-        resultList.forEach { result ->
-            if (result.length!=11){
-                Looper.prepare()
-                dialog.dismiss()
-                DialogUtil.alertDialog("存在数据不符合要求,请检查后上传",this)
-                Looper.loop()
-            }
-            val sequence = result.subSequence(0,10).toString()
-            val genElscodeCkCode = genElscodeCkCode(sequence)
-            if (genElscodeCkCode(sequence)!=result){
-                Looper.prepare()
-                dialog.dismiss()
-                DialogUtil.alertDialog("校验结果与铭牌不符\n请移除该铭牌:$result",this)
-                Looper.loop()
-            }
-            val uploadResult = OdooUtils.uploadRecScene(orderId, genElscodeCkCode, warehousedId)
-            if (uploadResult == null) {
-                errorList.add("上传失败")
-            }
-            val resultModel = Gson().fromJson(uploadResult, ResultModel::class.java)
-            when (resultModel.result) {
-                "200" -> {
-                    successList.add(result)
-                }
-                "500" -> errorList.add(result)
-                else -> errorList.add(result)
-            }
-        }
-        if (successList.size == resultList.size) {
-            Looper.prepare()
-            dialog.dismiss()
-            "上传成功".showToast(this)
-            saveFiles(resultList, predictor.outputImage())
-            startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
-            Looper.loop()
-        } else {
-            val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
-            Looper.prepare()
-            dialog.dismiss()
-            DialogUtil.alertDialog(message, this)
-            Looper.loop()
+    private fun uploadResult(resultModel: ResultModel) {
+        when (resultModel.result) {
+            "200" -> uploadSuccess()
+            else -> uploadFailed(resultModel)
         }
     }
 
-    private fun uploadRec(resultList: List<String>, receiptsId: Int) {
-        val errorList = arrayListOf<String>()
-        val successList = arrayListOf<String>()
-        resultList.forEach { result ->
-            if (result.length!=11){
-                Looper.prepare()
-                dialog.dismiss()
-                DialogUtil.alertDialog("存在数据不符合要求,请检查后上传",this)
-                Looper.loop()
-            }
-            val sequence = result.subSequence(0,10).toString()
-            val genElscodeCkCode = genElscodeCkCode(sequence)
-            if (genElscodeCkCode(sequence)!=result){
-                Looper.prepare()
-                dialog.dismiss()
-                DialogUtil.alertDialog("校验结果与铭牌不符\n请移除该铭牌:$result",this)
-                Looper.loop()
-            }
-            val uploadResult = OdooUtils.uploadRec(receiptsId, genElscodeCkCode)
-            if (uploadResult == null) {
-                errorList.add("上传失败")
-            }
-            val resultModel = Gson().fromJson(uploadResult, ResultModel::class.java)
-            "请求码:${resultModel.result}".logi()
-            when (resultModel.result) {
-                "200" -> {
-                    successList.add(result)
-                }
-                "500" -> errorList.add(result)
-                else -> errorList.add(result)
-            }
-        }
-        if (successList.size == resultList.size) {
-            Looper.prepare()
-            dialog.dismiss()
-            "上传成功".showToast(this)
-            saveFiles(resultList, predictor.outputImage())
-            startActivity(Intent(this@ResultActivity, CameraActivity::class.java))
-            Looper.loop()
-        } else {
-            val message = errorList.toString() + " 上传失败\n" + "上传失败总数:" + errorList.size
-            Looper.prepare()
-            dialog.dismiss()
-            DialogUtil.alertDialog(message, this)
-            Looper.loop()
-        }
+    private fun uploadFailed(resultModel: ResultModel) {
+        dialog.dismiss()
+        DialogUtil.alertDialog("上传失败\n详情：${resultModel.message}", this)
     }
+
+    private fun uploadSuccess() {
+        dialog.dismiss()
+        "上传成功".showToast(this)
+        predictor.outputResult().observe(this, {
+            saveFiles(it, predictor.outputImage())
+        })
+        startActivity(Intent(this, CameraActivity::class.java))
+        finish()
+    }
+
 
     private fun saveFiles(resultDirList: List<String>, bitmap: Bitmap) {
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
-            FileUtils().createRootDir(resultDirList, bitmap,this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            FileUtils().createRootDir(resultDirList, bitmap, this)
         }
         FileUtils().createRootDirComm(resultDirList, bitmap)
     }

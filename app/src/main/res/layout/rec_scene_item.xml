@@ -31,7 +31,7 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="@dimen/Receipts_Item_Font_Size"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/building_name" />
 
@@ -42,7 +42,7 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="@dimen/Receipts_Item_Font_Size"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_id_scene" />
 

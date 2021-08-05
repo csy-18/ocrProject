@@ -240,7 +240,7 @@ class ResultActivity : BaseActivity() {
     private fun setModelStatus() {
         val inferenceTime = predictor.inferenceTime()
         val stringBuilder = StringBuilder()
-        stringBuilder.append("运行时间：").append(inferenceTime).append("毫秒").append("\n")
+        stringBuilder.append("运行时间：").append(inferenceTime).append("毫秒")
         binding.runModelStatus.text = stringBuilder
     }
 

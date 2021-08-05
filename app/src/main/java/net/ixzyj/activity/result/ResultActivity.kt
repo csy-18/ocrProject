@@ -154,7 +154,6 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        "初始化视图".logi()
         dialog = DialogUtil.progressBarDialog(this)
         binding.imgResult.apply {
             Glide.with(this)
@@ -254,7 +253,7 @@ class ResultActivity : BaseActivity() {
             if (it.length != 11 || !verify) {
                 index.toString().logi()
                 it.logi()
-                stringBuilder.append("序号:").append("$index,").append("内容:").append(it).append("\n")
+                stringBuilder.append("$index").append(":").append(it).append("\n")
             }
             index++
         }

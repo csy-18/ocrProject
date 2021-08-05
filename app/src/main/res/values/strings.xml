@@ -45,15 +45,13 @@
     <string name="MY_DATA">MyData</string>
     <string name="title_activity_set_dbactivity">SetDBActivity</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
     <!-- Messages Preferences -->
     <string name="db_listPerference_title">数据库</string>
-    <string name="db_editTextPerference_title">添加数据库</string>
+    <string name="add_db_editTextPerference_title">添加数据库</string>
+    <string name="del_db_editTextPerference_title">删除数据库</string>
     <string name="server_listPerference_title">服务器</string>
-    <string name="server_editTextPerference_title">添加服务器</string>
+    <string name="add_server_editTextPerference_title">添加服务器</string>
+    <string name="del_server_editTextPerference_title">删除服务器</string>
     <string name="SERVER_LIST">ServerList</string>
     <string name="DB_LIST">DbList</string>
 

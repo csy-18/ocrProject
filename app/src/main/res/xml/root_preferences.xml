@@ -14,10 +14,16 @@
         <EditTextPreference
             android:defaultValue=""
             android:icon="@drawable/ic_dbbrain"
-            android:key="@string/db_editTextPerference_title"
+            android:key="@string/add_db_editTextPerference_title"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/db_editTextPerference_title" />
+            android:title="@string/add_db_editTextPerference_title" />
+        <ListPreference
+            android:icon="@drawable/ic_dbbrain"
+            android:key="@string/del_db_editTextPerference_title"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/del_db_editTextPerference_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/server_listPerference_title">
@@ -31,10 +37,16 @@
         <EditTextPreference
             android:defaultValue=""
             android:icon="@drawable/ic_server"
-            android:key="@string/server_editTextPerference_title"
+            android:key="@string/add_server_editTextPerference_title"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/server_editTextPerference_title" />
+            android:title="@string/add_server_editTextPerference_title" />
+
+        <ListPreference
+            android:icon="@drawable/ic_server"
+            app:key="@string/del_server_editTextPerference_title"
+            app:title="@string/del_server_editTextPerference_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 

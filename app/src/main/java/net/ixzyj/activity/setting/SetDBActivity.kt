@@ -34,16 +34,18 @@ class SetDBActivity : BaseActivity() {
         private fun initServer() {
             listPreServer()
             addServer()
+            delServe()
         }
 
         private fun initDb() {
             listPreDb()
             addDb()
+            delDb()
         }
 
         private fun addServer() {
             val serverEditText =
-                findPreference<EditTextPreference>(getString(R.string.server_editTextPerference_title))
+                findPreference<EditTextPreference>(getString(R.string.add_server_editTextPerference_title))
             serverEditText?.setOnPreferenceChangeListener { preference, newValue ->
                 val serverList = SharedPreferencesUtil.loadJson(getString(R.string.SERVER_LIST))
                 serverList.add(newValue.toString())
@@ -57,7 +59,7 @@ class SetDBActivity : BaseActivity() {
         }
 
         private fun addDb() {
-            findPreference<EditTextPreference>(getString(R.string.db_editTextPerference_title))?.apply {
+            findPreference<EditTextPreference>(getString(R.string.add_db_editTextPerference_title))?.apply {
                 setOnPreferenceChangeListener { preference, newValue ->
                     val dbList = SharedPreferencesUtil.loadJson(getString(R.string.DB_LIST))
                     dbList.add(newValue.toString())
@@ -82,6 +84,7 @@ class SetDBActivity : BaseActivity() {
                     entryValues = serverList.toTypedArray()
                     entries = serverList.toTypedArray()
                 }
+                negativeButtonText = "确定"
                 onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { preference, newValue ->
                         SharedPreferencesUtil.sharedPreferencesSave(
@@ -104,6 +107,7 @@ class SetDBActivity : BaseActivity() {
                     entryValues = dbList.toTypedArray()
                     entries = dbList.toTypedArray()
                 }
+                negativeButtonText = "确定"
                 onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { preference, newValue ->
                         SharedPreferencesUtil.sharedPreferencesSave(
@@ -113,6 +117,53 @@ class SetDBActivity : BaseActivity() {
                         OdooUtils.db = newValue.toString()
                         true
                     }
+            }
+        }
+
+        private fun delServe(){
+            findPreference<ListPreference>(getString(R.string.del_server_editTextPerference_title))?.apply {
+                val serverList = SharedPreferencesUtil.loadJson(getString(R.string.SERVER_LIST))
+                if (serverList==null){
+                    entryValues = arrayOf("")
+                    entries = arrayOf("")
+                }else{
+                    entryValues = serverList.toTypedArray()
+                    entries = serverList.toTypedArray()
+                }
+                negativeButtonText = "删除"
+                setOnPreferenceChangeListener { preference, newValue ->
+                    serverList.remove(newValue.toString())
+                    SharedPreferencesUtil.saveJson(
+                        getString(R.string.SERVER_LIST),
+                        serverList
+                    )
+                    delServe()
+                    listPreServer()
+                    true
+                }
+            }
+        }
+        private fun delDb(){
+            findPreference<ListPreference>(getString(R.string.del_db_editTextPerference_title))?.apply {
+                val dbList = SharedPreferencesUtil.loadJson(getString(R.string.DB_LIST))
+                if (dbList==null){
+                    entryValues = arrayOf("")
+                    entries = arrayOf("")
+                }else{
+                    entryValues = dbList.toTypedArray()
+                    entries = dbList.toTypedArray()
+                }
+                negativeButtonText = "删除"
+                setOnPreferenceChangeListener { preference, newValue ->
+                    dbList.remove(newValue.toString())
+                    SharedPreferencesUtil.saveJson(
+                        getString(R.string.DB_LIST),
+                        dbList
+                    )
+                    listPreDb()
+                    delDb()
+                    true
+                }
             }
         }
     }

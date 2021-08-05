@@ -33,7 +33,7 @@ public class PredictorUtil {
     public int inferIterNum = 1;
     public int cpuThreadNum = 4;
     public String cpuPowerMode = "LITE_POWER_HIGH";
-    private static String REGEX_CHINESE = "[a-zA-WYZ_\\u4e00-\\u9fa5]";// 中文正则
+    private static String REGEX_CHINESE = "[a-zA-WYZ_\\u4e00-\\u9fa5\\r]";// 中文正则
     //    private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
     public String modelPath = "";
     public String modelName = "";
@@ -331,7 +331,7 @@ public class PredictorUtil {
             if ((result.getLabel().equals(""))) {
                 continue;
             }
-            if ((result.getLabel().length()<9||result.getLabel().length()>13)){
+            if ((result.getLabel().length()<5||result.getLabel().length()>15)){
                 continue;
             }
             if (result.getConfidence() < 0.8) {
@@ -345,11 +345,9 @@ public class PredictorUtil {
             for (Point p : result.getPoints()) {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
-            Log.i(TAG, sb.toString()); // show LOG in Logcat panel
             if (result.getLabel().length() > 11) {
                 result.setLabel(result.getLabel().subSequence(0, 11).toString());
             }
-            Log.i(TAG, "内容：" + result.getLabel() + "置信度：" + result.getConfidence());
             outputResultList.add(result.getLabel());
         }
         outputResult.postValue(outputResultList);
@@ -361,7 +359,7 @@ public class PredictorUtil {
         paintFillAlpha.setAlpha(50);
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#000000"));
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(8);
         paint.setStyle(Paint.Style.STROKE);
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(50);
@@ -375,7 +373,7 @@ public class PredictorUtil {
             if ((result.getLabel().equals(""))) {
                 continue;
             }
-            if ((result.getLabel().length()<9||result.getLabel().length()>13)){
+            if ((result.getLabel().length()<5||result.getLabel().length()>15)){
                 continue;
             }
             if (result.getConfidence() < 0.8) {

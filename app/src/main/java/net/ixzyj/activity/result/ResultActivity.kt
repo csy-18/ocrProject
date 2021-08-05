@@ -122,7 +122,6 @@ class ResultActivity : BaseActivity() {
             }
         })
     }
-
     private fun fromRec() {
         val bundle = intent.extras
         val receiptsId = bundle?.getInt("RECEIPTS_ID")
@@ -194,7 +193,6 @@ class ResultActivity : BaseActivity() {
             recyclerViewAdapter.notifyDataSetChanged()
         }
         binding.saveUploadBtn.setOnClickListener {
-            "上传按钮点击".logi()
             dialog.show()
             when (flagPage) {
                 1 -> work.sendEmptyMessage(FROM_REC)
@@ -257,7 +255,6 @@ class ResultActivity : BaseActivity() {
             }
             if (it.length != 11 || !verify) {
                 index.toString().logi()
-                it.logi()
                 stringBuilder.append("$index").append(":").append(it).append("\n")
             }
             index++
@@ -276,12 +273,12 @@ class ResultActivity : BaseActivity() {
         dialog.dismiss()
         when(resultModel.result){
             "500"->{
-                val split = resultModel.message.split("未找到")
-                val stringBuilder = StringBuilder()
-                split.forEach { s ->
-                    stringBuilder.append(s).append("\n")
-                }
-                DialogUtil.alertDialog("上传失败\n错误数据如下\n$stringBuilder", this)
+//                val split = resultModel.message.split("未找到")
+//                val stringBuilder = StringBuilder()
+//                split.forEach { s ->
+//                    stringBuilder.append(s).append("\n")
+//                }
+                DialogUtil.alertDialog("上传失败\n错误信息如下\n${resultModel.message}", this)
             }
             else->{DialogUtil.alertDialog("上传失败\n存在错误数据", this)}
         }

@@ -48,5 +48,9 @@
         <!-- 遮罩层 -->
         <item name="android:backgroundDimAmount">0.5</item>
     </style>
-
+    <!-- dialog的动画 -->
+    <style name="main_menu_animStyle">
+        <item name="android:windowEnterAnimation">@anim/zoom_hight</item>
+        <item name="android:windowExitAnimation">@anim/zoom_low</item>
+    </style>
 </resources>

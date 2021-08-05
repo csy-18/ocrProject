@@ -30,9 +30,9 @@ public class OdooUtils {
         Map<String, String> info = new HashMap<>();
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
         // 获取版本信息
         try {
+            config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
             info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,10 +56,10 @@ public class OdooUtils {
     //用户登录
     public static int userLogin(String username, String password) throws MalformedURLException {
         int uid = -1;
-        final XmlRpcClient client = new XmlRpcClient();
-        final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
         try {
+            final XmlRpcClient client = new XmlRpcClient();
+            final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
             uid = (int) client.execute(config, "authenticate", Arrays.asList(
                     db, username, password, Collections.emptyMap()));
             Log.i(TAG, "userLogin: " + uid);

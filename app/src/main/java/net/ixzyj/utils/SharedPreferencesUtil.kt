@@ -7,6 +7,7 @@ import net.ixzyj.ocr.R
 import net.ixzyj.utils.MyApplication.Companion.getContext
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import net.ixzyj.utils.MyApplication.Companion.logi
 import kotlin.collections.ArrayList
 
 @SuppressLint("StaticFieldLeak", "CommitPrefEdits")
@@ -43,9 +44,14 @@ object SharedPreferencesUtil {
      * 读取
      * @return
      */
-    fun loadJson(key: String): List<Long> {
-        val data = shp.getString(key, "")
-        return Gson().fromJson(data, object : TypeToken<List<Long>>() {}.type)
+    fun loadJson(key: String): ArrayList<String> {
+        val data = shp.getString(key, "123")
+        try {
+            return Gson().fromJson(data, object : TypeToken<ArrayList<String>>() {}.type)
+        } catch (e: Exception) {
+            e.message?.logi()
+            return arrayListOf("")
+        }
     }
 
     inline fun <reified T : Any> sharedPreferencesLoad(key: String, defValue: T) = when (T::class) {

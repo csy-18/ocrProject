@@ -60,6 +60,7 @@ object DialogUtil {
         return Dialog(activity, R.style.DialogTheme).apply {
             setContentView(view)
             window!!.apply {
+                setWindowAnimations(R.style.main_menu_animStyle)
                 setGravity(Gravity.CENTER)
                 setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }

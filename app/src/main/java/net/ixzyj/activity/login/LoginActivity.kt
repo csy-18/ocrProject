@@ -7,15 +7,12 @@ import android.os.Looper
 import android.os.Message
 import android.view.View
 import net.ixzyj.activity.main.OcrMainActivity
-import net.ixzyj.activity.setting.FileActivity
 import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.network.OdooUtils.userLogin
-import net.ixzyj.ocr.R
 import net.ixzyj.ocr.databinding.ActivityLoginBinding
 import net.ixzyj.utils.DialogUtil
 import net.ixzyj.utils.MyApplication.Companion.isDebug
-import net.ixzyj.utils.MyApplication.Companion.logi
 import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
@@ -82,7 +79,6 @@ class LoginActivity : BaseActivity() {
         SharedPreferencesUtil.sharedPreferencesSave("PASS_WORD", encryptPwd)
         SharedPreferencesUtil.sharedPreferencesSave("USER_ID", USER_ID)
         SharedPreferencesUtil.sharedPreferencesSave("LOGIN_ISCHECKED", true)
-        OdooUtils.url.logi()
         startActivity(Intent(this@LoginActivity, OcrMainActivity::class.java))
         finish()
     }

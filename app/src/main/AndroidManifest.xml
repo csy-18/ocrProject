@@ -18,21 +18,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="net.ixzyj.activity.setting.FileActivity"></activity>
         <activity
             android:name="net.ixzyj.activity.setting.SetDBActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_set_dbactivity" />
         <activity
             android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance" />
         <activity
             android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance" />
         <activity
             android:name="net.ixzyj.activity.main.OcrMainActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance" />
         <activity
             android:name="net.ixzyj.activity.login.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,16 +44,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.ixzyj.activity.login.LoginActivity" />
+        <activity android:name="net.ixzyj.activity.login.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.result.ResultActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="net.ixzyj.activity.camera.CameraActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance" /> <!-- to test MiniActivity, change this to net.ixzyj.demo.ocr.demo.MiniActivity -->
         <activity
             android:name="net.ixzyj.activity.setting.SettingsActivity"
+            android:screenOrientation="portrait"
             android:label="Settings" />
 
         <provider

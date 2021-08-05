@@ -215,6 +215,7 @@ class ResultActivity : BaseActivity() {
                 .create().show()
         }
         setModelStatus()
+        setErrorResult()
     }
 
     private fun setItemTouch(recyclerView: RecyclerView) {
@@ -240,7 +241,11 @@ class ResultActivity : BaseActivity() {
         val inferenceTime = predictor.inferenceTime()
         val stringBuilder = StringBuilder()
         stringBuilder.append("运行时间：").append(inferenceTime).append("毫秒").append("\n")
-        stringBuilder.append("以下数据不合格,请修改后上传：\n")
+        binding.runModelStatus.text = stringBuilder
+    }
+
+    private fun setErrorResult(){
+        val stringBuilder = StringBuilder()
         var index = 1
         val resultList = predictor.outputResult().value
         resultList?.forEach {
@@ -257,7 +262,7 @@ class ResultActivity : BaseActivity() {
             }
             index++
         }
-        binding.runModelStatus.text = stringBuilder
+        binding.errorResult.text = stringBuilder
     }
 
     private fun uploadResult(resultModel: ResultModel) {
@@ -269,7 +274,17 @@ class ResultActivity : BaseActivity() {
 
     private fun uploadFailed(resultModel: ResultModel) {
         dialog.dismiss()
-        DialogUtil.alertDialog("上传失败\n详情：${resultModel.message}", this)
+        when(resultModel.result){
+            "500"->{
+                val split = resultModel.message.split("未找到")
+                val stringBuilder = StringBuilder()
+                split.forEach { s ->
+                    stringBuilder.append(s).append("\n")
+                }
+                DialogUtil.alertDialog("上传失败\n错误数据如下\n$stringBuilder", this)
+            }
+            else->{DialogUtil.alertDialog("上传失败\n存在错误数据", this)}
+        }
     }
 
     private fun uploadSuccess() {
@@ -281,7 +296,6 @@ class ResultActivity : BaseActivity() {
         startActivity(Intent(this, CameraActivity::class.java))
         finish()
     }
-
 
     private fun saveFiles(resultDirList: List<String>, bitmap: Bitmap) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

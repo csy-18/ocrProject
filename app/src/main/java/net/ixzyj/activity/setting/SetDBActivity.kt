@@ -100,6 +100,7 @@ class SetDBActivity : BaseActivity() {
                 loadServerData().observe(this, {
                     saveServerData(it)
                 })
+                listPreServer()
                 true
             }
         }
@@ -111,6 +112,7 @@ class SetDBActivity : BaseActivity() {
                     loadDbData().observe(this@SettingsFragment, {
                         saveDbData(it)
                     })
+                    listPreDb()
                     true
                 }
             }
@@ -126,6 +128,7 @@ class SetDBActivity : BaseActivity() {
                     setOnPreferenceChangeListener { preference, newValue ->
                         serverList.value?.remove(newValue.toString())
                         saveServerData(it)
+                        listPreServer()
                         true
                     }
                 })
@@ -141,6 +144,7 @@ class SetDBActivity : BaseActivity() {
                     setOnPreferenceChangeListener { preference, newValue ->
                         dbList.value?.remove(newValue.toString())
                         saveDbData(it)
+                        listPreDb()
                         true
                     }
                 })

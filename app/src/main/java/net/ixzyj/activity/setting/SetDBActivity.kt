@@ -56,7 +56,7 @@ class SetDBActivity : BaseActivity() {
 
         private fun listPreServer() {
             findPreference<ListPreference>(getString(R.string.server_listPerference_title))?.apply {
-                negativeButtonText = "确定"
+                negativeButtonText = ""
                 loadServerData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
@@ -75,7 +75,7 @@ class SetDBActivity : BaseActivity() {
 
         private fun listPreDb() {
             findPreference<ListPreference>(getString(R.string.db_listPerference_title))?.apply {
-                negativeButtonText = "确定"
+                negativeButtonText = ""
                 loadDbData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
@@ -121,7 +121,7 @@ class SetDBActivity : BaseActivity() {
 
         private fun delServe() {
             findPreference<ListPreference>(getString(R.string.del_server_editTextPerference_title))?.apply {
-                negativeButtonText = "删除"
+                negativeButtonText = ""
                 loadServerData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
@@ -137,7 +137,7 @@ class SetDBActivity : BaseActivity() {
 
         private fun delDb() {
             findPreference<ListPreference>(getString(R.string.del_db_editTextPerference_title))?.apply {
-                negativeButtonText = "删除"
+                negativeButtonText = ""
                 loadDbData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()

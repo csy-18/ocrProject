@@ -338,6 +338,13 @@ public class PredictorUtil {
                 Log.i(TAG, "置信度低于0.8: " + result.getLabel());
                 continue;
             }
+            // 对于不正确的数据，在最后加上X
+            boolean isExist = result.getLabel().charAt(result.getLabel().length() - 1) == 'X';
+            int pos = result.getLabel().indexOf('-');
+            if (!isExist && (pos == -1 && result.getLabel().length() < 7 ||
+                    pos != -1 && result.getLabel().substring(pos + 1).length() < 7 )) {
+                result.setLabel(result.getLabel() + "X");
+            }
             StringBuilder sb = new StringBuilder();
             sb.append(result.getLabel());
             sb.append(" ").append(result.getConfidence());
@@ -379,6 +386,7 @@ public class PredictorUtil {
             if (result.getConfidence() < 0.8) {
                 continue;
             }
+
             Path path = new Path();
             List<Point> points = result.getPoints();
             path.moveTo(points.get(0).x, points.get(0).y);

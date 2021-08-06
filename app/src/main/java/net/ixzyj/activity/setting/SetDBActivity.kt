@@ -9,6 +9,7 @@ import net.ixzyj.network.OdooUtils
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.utils.MyApplication.Companion.logi
 
 class SetDBActivity : BaseActivity() {
 
@@ -77,9 +78,9 @@ class SetDBActivity : BaseActivity() {
         private fun listPreServer() {
             findPreference<ListPreference>(getString(R.string.server_listPerference_title))?.apply {
                 val serverList = SharedPreferencesUtil.loadJson(getString(R.string.SERVER_LIST))
-                if (serverList==null){
-                    entryValues = arrayOf("")
-                    entries = arrayOf("")
+                if (serverList.toString()=="[]"){
+                    entryValues = arrayOf(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT))
+                    entries = arrayOf(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT))
                 }else{
                     entryValues = serverList.toTypedArray()
                     entries = serverList.toTypedArray()
@@ -100,9 +101,9 @@ class SetDBActivity : BaseActivity() {
         private fun listPreDb() {
             findPreference<ListPreference>(getString(R.string.db_listPerference_title))?.apply {
                 val dbList = SharedPreferencesUtil.loadJson(getString(R.string.DB_LIST))
-                if (dbList==null){
-                    entryValues = arrayOf("")
-                    entries = arrayOf("")
+                if (dbList.toString()=="[]"){
+                    entryValues = arrayOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT))
+                    entries = arrayOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT))
                 }else{
                     entryValues = dbList.toTypedArray()
                     entries = dbList.toTypedArray()
@@ -123,9 +124,9 @@ class SetDBActivity : BaseActivity() {
         private fun delServe(){
             findPreference<ListPreference>(getString(R.string.del_server_editTextPerference_title))?.apply {
                 val serverList = SharedPreferencesUtil.loadJson(getString(R.string.SERVER_LIST))
-                if (serverList==null){
-                    entryValues = arrayOf("")
-                    entries = arrayOf("")
+                if (serverList.toString()=="[]"){
+                    entryValues = arrayOf(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT))
+                    entries = arrayOf(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT))
                 }else{
                     entryValues = serverList.toTypedArray()
                     entries = serverList.toTypedArray()
@@ -146,9 +147,9 @@ class SetDBActivity : BaseActivity() {
         private fun delDb(){
             findPreference<ListPreference>(getString(R.string.del_db_editTextPerference_title))?.apply {
                 val dbList = SharedPreferencesUtil.loadJson(getString(R.string.DB_LIST))
-                if (dbList==null){
-                    entryValues = arrayOf("")
-                    entries = arrayOf("")
+                if (dbList.toString()=="[]"){
+                    entryValues = arrayOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT))
+                    entries = arrayOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT))
                 }else{
                     entryValues = dbList.toTypedArray()
                     entries = dbList.toTypedArray()

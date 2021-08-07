@@ -9,10 +9,5 @@
         <bitmap android:gravity="center"
             android:src="@drawable/skyscraper_3184798_1920"/>
     </item>
-    <!-- 底部 -->
-    <item>
-        <bitmap android:gravity="center|center_horizontal"
-            android:src="@drawable/plex_5"/>
-    </item>
 </layer-list>
 

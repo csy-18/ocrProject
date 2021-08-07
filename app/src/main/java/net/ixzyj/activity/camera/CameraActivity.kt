@@ -37,6 +37,7 @@ import com.sychen.basic.activity.ActivityCollector
 import com.sychen.basic.activity.BaseActivity
 import kotlinx.coroutines.launch
 import net.ixzyj.activity.receipts.ReceiptsActivity
+import net.ixzyj.activity.receptioninscene.RecinSceneActivity
 import net.ixzyj.network.model.ReceptioninScene
 import net.ixzyj.ocr.R
 import java.io.File
@@ -82,18 +83,21 @@ class CameraActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun initViews() {
         binding.toolbar3.apply {
-            title = intent.extras?.getString("TOOLBAR_TITLE")
             setNavigationOnClickListener {
                 when (flagPage) {
                     1 -> {
                         startActivity(Intent(this@CameraActivity, ReceiptsActivity::class.java))
+                        finish()
                     }
                     2 -> {
-                        startActivity(Intent(this@CameraActivity, ReceptioninScene::class.java))
+                        startActivity(Intent(this@CameraActivity, RecinSceneActivity::class.java))
+                        finish()
                     }
                 }
             }
         }
+
+        binding.buildingToolBar.text = intent.extras?.getString("TOOLBAR_TITLE")
         cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
             startCamera()
@@ -118,10 +122,10 @@ class CameraActivity : BaseActivity() {
 
     private fun changeFlashLightState() {
         flashLightState.value = flashLightState.value?.not()
-        flashLightState.observe(this,{
-            when(it){
-                true-> binding.flashLight.load(R.drawable.ic_baseline_flash_on_24){}
-                false-> binding.flashLight.load(R.drawable.ic_baseline_flash_off_24){}
+        flashLightState.observe(this, {
+            when (it) {
+                true -> binding.flashLight.load(R.drawable.ic_baseline_flash_on_24) {}
+                false -> binding.flashLight.load(R.drawable.ic_baseline_flash_off_24) {}
             }
         })
     }
@@ -200,7 +204,7 @@ class CameraActivity : BaseActivity() {
         // 获得有关可修改图像捕获用例的稳定参考
         val imageCapture = imageCapture ?: return
         // 闪光灯设置
-        flashLightState.observe(this,{
+        flashLightState.observe(this, {
             imageCapture.camera?.cameraControl?.enableTorch(it)
         })
         // 创建带时间戳的输出文件以保存图像

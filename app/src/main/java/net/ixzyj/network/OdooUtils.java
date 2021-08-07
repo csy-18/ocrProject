@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
@@ -26,35 +27,19 @@ public class OdooUtils {
             password;
 
     //获取版本
-    public static String getVersion() throws MalformedURLException {
+    public static String getVersion() throws MalformedURLException, XmlRpcException {
         Map<String, String> info = new HashMap<>();
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         // 获取版本信息
-        try {
-            config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
-            info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
+        info = (Map<String, String>) client.execute(config, "version", Collections.emptyList());
         final Gson gson = new Gson();
         return gson.toJson(info);
     }
 
-    // 验证用户名、密码，返回uid
-    public static int authenticate(XmlRpcClient client, XmlRpcClientConfigImpl config) {
-        int uid = 0;
-        try {
-            uid = (int) client.execute(config, "authenticate", Arrays.asList(
-                    db, username, password, Collections.emptyMap()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return uid;
-    }
-
     //用户登录
-    public static int userLogin(String username, String password) throws MalformedURLException {
+    public static int userLogin(String username, String password) {
         int uid = -1;
         try {
             final XmlRpcClient client = new XmlRpcClient();
@@ -71,30 +56,26 @@ public class OdooUtils {
     }
 
     // 获取入库清单
-    public static List<Object> getReceipts() throws MalformedURLException {
+    public static List<Object> getReceipts() throws MalformedURLException, XmlRpcException {
         List<Object> info = new ArrayList<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
                 setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
             }});
         }};
-        try {
-            info = Arrays.asList((Object[]) models.execute(
-                    "execute_kw", Arrays.asList(db, uid, password, "buy.receipt", "search_read",
-                            Arrays.asList(Arrays.asList(Arrays.asList("state", "=", "draft")), Arrays.asList(
-                                    "id",
-                                    "state",
-                                    "date",
-                                    "name",
-                                    "order_id",
-                                    "partner_id",
-                                    "user_id",
-                                    "building_id",
-                                    "warehouse_id"))
-                    )));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        info = Arrays.asList((Object[]) models.execute(
+                "execute_kw", Arrays.asList(db, uid, password, "buy.receipt", "search_read",
+                        Arrays.asList(Arrays.asList(Arrays.asList("state", "=", "draft")), Arrays.asList(
+                                "id",
+                                "state",
+                                "date",
+                                "name",
+                                "order_id",
+                                "partner_id",
+                                "user_id",
+                                "building_id",
+                                "warehouse_id"))
+                )));
         return info;
     }
 
@@ -120,29 +101,25 @@ public class OdooUtils {
         return gson.toJson(resultMap);
     }
 
-    public static List<Object> getSendOrders() throws MalformedURLException {
+    public static List<Object> getSendOrders() throws MalformedURLException, XmlRpcException {
         List<Object> info = new ArrayList<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
                 setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
             }});
         }};
-        try {
-            info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password,
-                    "wh.internal", "search_read",
-                    Arrays.asList(
-                            Arrays.asList(Arrays.asList("state", "=", "draft"),
-                            Arrays.asList("is_open", "=", true),
-                            Arrays.asList("origin", "=", "material_project_out")),
-                            Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password,
+                "wh.internal", "search_read",
+                Arrays.asList(
+                        Arrays.asList(Arrays.asList("state", "=", "draft"),
+                                Arrays.asList("is_open", "=", true),
+                                Arrays.asList("origin", "=", "material_project_out")),
+                        Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
         return info;
     }
 
 
-    public static String uploadRecScene( Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
+    public static String uploadRecScene(Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
         Map<String, String> resultMap = new HashMap<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
@@ -163,8 +140,8 @@ public class OdooUtils {
 
     public static void main(String[] args) {
         try {
-            System.out.println(OdooUtils.getVersion());
-        } catch (MalformedURLException e) {
+            OdooUtils.getVersion();
+        } catch (MalformedURLException | XmlRpcException e) {
             e.printStackTrace();
         }
     }

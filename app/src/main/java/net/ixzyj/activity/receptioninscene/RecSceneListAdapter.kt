@@ -35,7 +35,7 @@ class RecSceneListAdapter(val resultList: List<ReceptioninSceneItem>) :
             this.findViewById<TextView>(R.id.building_name).text = result.building_id[1].toString()
             setOnClickListener {
                 bundle.apply {
-                    putString("TOOLBAR_TITLE","现场接收清点扫码")
+                    putString("TOOLBAR_TITLE",result.building_id[1].toString())
                     putInt("ORDER_ID",result.id)
                     putInt("WAREHOUSE_ID",result.warehouse_id[0].toString().toFloat().toInt())
                     flagPage = 2

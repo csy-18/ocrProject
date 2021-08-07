@@ -8,13 +8,12 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/in_stock"
-        app:layout_constraintEnd_toEndOf="@+id/in_stock"
-        app:layout_constraintStart_toStartOf="@+id/in_stock"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/toolbar2"
         app:layout_constraintTop_toBottomOf="@+id/toolbar2"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/plex_5" />
 
     <androidx.appcompat.widget.Toolbar
@@ -24,6 +23,7 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,24 +31,32 @@
         app:titleTextColor="@color/white" />
 
     <ImageView
-        android:id="@+id/in_stock"
-        android:layout_width="333dp"
+        android:id="@+id/recImg"
+        android:layout_width="0dp"
         android:layout_height="250dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:alpha="0.7"
-        app:layout_constraintBottom_toTopOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintBottom_toTopOf="@+id/recInSceneImg"
+        app:layout_constraintDimensionRatio="w,4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/architecture_2256490" />
 
     <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="333dp"
+        android:id="@+id/recInSceneImg"
+        android:layout_width="0dp"
         android:layout_height="250dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:alpha="0.6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="w,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/in_stock"
         app:srcCompat="@drawable/construction_241895" />
 
     <TextView
@@ -60,10 +68,11 @@
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="@dimen/main_font_size"
-        app:layout_constraintBottom_toBottomOf="@+id/in_stock"
-        app:layout_constraintEnd_toEndOf="@+id/in_stock"
-        app:layout_constraintStart_toStartOf="@+id/in_stock"
-        app:layout_constraintTop_toTopOf="@+id/in_stock" />
+        app:layout_constraintBottom_toBottomOf="@+id/recImg"
+        app:layout_constraintEnd_toEndOf="@+id/recImg"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/recImg"
+        app:layout_constraintTop_toTopOf="@+id/recImg" />
 
     <TextView
         android:id="@+id/textView6"
@@ -74,8 +83,9 @@
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="@dimen/main_font_size"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintStart_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+        app:layout_constraintBottom_toBottomOf="@+id/recInSceneImg"
+        app:layout_constraintDimensionRatio=""
+        app:layout_constraintEnd_toEndOf="@+id/recInSceneImg"
+        app:layout_constraintStart_toStartOf="@+id/recInSceneImg"
+        app:layout_constraintTop_toTopOf="@+id/recInSceneImg" />
 </androidx.constraintlayout.widget.ConstraintLayout>

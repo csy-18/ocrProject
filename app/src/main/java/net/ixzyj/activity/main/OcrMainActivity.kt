@@ -13,25 +13,35 @@ import net.ixzyj.activity.setting.SettingsActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.ocr.R
 import net.ixzyj.ocr.databinding.ActivityOcrMainBinding
-import net.ixzyj.utils.DialogUtil
 import net.ixzyj.utils.MyApplication.Companion.logi
-import net.ixzyj.utils.SharedPreferencesUtil
 import com.google.gson.Gson
+import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.activity.login.LoginActivity
+import net.ixzyj.activity.setting.SetDBActivity
+import net.ixzyj.utils.*
+import org.apache.xmlrpc.XmlRpcException
+import java.net.MalformedURLException
 
-class OcrMainActivity : AppCompatActivity() {
+class OcrMainActivity : BaseActivity() {
 
     lateinit var binding: ActivityOcrMainBinding
+
     private val bundle by lazy {
         Bundle()
     }
     private lateinit var work: Handler
+    private lateinit var errorHandler: Handler
     lateinit var dialog: Dialog
+
     companion object {
         var UID = -1
         const val LOAD_RECEIPTS_SUCCESS = 0
         const val LOAD_RECEIPTS_FAILED = 1
         const val LOAD_REC_SCENE_SUCCESS = 2
         const val LOAD_REC_SCENE_FAILED = 3
+        const val ERROR = 4
+        const val NET_ERROR = 5
+        const val SETTING_ERROR = 6
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +64,7 @@ class OcrMainActivity : AppCompatActivity() {
                         loadReceiptsFailed()
                     }
                     LOAD_REC_SCENE_SUCCESS -> {
+                        val obj = msg.obj
                         loadRecSceneSuccess()
                     }
                     LOAD_REC_SCENE_FAILED -> {
@@ -62,13 +73,48 @@ class OcrMainActivity : AppCompatActivity() {
                 }
             }
         }
+        errorHandler = object : Handler(mainLooper) {
+            override fun handleMessage(msg: Message) {
+                when (msg.what) {
+                    ERROR -> {
+                        doErrorWork()
+                    }
+                    NET_ERROR -> {
+                        doNetError()
+                    }
+                    SETTING_ERROR -> {
+                        doSettingError()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun doSettingError() {
+        val alertDialog =
+            DialogUtil.alertDialog("获取列表失败\n请到设置页面重新设定服务器", this)
+        alertDialog.setOnDismissListener {
+            startActivity(Intent(this, SetDBActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun doNetError() {
+        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络\n或者联系开发人员解决", this)
+    }
+
+    private fun doErrorWork() {
+        val alertDialog =
+            DialogUtil.alertDialog("获取列表异常", this)
+        alertDialog.setOnDismissListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
     }
 
     private fun loadRecSceneFailed() {
         dialog.dismiss()
-        val alertDialog = DialogUtil.alertDialog("错误", this)
-        alertDialog.create()
-        alertDialog.show()
+        DialogUtil.alertDialog("获取列表失败", this)
     }
 
     private fun loadRecSceneSuccess() {
@@ -93,27 +139,28 @@ class OcrMainActivity : AppCompatActivity() {
         bundle.getString("RECEIPTS_INFO")
         intent.putExtras(bundle)
         startActivity(intent)
+
     }
 
     private fun initViews() {
         dialog = DialogUtil.progressBarDialog(this)
-        binding.toolbar2.apply {
-//            inflateMenu(R.menu.menu_action_options)
-//            setOnMenuItemClickListener{ item->
-//                when(item?.itemId){
-//                    R.id.settings->startActivity(Intent(this@OcrMainActivity,SettingsActivity::class.java))
-//                }
-//                true
-//            }
-        }
-        binding.inStock.setOnClickListener {
+        binding.recImg.setOnClickListener {
             dialog.show()
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
             it.postDelayed({
                 Thread {
-                    val receipts = OdooUtils.getReceipts()
-                    when (receipts.size) {
+                    val receipts = try {
+                        OdooUtils.getReceipts()
+                    } catch (e: MalformedURLException) {
+                        errorHandler.sendEmptyMessage(SETTING_ERROR)
+                    } catch (e: XmlRpcException) {
+                        errorHandler.sendEmptyMessage(NET_ERROR)
+                    } catch (e: Exception) {
+                        errorHandler.sendEmptyMessage(ERROR)
+                    }
+                    Gson().toJson(receipts).logi()
+                    when (receipts) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
                         }
@@ -126,15 +173,23 @@ class OcrMainActivity : AppCompatActivity() {
             }, 500)
 
         }
-        binding.imageView4.setOnClickListener {
+        binding.recInSceneImg.setOnClickListener {
             dialog.show()
             val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_low)
             it.startAnimation(animation)
             it.postDelayed({
-                "用户id-$UID".logi()
                 Thread {
-                    val order = OdooUtils.getSendOrders()
-                    when (order.size) {
+                    val order = try {
+                        OdooUtils.getSendOrders()
+                    } catch (e: MalformedURLException) {
+                        errorHandler.sendEmptyMessage(SETTING_ERROR)
+                    } catch (e: XmlRpcException) {
+                        errorHandler.sendEmptyMessage(NET_ERROR)
+                    } catch (e: Exception) {
+                        errorHandler.sendEmptyMessage(ERROR)
+                    }
+                    Gson().toJson(order).logi()
+                    when (order) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)
                         }

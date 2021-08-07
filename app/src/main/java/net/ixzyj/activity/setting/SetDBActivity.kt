@@ -1,6 +1,8 @@
 package net.ixzyj.activity.setting
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.EditTextPreference
@@ -11,6 +13,7 @@ import net.ixzyj.network.OdooUtils
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.utils.MyApplication.Companion.logi
 
 class SetDBActivity : BaseActivity() {
@@ -25,6 +28,13 @@ class SetDBActivity : BaseActivity() {
                 .commit()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        findViewById<Toolbar>(R.id.toolbarSetting).apply {
+            title = "设置"
+            setNavigationOnClickListener {
+                startActivity(Intent(this@SetDBActivity,LoginActivity::class.java))
+                finish()
+            }
+        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {

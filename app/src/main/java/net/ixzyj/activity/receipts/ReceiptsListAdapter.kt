@@ -37,7 +37,7 @@ class ReceiptsListAdapter(val resultList: List<ReceiptsModelItem>) :
             setOnClickListener {
                 bundle.apply {
                     putInt("RECEIPTS_ID", result.id)
-                    putString("TOOLBAR_TITLE","物资入库扫码")
+                    putString("TOOLBAR_TITLE",result.building_id[1].toString())
                     flagPage = 1
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)

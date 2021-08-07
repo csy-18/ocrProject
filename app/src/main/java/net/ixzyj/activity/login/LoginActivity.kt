@@ -84,12 +84,8 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun loginFailed() {
-        Thread {
-            Looper.prepare()
-            binding.progressBarLogin.visibility = View.INVISIBLE
-            DialogUtil.alertDialog("登录失败", this)
-            Looper.loop()
-        }.start()
+        binding.progressBarLogin.visibility = View.INVISIBLE
+        DialogUtil.alertDialog("登录失败", this)
     }
 
     private fun initViews() {
@@ -126,7 +122,8 @@ class LoginActivity : BaseActivity() {
             val userName = binding.userNameEdit.text.toString()
             val pwd = binding.pwdEdit.text.toString()
             if (userName == "" || pwd == "") {
-                "未输入数据，请输入数据重试".showToast(this)
+                binding.progressBarLogin.visibility = View.INVISIBLE
+                "用户名或密码未输入,请输入后重试".showToast(this)
                 return@setOnClickListener
             }
             Thread {

@@ -1,15 +1,16 @@
 package net.ixzyj.activity.receptioninscene
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.network.model.ReceptioninScene
 import net.ixzyj.ocr.databinding.ActivityRecinSceneBinding
+import net.ixzyj.utils.MyApplication.Companion.logi
+import com.google.gson.Gson
+import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.utils.DialogUtil
 import net.ixzyj.utils.MyApplication
 
@@ -41,7 +42,9 @@ class RecinSceneActivity : AppCompatActivity() {
 
     private fun doDataErrorWork() {
         val alertDialog =
-            DialogUtil.alertDialog("数据传输错误\n返回主页面重新进入", this)
+            DialogUtil.alertDialog("数据传输错误\n回退到主页重新进入", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             backHome()
         }
@@ -58,13 +61,11 @@ class RecinSceneActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        if (::receptioninScene.isInitialized) {
-            recSceneListAdapter = RecSceneListAdapter(receptioninScene)
-            binding.recyclerViewReceScene.apply {
-                layoutManager =
-                    LinearLayoutManager(this@RecinSceneActivity, LinearLayoutManager.VERTICAL, false)
-                adapter = recSceneListAdapter
-            }
+        recSceneListAdapter = RecSceneListAdapter(receptioninScene)
+        binding.recyclerViewReceScene.apply {
+            layoutManager =
+                LinearLayoutManager(this@RecinSceneActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = recSceneListAdapter
         }
         binding.toolbar4.apply {
             setNavigationOnClickListener {

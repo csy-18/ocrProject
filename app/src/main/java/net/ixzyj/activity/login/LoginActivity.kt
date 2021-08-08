@@ -6,22 +6,24 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.view.View
-import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.network.OdooUtils.userLogin
 import net.ixzyj.ocr.databinding.ActivityLoginBinding
-import net.ixzyj.utils.AESUtil
 import net.ixzyj.utils.DialogUtil
+import net.ixzyj.utils.MyApplication.Companion.isDebug
+import net.ixzyj.utils.MyApplication.Companion.showToast
+import net.ixzyj.utils.SharedPreferencesUtil
+import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.utils.AESUtil
+import net.ixzyj.utils.MyApplication
 import net.ixzyj.utils.MyApplication.Companion.ERROR
 import net.ixzyj.utils.MyApplication.Companion.NET_ERROR
 import net.ixzyj.utils.MyApplication.Companion.SETTING_ERROR
-import net.ixzyj.utils.MyApplication.Companion.isDebug
 import net.ixzyj.utils.MyApplication.Companion.logi
-import net.ixzyj.utils.MyApplication.Companion.showToast
-import net.ixzyj.utils.SharedPreferencesUtil
 import org.apache.xmlrpc.XmlRpcException
+import java.lang.Exception
 import java.net.MalformedURLException
 
 class LoginActivity : BaseActivity() {
@@ -47,7 +49,6 @@ class LoginActivity : BaseActivity() {
     private fun initHandler() {
         work = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
-                binding.progressBarLogin.visibility = View.INVISIBLE
                 when (msg.what) {
                     USER_LOGIN_SUCCESS -> {
                         loginSuccess()
@@ -60,7 +61,6 @@ class LoginActivity : BaseActivity() {
         }
         errorHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
-                binding.progressBarLogin.visibility = View.INVISIBLE
                 when (msg.what) {
                     ERROR -> {
                         doErrorWork()
@@ -77,8 +77,9 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun doSettingError() {
-        val alertDialog =
-            DialogUtil.alertDialog("查询不到该用户\n请重新配置服务器和数据库", this)
+        val alertDialog = DialogUtil.alertDialog("数据库和服务器查询不到该用户\n请到进入重新设置服务器和数据库", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -86,14 +87,19 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("网络异常\n请检查手机网络", this)
+        val alertDialog = DialogUtil.alertDialog("连接服务器失败\n请检查手机网络", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun doErrorWork() {
-        DialogUtil.alertDialog("登录失败，原因未知\n请联系开发人员", this)
+        val alertDialog = DialogUtil.alertDialog("登录失败\n请联系开发人员", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loginSuccess() {
+        binding.progressBarLogin.visibility = View.INVISIBLE
         OdooUtils.uid = USER_ID.toString()
         OdooUtils.username = binding.userNameEdit.text.toString()
         OdooUtils.password = binding.pwdEdit.text.toString()
@@ -123,7 +129,10 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun loginFailed() {
-        DialogUtil.alertDialog("用户名或密码错误", this)
+        binding.progressBarLogin.visibility = View.INVISIBLE
+        val alertDialog = DialogUtil.alertDialog("用户名或密码错误", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun initViews() {
@@ -167,19 +176,19 @@ class LoginActivity : BaseActivity() {
             Thread {
                 try {
                     USER_ID = userLogin(userName, pwd)
-                    "用户ID$USER_ID".logi()
-                    when (USER_ID) {
-                        -1 -> work.sendEmptyMessage(USER_LOGIN_FAILED)
-                        else -> work.sendEmptyMessage(USER_LOGIN_SUCCESS)
-                    }
                 } catch (e: MalformedURLException) {
                     errorHandler.sendEmptyMessage(SETTING_ERROR)
                 } catch (e: XmlRpcException) {
                     errorHandler.sendEmptyMessage(NET_ERROR)
-                } catch (e: ClassCastException){
+                } catch (e:ClassCastException){
                     //密码错误
-                }catch (e: Exception){
+                }catch (e:Exception){
                     errorHandler.sendEmptyMessage(ERROR)
+                }
+                "用户ID$USER_ID".logi()
+                when (USER_ID) {
+                    -1 -> work.sendEmptyMessage(USER_LOGIN_FAILED)
+                    else -> work.sendEmptyMessage(USER_LOGIN_SUCCESS)
                 }
             }.start()
         }

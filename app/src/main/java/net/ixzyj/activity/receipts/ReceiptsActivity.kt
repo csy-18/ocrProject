@@ -1,16 +1,19 @@
 package net.ixzyj.activity.receipts
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.network.model.ReceiptsModel
 import net.ixzyj.ocr.databinding.ActivityReceiptsBinding
+import com.google.gson.Gson
+import net.ixzyj.activity.camera.CameraActivity
+import net.ixzyj.activity.login.LoginActivity
+import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.utils.DialogUtil
+import net.ixzyj.utils.MyApplication
 import net.ixzyj.utils.MyApplication.Companion.DATA_ERROR
 
 class ReceiptsActivity : AppCompatActivity() {
@@ -31,7 +34,7 @@ class ReceiptsActivity : AppCompatActivity() {
         errorHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
-                    DATA_ERROR -> {
+                    DATA_ERROR->{
                         doDataErrorWork()
                     }
                 }
@@ -41,7 +44,9 @@ class ReceiptsActivity : AppCompatActivity() {
 
     private fun doDataErrorWork() {
         val alertDialog =
-            DialogUtil.alertDialog("数据传输错误\n返回主页面重新进入", this)
+            DialogUtil.alertDialog("数据传输错误\n回退到主页重新进入", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             backHome()
         }
@@ -59,13 +64,11 @@ class ReceiptsActivity : AppCompatActivity() {
 
 
     private fun initViews() {
-        if (::receiptsModel.isInitialized) {
-            receiptsListAdapter = ReceiptsListAdapter(receiptsModel)
-            binding.recyclerViewReceipts.apply {
-                layoutManager =
-                    LinearLayoutManager(this@ReceiptsActivity, LinearLayoutManager.VERTICAL, false)
-                adapter = receiptsListAdapter
-            }
+        receiptsListAdapter = ReceiptsListAdapter(receiptsModel)
+        binding.recyclerViewReceipts.apply {
+            layoutManager =
+                LinearLayoutManager(this@ReceiptsActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = receiptsListAdapter
         }
         binding.toolbar.apply {
             setNavigationOnClickListener {
@@ -74,7 +77,7 @@ class ReceiptsActivity : AppCompatActivity() {
         }
     }
 
-    private fun backHome() {
+    private fun backHome(){
         startActivity(Intent(this@ReceiptsActivity, OcrMainActivity::class.java))
         finish()
     }

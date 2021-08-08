@@ -26,8 +26,6 @@ object DialogUtil {
                 setGravity(Gravity.CENTER)
                 setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
-            create()
-            show()
             dialogConfirm.setOnClickListener {
                 dismiss()
             }

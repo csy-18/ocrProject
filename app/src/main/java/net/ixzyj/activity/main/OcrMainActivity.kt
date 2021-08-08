@@ -2,25 +2,26 @@ package net.ixzyj.activity.main
 
 import android.app.Dialog
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.animation.AnimationUtils
-import com.google.gson.Gson
-import com.sychen.basic.activity.BaseActivity
-import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.activity.receipts.ReceiptsActivity
 import net.ixzyj.activity.receptioninscene.RecinSceneActivity
-import net.ixzyj.activity.setting.SetDBActivity
+import net.ixzyj.activity.setting.SettingsActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.ocr.R
 import net.ixzyj.ocr.databinding.ActivityOcrMainBinding
-import net.ixzyj.utils.DialogUtil
+import net.ixzyj.utils.MyApplication.Companion.logi
+import com.google.gson.Gson
+import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.activity.login.LoginActivity
+import net.ixzyj.activity.setting.SetDBActivity
+import net.ixzyj.utils.*
 import net.ixzyj.utils.MyApplication.Companion.ERROR
 import net.ixzyj.utils.MyApplication.Companion.NET_ERROR
 import net.ixzyj.utils.MyApplication.Companion.SETTING_ERROR
-import net.ixzyj.utils.MyApplication.Companion.logi
-import net.ixzyj.utils.SharedPreferencesUtil
 import org.apache.xmlrpc.XmlRpcException
 import java.net.MalformedURLException
 
@@ -55,7 +56,6 @@ class OcrMainActivity : BaseActivity() {
     private fun initHandler() {
         work = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
-                dialog.dismiss()
                 when (msg.what) {
                     LOAD_RECEIPTS_SUCCESS -> {
                         loadReceiptsSuccess()
@@ -74,7 +74,6 @@ class OcrMainActivity : BaseActivity() {
         }
         errorHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
-                dialog.dismiss()
                 when (msg.what) {
                     ERROR -> {
                         doErrorWork()
@@ -92,7 +91,7 @@ class OcrMainActivity : BaseActivity() {
 
     private fun doSettingError() {
         val alertDialog =
-            DialogUtil.alertDialog("获取列表失败\n请重新设定服务器和数据库", this)
+            DialogUtil.alertDialog("获取列表失败\n请到设置页面重新设定服务器和数据库", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -100,12 +99,14 @@ class OcrMainActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("网络异常\n请检查手机网络", this)
+        val alertDialog = DialogUtil.alertDialog("连接服务器失败\n请检查手机网络\n或者联系开发人员解决", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun doErrorWork() {
         val alertDialog =
-            DialogUtil.alertDialog("获取列表异常，请重新登录", this)
+            DialogUtil.alertDialog("获取列表异常，请重新登录重试", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -113,10 +114,14 @@ class OcrMainActivity : BaseActivity() {
     }
 
     private fun loadRecSceneFailed() {
-        DialogUtil.alertDialog("该用户没有项目入库单", this)
+        dialog.dismiss()
+        val alertDialog = DialogUtil.alertDialog("该用户不存在现场入库清单", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loadRecSceneSuccess() {
+        dialog.dismiss()
         val intent = Intent(this, RecinSceneActivity::class.java)
         bundle.getString("REC_SCENE_INFO")
         intent.putExtras(bundle)
@@ -125,14 +130,17 @@ class OcrMainActivity : BaseActivity() {
 
 
     private fun loadReceiptsFailed() {
-        DialogUtil.alertDialog("该用户没有物资入库单", this)
+        dialog.dismiss()
+        DialogUtil.alertDialog("该用户不存在入库清单", this)
     }
 
     private fun loadReceiptsSuccess() {
+        dialog.dismiss()
         val intent = Intent(this, ReceiptsActivity::class.java)
         bundle.getString("RECEIPTS_INFO")
         intent.putExtras(bundle)
         startActivity(intent)
+
     }
 
     private fun initViews() {
@@ -143,18 +151,8 @@ class OcrMainActivity : BaseActivity() {
             it.startAnimation(animation)
             it.postDelayed({
                 Thread {
-                    try {
-                        val receipts = OdooUtils.getReceipts()
-                        "receipts:$receipts".logi()
-                        when (receipts.size) {
-                            0 -> {
-                                work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
-                            }
-                            else -> {
-                                bundle.putString("RECEIPTS_INFO", Gson().toJson(receipts))
-                                work.sendEmptyMessage(LOAD_RECEIPTS_SUCCESS)
-                            }
-                        }
+                    val receipts = try {
+                        OdooUtils.getReceipts()
                     } catch (e: MalformedURLException) {
                         errorHandler.sendEmptyMessage(SETTING_ERROR)
                     } catch (e: XmlRpcException) {
@@ -162,8 +160,19 @@ class OcrMainActivity : BaseActivity() {
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
                     }
+                    "receipts:$receipts".logi()
+                    when (receipts) {
+                        0 -> {
+                            work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
+                        }
+                        else -> {
+                            bundle.putString("RECEIPTS_INFO", Gson().toJson(receipts))
+                            work.sendEmptyMessage(LOAD_RECEIPTS_SUCCESS)
+                        }
+                    }
                 }.start()
             }, 500)
+
         }
         binding.recInSceneImg.setOnClickListener {
             dialog.show()
@@ -171,24 +180,24 @@ class OcrMainActivity : BaseActivity() {
             it.startAnimation(animation)
             it.postDelayed({
                 Thread {
-                    try {
-                        val order = OdooUtils.getSendOrders()
-                        "order$order".logi()
-                        when (order.size) {
-                            0 -> {
-                                work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)
-                            }
-                            else -> {
-                                bundle.putString("REC_SCENE_INFO", Gson().toJson(order))
-                                work.sendEmptyMessage(LOAD_REC_SCENE_SUCCESS)
-                            }
-                        }
+                    val order = try {
+                        OdooUtils.getSendOrders()
                     } catch (e: MalformedURLException) {
                         errorHandler.sendEmptyMessage(SETTING_ERROR)
                     } catch (e: XmlRpcException) {
                         errorHandler.sendEmptyMessage(NET_ERROR)
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
+                    }
+                    "order$order".logi()
+                    when (order) {
+                        0 -> {
+                            work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)
+                        }
+                        else -> {
+                            bundle.putString("REC_SCENE_INFO", Gson().toJson(order))
+                            work.sendEmptyMessage(LOAD_REC_SCENE_SUCCESS)
+                        }
                     }
                 }.start()
             }, 500)

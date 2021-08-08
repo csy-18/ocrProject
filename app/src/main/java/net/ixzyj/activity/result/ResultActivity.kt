@@ -26,6 +26,7 @@ import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import com.sychen.basic.activity.ActivityCollector
 import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.activity.setting.SetDBActivity
@@ -87,7 +88,12 @@ class ResultActivity : BaseActivity() {
                             resultModel =
                                 Gson().fromJson(msg.obj.toString(), ResultModel::class.java)
                         } catch (e: Exception) {
-
+                            val alertDialog =
+                                DialogUtil.alertDialog("数据存在错误,需要返回到列表页面重新获取数据", this@ResultActivity)
+                            alertDialog.setOnDismissListener {
+                                startActivity(Intent(this@ResultActivity,OcrMainActivity::class.java))
+                                finish()
+                            }
                         }
                         uploadResult(resultModel)
                     }

@@ -44,9 +44,11 @@ public class OdooUtils {
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
-        uid = (int) client.execute(config, "authenticate", Arrays.asList(
+        Object authenticate = client.execute(config, "authenticate", Arrays.asList(
                 db, username, password, Collections.emptyMap()));
-        Log.i(TAG, "userLogin: " + uid);
+        Log.i(TAG, "userLogin: authenticate" + authenticate.toString());
+        uid = (int) authenticate;
+        Log.i(TAG, "userLogin: uid" + uid);
         return uid;
     }
 

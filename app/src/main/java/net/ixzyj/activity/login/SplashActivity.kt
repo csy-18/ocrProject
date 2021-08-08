@@ -83,6 +83,7 @@ class SplashActivity : BaseActivity() {
                     "Exception-${e.message}".logi()
                     work.sendEmptyMessage(VERSION_FAILED)
                 }
+                "版本:$version".logi()
                 if (version != "") {
                     work.sendEmptyMessage(VERSION_SUCCESS)
                 }

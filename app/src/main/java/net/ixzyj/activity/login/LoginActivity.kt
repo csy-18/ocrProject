@@ -17,10 +17,13 @@ import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.utils.AESUtil
+import net.ixzyj.utils.MyApplication
 import net.ixzyj.utils.MyApplication.Companion.ERROR
 import net.ixzyj.utils.MyApplication.Companion.NET_ERROR
 import net.ixzyj.utils.MyApplication.Companion.SETTING_ERROR
+import net.ixzyj.utils.MyApplication.Companion.logi
 import org.apache.xmlrpc.XmlRpcException
+import java.lang.Exception
 import java.net.MalformedURLException
 
 class LoginActivity : BaseActivity() {
@@ -170,9 +173,12 @@ class LoginActivity : BaseActivity() {
                     errorHandler.sendEmptyMessage(SETTING_ERROR)
                 } catch (e: XmlRpcException) {
                     errorHandler.sendEmptyMessage(NET_ERROR)
-                } catch (e: Exception) {
+                } catch (e:ClassCastException){
+                    //密码错误
+                }catch (e:Exception){
                     errorHandler.sendEmptyMessage(ERROR)
                 }
+                "用户ID$USER_ID".logi()
                 when (USER_ID) {
                     -1 -> work.sendEmptyMessage(USER_LOGIN_FAILED)
                     else -> work.sendEmptyMessage(USER_LOGIN_SUCCESS)

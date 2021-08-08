@@ -174,6 +174,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
                         }
+                        "uploadResult$uploadResult".logi()
                         val message = Message()
                         message.obj = uploadResult
                         message.what = UPLOAD_SUCCESS_RESULT
@@ -208,6 +209,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
                         }
+                        "uploadResult$uploadResult".logi()
                         val message = Message()
                         message.obj = uploadResult
                         message.what = UPLOAD_SUCCESS_RESULT

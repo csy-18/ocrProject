@@ -156,6 +156,7 @@ class OcrMainActivity : BaseActivity() {
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
                     }
+                    "receipts:$receipts".logi()
                     when (receipts) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
@@ -184,6 +185,7 @@ class OcrMainActivity : BaseActivity() {
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
                     }
+                    "order$order".logi()
                     when (order) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)

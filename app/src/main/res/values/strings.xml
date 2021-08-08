@@ -29,6 +29,7 @@
     <string name="save_upload">保存并上传</string>
     <string name="in_stock">物资入库</string>
     <string name="out_stock">项目入库清点</string>
+    <string name="out_stock_2">项目入库</string>
     <string name="tips">温馨提示</string>
     <string name="ok">确定</string>
     <string name="dialog_progress">正在加载</string>

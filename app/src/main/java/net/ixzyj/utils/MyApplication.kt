@@ -35,6 +35,7 @@ class MyApplication : Application() {
         const val ERROR = 300
         const val NET_ERROR = 205
         const val SETTING_ERROR = 206
+        const val LOGIN_ERROR = 207
         const val DATA_ERROR = 208
         fun log(message: String) {
             Log.i(TAG, message)

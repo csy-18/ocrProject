@@ -5,15 +5,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.DialogUtil
 import net.ixzyj.utils.MyApplication.Companion.logi
-import com.sychen.basic.activity.BaseActivity
-import net.ixzyj.activity.setting.SetDBActivity
-import net.ixzyj.activity.setting.SettingsActivity
 import org.apache.xmlrpc.XmlRpcException
-import java.lang.Exception
 import java.net.MalformedURLException
 
 class SplashActivity : BaseActivity() {
@@ -45,7 +43,7 @@ class SplashActivity : BaseActivity() {
                     }
                     VERSION_FAILED -> {
                         val alertDialog =
-                            DialogUtil.alertDialog("获取版本失败\n请联系开发人员解决", this@SplashActivity)
+                            DialogUtil.alertDialog("获取版本失败\n请联系开发人员", this@SplashActivity)
                         alertDialog.create()
                         alertDialog.show()
                         alertDialog.setOnDismissListener {
@@ -55,7 +53,7 @@ class SplashActivity : BaseActivity() {
                     }
                     VERSION_SET_FAILED -> {
                         val alertDialog =
-                            DialogUtil.alertDialog("获取版本失败\n请到设置页面重新设定服务器", this@SplashActivity)
+                            DialogUtil.alertDialog("获取版本失败\n请重新配置服务器和数据库", this@SplashActivity)
                         alertDialog.create()
                         alertDialog.show()
                         alertDialog.setOnDismissListener {
@@ -65,7 +63,7 @@ class SplashActivity : BaseActivity() {
                     }
                     VERSION_NET_FAILED -> {
                         val alertDialog =
-                            DialogUtil.alertDialog("连接服务器失败\n请检查手机网络信号", this@SplashActivity)
+                            DialogUtil.alertDialog("网络异常\n请检查手机网络", this@SplashActivity)
                         alertDialog.create()
                         alertDialog.show()
                     }
@@ -80,6 +78,10 @@ class SplashActivity : BaseActivity() {
             Thread {
                 try {
                     version = OdooUtils.getVersion()
+                    "版本:$version".logi()
+                    if (version != "") {
+                        work.sendEmptyMessage(VERSION_SUCCESS)
+                    }
                 } catch (e: MalformedURLException) {
                     "MalformedURLException-${e.message}".logi()//服务器连接出错抛出异常
                     work.sendEmptyMessage(VERSION_SET_FAILED)
@@ -89,10 +91,6 @@ class SplashActivity : BaseActivity() {
                 } catch (e: Exception) {
                     "Exception-${e.message}".logi()
                     work.sendEmptyMessage(VERSION_FAILED)
-                }
-                "版本:$version".logi()
-                if (version != "") {
-                    work.sendEmptyMessage(VERSION_SUCCESS)
                 }
             }.start()
         }, 1000)

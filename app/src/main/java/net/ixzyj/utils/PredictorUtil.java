@@ -23,6 +23,7 @@ import net.ixzyj.ocr.OcrResultModel;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -168,9 +169,7 @@ public class PredictorUtil {
             assetsInputStream.close();
             String words = new String(lines);
             String[] contents = words.split("\n");
-            for (String content : contents) {
-                wordLabels.add(content);
-            }
+            wordLabels.addAll(Arrays.asList(contents));
             Log.i(TAG, "Word label size: " + wordLabels.size());
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -339,9 +338,7 @@ public class PredictorUtil {
             for (Point p : result.getPoints()) {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
-            Log.i(TAG, "校正前：" + result.getLabel() + ", " + result.getLabel().length());
             result.setLabel(adjustData(result.getLabel()));
-            Log.i(TAG, "校正后：" + result.getLabel() + ", " + result.getLabel().length());
 
             outputResultList.add(result.getLabel());
         }
@@ -360,7 +357,7 @@ public class PredictorUtil {
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(50);
         textPaint.setColor(Color.parseColor("#000000"));
-        textPaint.setStrokeWidth(3);
+        textPaint.setStrokeWidth(5);
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
 

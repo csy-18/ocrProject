@@ -11,26 +11,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.gson.Gson
+import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.activity.camera.CameraActivity
+import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.activity.main.OcrMainActivity
+import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.network.OdooUtils
 import net.ixzyj.network.model.ResultModel
 import net.ixzyj.ocr.databinding.ActivityResultBinding
 import net.ixzyj.utils.CodeUtils.genElscodeCkCode
 import net.ixzyj.utils.DialogUtil
 import net.ixzyj.utils.FileUtils
+import net.ixzyj.utils.MyApplication
 import net.ixzyj.utils.MyApplication.Companion.flagPage
 import net.ixzyj.utils.MyApplication.Companion.logi
 import net.ixzyj.utils.MyApplication.Companion.predictor
 import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
-import com.bumptech.glide.Glide
-import com.google.gson.Gson
-import com.sychen.basic.activity.ActivityCollector
-import com.sychen.basic.activity.BaseActivity
-import net.ixzyj.activity.login.LoginActivity
-import net.ixzyj.activity.setting.SetDBActivity
-import net.ixzyj.utils.MyApplication
 import org.apache.xmlrpc.XmlRpcException
 import java.net.MalformedURLException
 import java.util.*
@@ -87,15 +86,15 @@ class ResultActivity : BaseActivity() {
                         try {
                             resultModel =
                                 Gson().fromJson(msg.obj.toString(), ResultModel::class.java)
+                            uploadResult(resultModel)
                         } catch (e: Exception) {
                             val alertDialog =
-                                DialogUtil.alertDialog("数据存在错误,需要返回到列表页面重新获取数据", this@ResultActivity)
+                                DialogUtil.alertDialog("数据存在错误\n返回列表页面重新获取数据", this@ResultActivity)
                             alertDialog.setOnDismissListener {
                                 startActivity(Intent(this@ResultActivity,OcrMainActivity::class.java))
                                 finish()
                             }
                         }
-                        uploadResult(resultModel)
                     }
                 }
             }
@@ -112,6 +111,7 @@ class ResultActivity : BaseActivity() {
         }
         errorHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
+                dialog.dismiss()
                 when (msg.what) {
                     MyApplication.ERROR -> {
                         doErrorWork()
@@ -129,7 +129,7 @@ class ResultActivity : BaseActivity() {
 
     private fun doSettingError() {
         val alertDialog =
-            DialogUtil.alertDialog("上传失败\n请到设置页面重新设定服务器和数据库", this)
+            DialogUtil.alertDialog("上传失败\n请重新配置服务器和数据库", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -137,12 +137,12 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+        DialogUtil.alertDialog("网络异常\n请检查手机网络", this)
     }
 
     private fun doErrorWork() {
         val alertDialog =
-            DialogUtil.alertDialog("上传失败，请重新登录重试", this)
+            DialogUtil.alertDialog("上传失败\n请重新登录", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -165,8 +165,13 @@ class ResultActivity : BaseActivity() {
                         outResult.forEach {
                             stringBuffer.append(it).append("\n")
                         }
-                        val uploadResult = try {
-                            OdooUtils.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
+                        try {
+                            val uploadResult = OdooUtils.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
+                            "uploadResult$uploadResult".logi()
+                            val message = Message()
+                            message.obj = uploadResult
+                            message.what = UPLOAD_SUCCESS_RESULT
+                            netHandler.sendMessage(message)
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
@@ -174,11 +179,6 @@ class ResultActivity : BaseActivity() {
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
                         }
-                        "uploadResult$uploadResult".logi()
-                        val message = Message()
-                        message.obj = uploadResult
-                        message.what = UPLOAD_SUCCESS_RESULT
-                        netHandler.sendMessage(message)
                     }.start()
                 }
             }
@@ -200,8 +200,13 @@ class ResultActivity : BaseActivity() {
                         outResult.forEach {
                             stringBuffer.append(it).append("\n")
                         }
-                        val uploadResult = try {
-                            OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                        try {
+                            val uploadResult = OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                            "uploadResult$uploadResult".logi()
+                            val message = Message()
+                            message.obj = uploadResult
+                            message.what = UPLOAD_SUCCESS_RESULT
+                            netHandler.sendMessage(message)
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
@@ -209,11 +214,6 @@ class ResultActivity : BaseActivity() {
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
                         }
-                        "uploadResult$uploadResult".logi()
-                        val message = Message()
-                        message.obj = uploadResult
-                        message.what = UPLOAD_SUCCESS_RESULT
-                        netHandler.sendMessage(message)
                     }.start()
                 }
             }
@@ -257,7 +257,7 @@ class ResultActivity : BaseActivity() {
         }
         binding.saveInputBtn.setOnClickListener {
             val text = binding.inputEditText.text.toString().trim()
-            if (text == "" || text == "") {
+            if (text == "" || text.isEmpty()) {
                 "请输入数据重试！".showToast(this)
                 return@setOnClickListener
             }
@@ -346,7 +346,7 @@ class ResultActivity : BaseActivity() {
         dialog.dismiss()
         when (resultModel.result) {
             "500" -> {
-                DialogUtil.alertDialog("上传失败\n错误信息如下\n${resultModel.message}", this)
+                DialogUtil.alertDialog("上传失败\n错误信息：\n${resultModel.message}", this)
             }
             else -> {
                 DialogUtil.alertDialog("上传失败\n存在错误数据", this)

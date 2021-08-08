@@ -46,6 +46,8 @@ class SplashActivity : BaseActivity() {
                     VERSION_FAILED -> {
                         val alertDialog =
                             DialogUtil.alertDialog("获取版本失败\n请联系开发人员解决", this@SplashActivity)
+                        alertDialog.create()
+                        alertDialog.show()
                         alertDialog.setOnDismissListener {
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                             finish()
@@ -54,13 +56,18 @@ class SplashActivity : BaseActivity() {
                     VERSION_SET_FAILED -> {
                         val alertDialog =
                             DialogUtil.alertDialog("获取版本失败\n请到设置页面重新设定服务器", this@SplashActivity)
+                        alertDialog.create()
+                        alertDialog.show()
                         alertDialog.setOnDismissListener {
                             startActivity(Intent(this@SplashActivity, SetDBActivity::class.java))
                             finish()
                         }
                     }
                     VERSION_NET_FAILED -> {
-                        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络信号", this@SplashActivity)
+                        val alertDialog =
+                            DialogUtil.alertDialog("连接服务器失败\n请检查手机网络信号", this@SplashActivity)
+                        alertDialog.create()
+                        alertDialog.show()
                     }
                 }
             }

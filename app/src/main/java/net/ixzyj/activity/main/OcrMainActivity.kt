@@ -99,7 +99,9 @@ class OcrMainActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络\n或者联系开发人员解决", this)
+        val alertDialog = DialogUtil.alertDialog("连接服务器失败\n请检查手机网络\n或者联系开发人员解决", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun doErrorWork() {
@@ -113,7 +115,9 @@ class OcrMainActivity : BaseActivity() {
 
     private fun loadRecSceneFailed() {
         dialog.dismiss()
-        DialogUtil.alertDialog("该用户不存在现场入库清单", this)
+        val alertDialog = DialogUtil.alertDialog("该用户不存在现场入库清单", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loadRecSceneSuccess() {

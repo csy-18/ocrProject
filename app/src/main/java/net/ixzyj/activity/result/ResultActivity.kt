@@ -90,6 +90,8 @@ class ResultActivity : BaseActivity() {
                         } catch (e: Exception) {
                             val alertDialog =
                                 DialogUtil.alertDialog("数据存在错误,需要返回到列表页面重新获取数据", this@ResultActivity)
+                            alertDialog.create()
+                            alertDialog.show()
                             alertDialog.setOnDismissListener {
                                 startActivity(Intent(this@ResultActivity,OcrMainActivity::class.java))
                                 finish()
@@ -130,6 +132,8 @@ class ResultActivity : BaseActivity() {
     private fun doSettingError() {
         val alertDialog =
             DialogUtil.alertDialog("上传失败\n请到设置页面重新设定服务器和数据库", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -137,12 +141,16 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+        val alertDialog = DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun doErrorWork() {
         val alertDialog =
             DialogUtil.alertDialog("上传失败，请重新登录重试", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -346,10 +354,15 @@ class ResultActivity : BaseActivity() {
         dialog.dismiss()
         when (resultModel.result) {
             "500" -> {
-                DialogUtil.alertDialog("上传失败\n错误信息如下\n${resultModel.message}", this)
+                val alertDialog =
+                    DialogUtil.alertDialog("上传失败\n错误信息如下\n${resultModel.message}", this)
+                alertDialog.create()
+                alertDialog.show()
             }
             else -> {
-                DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+                val alertDialog = DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+                alertDialog.create()
+                alertDialog.show()
             }
         }
     }

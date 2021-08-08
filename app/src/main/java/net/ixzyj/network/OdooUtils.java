@@ -40,14 +40,12 @@ public class OdooUtils {
 
     //用户登录
     public static int userLogin(String username, String password) throws XmlRpcException, MalformedURLException {
-        int uid = -1;
+        int uid;
         final XmlRpcClient client = new XmlRpcClient();
         final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
-        Object authenticate = client.execute(config, "authenticate", Arrays.asList(
+        uid = (int) client.execute(config, "authenticate", Arrays.asList(
                 db, username, password, Collections.emptyMap()));
-        Log.i(TAG, "userLogin: authenticate" + authenticate.toString());
-        uid = (int) authenticate;
         Log.i(TAG, "userLogin: uid" + uid);
         return uid;
     }

@@ -45,6 +45,8 @@ class ReceiptsActivity : AppCompatActivity() {
     private fun doDataErrorWork() {
         val alertDialog =
             DialogUtil.alertDialog("数据传输错误\n回退到主页重新进入", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             backHome()
         }

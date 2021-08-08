@@ -77,8 +77,9 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun doSettingError() {
-        val alertDialog =
-            DialogUtil.alertDialog("数据库和服务器查询不到该用户\n请到进入重新设置服务器和数据库", this)
+        val alertDialog = DialogUtil.alertDialog("数据库和服务器查询不到该用户\n请到进入重新设置服务器和数据库", this)
+        alertDialog.create()
+        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -86,11 +87,15 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络", this)
+        val alertDialog = DialogUtil.alertDialog("连接服务器失败\n请检查手机网络", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun doErrorWork() {
-        DialogUtil.alertDialog("登录失败\n请联系开发人员", this)
+        val alertDialog = DialogUtil.alertDialog("登录失败\n请联系开发人员", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loginSuccess() {
@@ -125,7 +130,9 @@ class LoginActivity : BaseActivity() {
 
     private fun loginFailed() {
         binding.progressBarLogin.visibility = View.INVISIBLE
-        DialogUtil.alertDialog("用户名或密码错误", this)
+        val alertDialog = DialogUtil.alertDialog("用户名或密码错误", this)
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun initViews() {

@@ -130,7 +130,7 @@ class ResultActivity : BaseActivity() {
 
     private fun doSettingError() {
         val alertDialog =
-            DialogUtil.alertDialog("上传失败\n请重新配置服务器和数据库", this)
+            DialogUtil.alertDialog("上传失败\n失败原因:服务器或数据库地址出错\n请重新配置服务器和数据库", this)
         alertDialog.create()
         alertDialog.show()
         alertDialog.setOnDismissListener {
@@ -140,7 +140,7 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        val alertDialog = DialogUtil.alertDialog("网络异常\n请检查手机网络", this)
+        val alertDialog = DialogUtil.alertDialog("上传失败\n失败原因:与服务器通讯失败\n请检查数据格式\n请检查手机网络", this)
         alertDialog.create()
         alertDialog.show()
     }
@@ -217,6 +217,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
+                            e.message?.logi()
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)

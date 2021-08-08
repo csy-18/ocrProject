@@ -13,6 +13,7 @@
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             android:defaultValue=""
+            app:dialogMessage="不正确的地址会导致软件异常出错"
             android:icon="@drawable/ic_dbbrain"
             android:key="@string/add_db_editTextPerference_title"
             android:selectAllOnFocus="true"
@@ -38,6 +39,7 @@
             android:defaultValue=""
             android:icon="@drawable/ic_server"
             android:key="@string/add_server_editTextPerference_title"
+            app:dialogMessage="不正确的地址会导致软件异常出错"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/add_server_editTextPerference_title" />

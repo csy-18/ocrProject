@@ -60,7 +60,7 @@ class SplashActivity : BaseActivity() {
                         }
                     }
                     VERSION_NET_FAILED -> {
-                        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络\n或者联系开发人员解决", this@SplashActivity)
+                        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络信号", this@SplashActivity)
                     }
                 }
             }
@@ -73,11 +73,14 @@ class SplashActivity : BaseActivity() {
             Thread {
                 try {
                     version = OdooUtils.getVersion()
-                } catch (e: MalformedURLException) { //服务器连接出错抛出异常
+                } catch (e: MalformedURLException) {
+                    "MalformedURLException-${e.message}".logi()//服务器连接出错抛出异常
                     work.sendEmptyMessage(VERSION_SET_FAILED)
-                } catch (e: XmlRpcException) { //手机没有网络情况抛出异常
+                } catch (e: XmlRpcException) {      //手机没有网络情况抛出异常
+                    "XmlRpcException-${e.message}".logi()
                     work.sendEmptyMessage(VERSION_NET_FAILED)
                 } catch (e: Exception) {
+                    "Exception-${e.message}".logi()
                     work.sendEmptyMessage(VERSION_FAILED)
                 }
                 if (version != "") {

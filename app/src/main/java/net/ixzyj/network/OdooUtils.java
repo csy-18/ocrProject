@@ -39,19 +39,14 @@ public class OdooUtils {
     }
 
     //用户登录
-    public static int userLogin(String username, String password) {
+    public static int userLogin(String username, String password) throws XmlRpcException, MalformedURLException {
         int uid = -1;
-        try {
-            final XmlRpcClient client = new XmlRpcClient();
-            final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
-            uid = (int) client.execute(config, "authenticate", Arrays.asList(
-                    db, username, password, Collections.emptyMap()));
-            Log.i(TAG, "userLogin: " + uid);
-        } catch (Exception e) {
-            Log.i(TAG, "userLogin: " + e.getMessage());
-            e.printStackTrace();
-        }
+        final XmlRpcClient client = new XmlRpcClient();
+        final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        config.setServerURL(new URL(String.format("%s/xmlrpc/2/common", url)));
+        uid = (int) client.execute(config, "authenticate", Arrays.asList(
+                db, username, password, Collections.emptyMap()));
+        Log.i(TAG, "userLogin: " + uid);
         return uid;
     }
 
@@ -80,23 +75,19 @@ public class OdooUtils {
     }
 
 
-    public static String uploadRec(Integer receiptId, String result) {
-        Map<String, String> resultMap = new HashMap<>();
-        try {
-            XmlRpcClient models = new XmlRpcClient() {{
-                setConfig(new XmlRpcClientConfigImpl() {{
-                    setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
-                }});
-            }};
-            resultMap = (Map<String, String>) models.execute("execute_kw", Arrays.asList(
-                    db,
-                    uid,
-                    password,
-                    "buy.receipt", "process_barcode",
-                    Arrays.asList(Arrays.asList(receiptId), result)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static String uploadRec(Integer receiptId, String result) throws XmlRpcException, MalformedURLException {
+        Map<String, String> resultMap;
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        resultMap = (Map<String, String>) models.execute("execute_kw", Arrays.asList(
+                db,
+                uid,
+                password,
+                "buy.receipt", "process_barcode",
+                Arrays.asList(Arrays.asList(receiptId), result)));
         final Gson gson = new Gson();
         return gson.toJson(resultMap);
     }
@@ -119,21 +110,17 @@ public class OdooUtils {
     }
 
 
-    public static String uploadRecScene(Integer orderId, String content, Integer warehouseId) throws MalformedURLException {
+    public static String uploadRecScene(Integer orderId, String content, Integer warehouseId) throws MalformedURLException, XmlRpcException {
         Map<String, String> resultMap = new HashMap<>();
         XmlRpcClient models = new XmlRpcClient() {{
             setConfig(new XmlRpcClientConfigImpl() {{
                 setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
             }});
         }};
-        try {
-            resultMap = (Map<String, String>) models.execute("execute_kw",
-                    Arrays.asList(db, uid, password,
-                            "wh.internal", "process_barcode",
-                            Arrays.asList(orderId, content, warehouseId)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        resultMap = (Map<String, String>) models.execute("execute_kw",
+                Arrays.asList(db, uid, password,
+                        "wh.internal", "process_barcode",
+                        Arrays.asList(orderId, content, warehouseId)));
         Gson gson = new Gson();
         return gson.toJson(resultMap);
     }

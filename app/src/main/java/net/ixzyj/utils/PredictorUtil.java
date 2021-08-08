@@ -1,5 +1,9 @@
 package net.ixzyj.utils;
 
+import static android.graphics.Color.blue;
+import static android.graphics.Color.green;
+import static android.graphics.Color.red;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,7 +19,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import net.ixzyj.ocr.OCRPredictorNative;
 import net.ixzyj.ocr.OcrResultModel;
-import net.ixzyj.ocr.R;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-
-import static android.graphics.Color.*;
 
 public class PredictorUtil {
     private static final String TAG = PredictorUtil.class.getSimpleName();
@@ -328,23 +329,9 @@ public class PredictorUtil {
         for (int i = 0; i < results.size(); i++) {
             OcrResultModel result = results.get(i);
             result.setLabel(result.getLabel().replaceAll(REGEX_CHINESE, ""));
-            if ((result.getLabel().equals(""))) {
-                continue;
-            }
-            if ((result.getLabel().length()<5||result.getLabel().length()>15)){
-                continue;
-            }
-            if (result.getConfidence() < 0.8) {
-                Log.i(TAG, "置信度低于0.8: " + result.getLabel());
-                continue;
-            }
-            // 对于不正确的数据，在最后加上X
-            boolean isExist = result.getLabel().charAt(result.getLabel().length() - 1) == 'X';
-            int pos = result.getLabel().indexOf('-');
-            if (!isExist && (pos == -1 && result.getLabel().length() < 7 ||
-                    pos != -1 && result.getLabel().substring(pos + 1).length() < 7 )) {
-                result.setLabel(result.getLabel() + "X");
-            }
+
+            if (!isValid(result)) continue;
+
             StringBuilder sb = new StringBuilder();
             sb.append(result.getLabel());
             sb.append(" ").append(result.getConfidence());
@@ -352,12 +339,14 @@ public class PredictorUtil {
             for (Point p : result.getPoints()) {
                 sb.append("(").append(p.x).append(",").append(p.y).append(") ");
             }
-            if (result.getLabel().length() > 11) {
-                result.setLabel(result.getLabel().subSequence(0, 11).toString());
-            }
+            Log.i(TAG, "校正前：" + result.getLabel() + ", " + result.getLabel().length());
+            result.setLabel(adjustData(result.getLabel()));
+            Log.i(TAG, "校正后：" + result.getLabel() + ", " + result.getLabel().length());
+
             outputResultList.add(result.getLabel());
         }
         outputResult.postValue(outputResultList);
+
         outputImage = inputImage;
         Canvas canvas = new Canvas(outputImage);
         Paint paintFillAlpha = new Paint();
@@ -366,26 +355,20 @@ public class PredictorUtil {
         paintFillAlpha.setAlpha(50);
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#000000"));
-        paint.setStrokeWidth(8);
+        paint.setStrokeWidth(7);
         paint.setStyle(Paint.Style.STROKE);
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(50);
         textPaint.setColor(Color.parseColor("#000000"));
-        textPaint.setStrokeWidth(5);
+        textPaint.setStrokeWidth(3);
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
+
         int index = 1;
         for (OcrResultModel result : results) {
             result.setLabel(result.getLabel().replaceAll(REGEX_CHINESE, ""));
-            if ((result.getLabel().equals(""))) {
-                continue;
-            }
-            if ((result.getLabel().length()<5||result.getLabel().length()>15)){
-                continue;
-            }
-            if (result.getConfidence() < 0.8) {
-                continue;
-            }
+
+            if (!isValid(result)) continue;
 
             Path path = new Path();
             List<Point> points = result.getPoints();
@@ -401,4 +384,45 @@ public class PredictorUtil {
         }
     }
 
+    /**
+     * 排除无效数据
+     *
+     * @param result OcrResultModel对象
+     * @return
+     */
+    private boolean isValid(OcrResultModel result) {
+        if (result.getLabel().equals("")) {
+            return false;
+        }
+        if (result.getLabel().length() < 5 || result.getLabel().length() > 15) {
+            return false;
+        }
+        if (result.getConfidence() < 0.8) {
+            Log.i(TAG, "置信度低于0.8: " + result.getLabel());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 调整数据
+     *
+     * @param label 标签值
+     * @return
+     */
+    private String adjustData(String label) {
+        boolean isExist = label.charAt(label.length() - 1) == 'X';
+
+        // 校正后7位
+        int pos = label.indexOf('-');
+        int len = label.substring(pos + 1).length();
+
+        if (pos != -1 && len  > 7) {
+            return label.substring(0, label.length() - 1);
+        } else if (!isExist && (pos != -1 && len  < 7 || pos == -1 && label.length() < 7)) {
+            // 整个位数或后7位位数小于7，则在最后加上X
+            return label + "X";
+        }
+        return label;
+    }
 }

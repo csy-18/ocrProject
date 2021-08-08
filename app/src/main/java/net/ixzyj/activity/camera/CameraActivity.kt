@@ -96,8 +96,8 @@ class CameraActivity : BaseActivity() {
                 }
             }
         }
-
-        binding.buildingToolBar.text = intent.extras?.getString("TOOLBAR_TITLE")
+        binding.cameraToolBar.text = intent.extras?.getString("TOOLBAR_TITLE")
+        binding.buildingToolBar.text = intent.extras?.getString("BUILDING_TITLE")
         cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
             startCamera()

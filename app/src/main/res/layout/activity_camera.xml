@@ -69,9 +69,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
         <TextView
+            android:id="@+id/camera_tool_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="物资入库- "
             android:textSize="16sp"
             android:textColor="@color/white"/>
         <TextView

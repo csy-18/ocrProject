@@ -1,5 +1,6 @@
 package net.ixzyj.activity.result
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -26,6 +27,11 @@ import net.ixzyj.utils.SharedPreferencesUtil
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.sychen.basic.activity.BaseActivity
+import net.ixzyj.activity.login.LoginActivity
+import net.ixzyj.activity.setting.SetDBActivity
+import net.ixzyj.utils.MyApplication
+import org.apache.xmlrpc.XmlRpcException
+import java.net.MalformedURLException
 import java.util.*
 
 class ResultActivity : BaseActivity() {
@@ -34,8 +40,9 @@ class ResultActivity : BaseActivity() {
     lateinit var work: Handler
     lateinit var netHandler: Handler
     lateinit var adapterHandler: Handler
+    lateinit var errorHandler: Handler
     lateinit var dialog: Dialog
-
+    var resultModel = ResultModel("", "500")
     val viewModel by lazy {
         ViewModelProvider(this).get(ResultViewModel::class.java)
     }
@@ -54,8 +61,8 @@ class ResultActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initDatas()
         initHandler()
+        initDatas()
         initViews()
     }
 
@@ -76,8 +83,12 @@ class ResultActivity : BaseActivity() {
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
                     UPLOAD_SUCCESS_RESULT -> {
-                        val resultModel =
-                            Gson().fromJson(msg.obj.toString(), ResultModel::class.java)
+                        try {
+                            resultModel =
+                                Gson().fromJson(msg.obj.toString(), ResultModel::class.java)
+                        } catch (e: Exception) {
+
+                        }
                         uploadResult(resultModel)
                     }
                 }
@@ -92,6 +103,43 @@ class ResultActivity : BaseActivity() {
                     }
                 }
             }
+        }
+        errorHandler = object : Handler(mainLooper) {
+            override fun handleMessage(msg: Message) {
+                when (msg.what) {
+                    MyApplication.ERROR -> {
+                        doErrorWork()
+                    }
+                    MyApplication.NET_ERROR -> {
+                        doNetError()
+                    }
+                    MyApplication.SETTING_ERROR -> {
+                        doSettingError()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun doSettingError() {
+        val alertDialog =
+            DialogUtil.alertDialog("上传失败\n请到设置页面重新设定服务器和数据库", this)
+        alertDialog.setOnDismissListener {
+            startActivity(Intent(this, SetDBActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun doNetError() {
+        DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+    }
+
+    private fun doErrorWork() {
+        val alertDialog =
+            DialogUtil.alertDialog("上传失败，请重新登录重试", this)
+        alertDialog.setOnDismissListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 
@@ -111,8 +159,15 @@ class ResultActivity : BaseActivity() {
                         outResult.forEach {
                             stringBuffer.append(it).append("\n")
                         }
-                        val uploadResult =
+                        val uploadResult = try {
                             OdooUtils.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
+                        } catch (e: MalformedURLException) {
+                            errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
+                        } catch (e: XmlRpcException) {
+                            errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
+                        } catch (e: Exception) {
+                            errorHandler.sendEmptyMessage(MyApplication.ERROR)
+                        }
                         val message = Message()
                         message.obj = uploadResult
                         message.what = UPLOAD_SUCCESS_RESULT
@@ -122,6 +177,7 @@ class ResultActivity : BaseActivity() {
             }
         })
     }
+
     private fun fromRec() {
         val bundle = intent.extras
         val receiptsId = bundle?.getInt("RECEIPTS_ID")
@@ -137,7 +193,15 @@ class ResultActivity : BaseActivity() {
                         outResult.forEach {
                             stringBuffer.append(it).append("\n")
                         }
-                        val uploadResult = OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                        val uploadResult = try {
+                            OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                        } catch (e: MalformedURLException) {
+                            errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
+                        } catch (e: XmlRpcException) {
+                            errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
+                        } catch (e: Exception) {
+                            errorHandler.sendEmptyMessage(MyApplication.ERROR)
+                        }
                         val message = Message()
                         message.obj = uploadResult
                         message.what = UPLOAD_SUCCESS_RESULT
@@ -152,6 +216,7 @@ class ResultActivity : BaseActivity() {
         userId = SharedPreferencesUtil.sharedPreferencesLoad("USER_ID", -1) as Int
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initViews() {
         dialog = DialogUtil.progressBarDialog(this)
         binding.imgResult.apply {
@@ -160,7 +225,6 @@ class ResultActivity : BaseActivity() {
                 .into(this)
             setOnClickListener {
                 DialogUtil.photoDialog(this@ResultActivity, predictor.outputImage())
-                    .show()
             }
         }
         binding.inputEditText.apply {
@@ -185,8 +249,8 @@ class ResultActivity : BaseActivity() {
         }
         binding.saveInputBtn.setOnClickListener {
             val text = binding.inputEditText.text.toString().trim()
-            if (text.equals("") || text == "") {
-                "未输入数据！".showToast(this)
+            if (text == "" || text == "") {
+                "请输入数据重试！".showToast(this)
                 return@setOnClickListener
             }
             predictor.outputResult.value?.add(text)
@@ -227,6 +291,7 @@ class ResultActivity : BaseActivity() {
                 return false
             }
 
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 "序号${viewHolder.adapterPosition}".logi()
                 predictor.outputResult.value?.removeAt(viewHolder.adapterPosition)
@@ -242,7 +307,7 @@ class ResultActivity : BaseActivity() {
         binding.runModelStatus.text = stringBuilder
     }
 
-    private fun setErrorResult(){
+    private fun setErrorResult() {
         val stringBuilder = StringBuilder()
         var index = 1
         val resultList = predictor.outputResult().value
@@ -271,16 +336,13 @@ class ResultActivity : BaseActivity() {
 
     private fun uploadFailed(resultModel: ResultModel) {
         dialog.dismiss()
-        when(resultModel.result){
-            "500"->{
-//                val split = resultModel.message.split("未找到")
-//                val stringBuilder = StringBuilder()
-//                split.forEach { s ->
-//                    stringBuilder.append(s).append("\n")
-//                }
+        when (resultModel.result) {
+            "500" -> {
                 DialogUtil.alertDialog("上传失败\n错误信息如下\n${resultModel.message}", this)
             }
-            else->{DialogUtil.alertDialog("上传失败\n存在错误数据", this)}
+            else -> {
+                DialogUtil.alertDialog("上传失败\n存在错误数据", this)
+            }
         }
     }
 

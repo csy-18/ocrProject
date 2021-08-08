@@ -17,11 +17,16 @@ import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.utils.AESUtil
+import net.ixzyj.utils.MyApplication.Companion.ERROR
+import net.ixzyj.utils.MyApplication.Companion.NET_ERROR
+import net.ixzyj.utils.MyApplication.Companion.SETTING_ERROR
+import org.apache.xmlrpc.XmlRpcException
+import java.net.MalformedURLException
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var work: Handler
-    private val odooUtils = OdooUtils()
+    private lateinit var errorHandler: Handler
 
     companion object {
         const val USER_LOGIN_SUCCESS = 0
@@ -51,6 +56,38 @@ class LoginActivity : BaseActivity() {
                 }
             }
         }
+        errorHandler = object : Handler(mainLooper) {
+            override fun handleMessage(msg: Message) {
+                when (msg.what) {
+                    ERROR -> {
+                        doErrorWork()
+                    }
+                    NET_ERROR -> {
+                        doNetError()
+                    }
+                    SETTING_ERROR -> {
+                        doSettingError()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun doSettingError() {
+        val alertDialog =
+            DialogUtil.alertDialog("数据库和服务器查询不到该用户\n请到进入重新设置服务器和数据库", this)
+        alertDialog.setOnDismissListener {
+            startActivity(Intent(this, SetDBActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun doNetError() {
+        DialogUtil.alertDialog("连接服务器失败\n请检查手机网络", this)
+    }
+
+    private fun doErrorWork() {
+        DialogUtil.alertDialog("登录失败\n请联系开发人员", this)
     }
 
     private fun loginSuccess() {
@@ -85,7 +122,7 @@ class LoginActivity : BaseActivity() {
 
     private fun loginFailed() {
         binding.progressBarLogin.visibility = View.INVISIBLE
-        DialogUtil.alertDialog("登录失败", this)
+        DialogUtil.alertDialog("用户名或密码错误", this)
     }
 
     private fun initViews() {
@@ -127,7 +164,15 @@ class LoginActivity : BaseActivity() {
                 return@setOnClickListener
             }
             Thread {
-                USER_ID = userLogin(userName, pwd)
+                try {
+                    USER_ID = userLogin(userName, pwd)
+                } catch (e: MalformedURLException) {
+                    errorHandler.sendEmptyMessage(SETTING_ERROR)
+                } catch (e: XmlRpcException) {
+                    errorHandler.sendEmptyMessage(NET_ERROR)
+                } catch (e: Exception) {
+                    errorHandler.sendEmptyMessage(ERROR)
+                }
                 when (USER_ID) {
                     -1 -> work.sendEmptyMessage(USER_LOGIN_FAILED)
                     else -> work.sendEmptyMessage(USER_LOGIN_SUCCESS)

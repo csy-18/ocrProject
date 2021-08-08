@@ -35,9 +35,10 @@ class RecSceneListAdapter(val resultList: List<ReceptioninSceneItem>) :
             this.findViewById<TextView>(R.id.building_name).text = result.building_id[1].toString()
             setOnClickListener {
                 bundle.apply {
-                    putString("TOOLBAR_TITLE",result.building_id[1].toString())
+                    putString("TOOLBAR_TITLE","项目入库清点-")
                     putInt("ORDER_ID",result.id)
                     putInt("WAREHOUSE_ID",result.warehouse_id[0].toString().toFloat().toInt())
+                    putString("BUILDING_TITLE",result.building_id[1].toString())
                     flagPage = 2
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)

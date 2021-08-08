@@ -45,8 +45,9 @@
         <ListPreference
             android:icon="@drawable/ic_server"
             app:key="@string/del_server_editTextPerference_title"
-            app:title="@string/del_server_editTextPerference_title"
-            app:useSimpleSummaryProvider="true" />
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            app:title="@string/del_server_editTextPerference_title" />
     </PreferenceCategory>
 
 

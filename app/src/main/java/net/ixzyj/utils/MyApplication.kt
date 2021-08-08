@@ -32,6 +32,10 @@ class MyApplication : Application() {
         var scoreThreshold = 0.1f
         var predictor = PredictorUtil()
 
+        const val ERROR = 300
+        const val NET_ERROR = 205
+        const val SETTING_ERROR = 206
+        const val DATA_ERROR = 208
         fun log(message: String) {
             Log.i(TAG, message)
         }

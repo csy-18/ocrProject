@@ -19,6 +19,9 @@ import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.utils.*
+import net.ixzyj.utils.MyApplication.Companion.ERROR
+import net.ixzyj.utils.MyApplication.Companion.NET_ERROR
+import net.ixzyj.utils.MyApplication.Companion.SETTING_ERROR
 import org.apache.xmlrpc.XmlRpcException
 import java.net.MalformedURLException
 
@@ -39,9 +42,6 @@ class OcrMainActivity : BaseActivity() {
         const val LOAD_RECEIPTS_FAILED = 1
         const val LOAD_REC_SCENE_SUCCESS = 2
         const val LOAD_REC_SCENE_FAILED = 3
-        const val ERROR = 4
-        const val NET_ERROR = 5
-        const val SETTING_ERROR = 6
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +64,6 @@ class OcrMainActivity : BaseActivity() {
                         loadReceiptsFailed()
                     }
                     LOAD_REC_SCENE_SUCCESS -> {
-                        val obj = msg.obj
                         loadRecSceneSuccess()
                     }
                     LOAD_REC_SCENE_FAILED -> {
@@ -92,7 +91,7 @@ class OcrMainActivity : BaseActivity() {
 
     private fun doSettingError() {
         val alertDialog =
-            DialogUtil.alertDialog("获取列表失败\n请到设置页面重新设定服务器", this)
+            DialogUtil.alertDialog("获取列表失败\n请到设置页面重新设定服务器和数据库", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -105,7 +104,7 @@ class OcrMainActivity : BaseActivity() {
 
     private fun doErrorWork() {
         val alertDialog =
-            DialogUtil.alertDialog("获取列表异常", this)
+            DialogUtil.alertDialog("获取列表异常，请重新登录重试", this)
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -114,7 +113,7 @@ class OcrMainActivity : BaseActivity() {
 
     private fun loadRecSceneFailed() {
         dialog.dismiss()
-        DialogUtil.alertDialog("获取列表失败", this)
+        DialogUtil.alertDialog("该用户不存在现场入库清单", this)
     }
 
     private fun loadRecSceneSuccess() {
@@ -128,9 +127,7 @@ class OcrMainActivity : BaseActivity() {
 
     private fun loadReceiptsFailed() {
         dialog.dismiss()
-        val alertDialog = DialogUtil.alertDialog("错误", this)
-        alertDialog.create()
-        alertDialog.show()
+        DialogUtil.alertDialog("该用户不存在入库清单", this)
     }
 
     private fun loadReceiptsSuccess() {
@@ -159,7 +156,6 @@ class OcrMainActivity : BaseActivity() {
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
                     }
-                    Gson().toJson(receipts).logi()
                     when (receipts) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_RECEIPTS_FAILED)
@@ -188,7 +184,6 @@ class OcrMainActivity : BaseActivity() {
                     } catch (e: Exception) {
                         errorHandler.sendEmptyMessage(ERROR)
                     }
-                    Gson().toJson(order).logi()
                     when (order) {
                         0 -> {
                             work.sendEmptyMessage(LOAD_REC_SCENE_FAILED)

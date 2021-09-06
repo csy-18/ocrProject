@@ -100,10 +100,12 @@ public class OdooUtils {
                 setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
             }});
         }};
-        info = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(db, uid, password,
+        info = Arrays.asList((Object[]) models.execute("execute_kw",
+                Arrays.asList(db, uid, password,
                 "wh.internal", "search_read",
                 Arrays.asList(
-                        Arrays.asList(Arrays.asList("state", "=", "draft"),
+                        Arrays.asList(
+                                Arrays.asList("state", "=", "draft"),
                                 Arrays.asList("is_open", "=", true),
                                 Arrays.asList("origin", "=", "material_project_out")),
                         Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));

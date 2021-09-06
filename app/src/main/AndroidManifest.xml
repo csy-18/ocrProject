@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name="net.ixzyj.utils.MyApplication"
         android:allowBackup="true"
@@ -19,46 +20,52 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="net.ixzyj.activity.setting.SetDBActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_set_dbactivity" />
-        <activity
-            android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" />
-        <activity
-            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" />
-        <activity
-            android:name="net.ixzyj.activity.main.OcrMainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" />
-        <activity
-            android:name="net.ixzyj.activity.login.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:name="net.ixzyj.activity.main.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.ixzyj.activity.login.LoginActivity"
+        <activity
+            android:name="net.ixzyj.activity.setting.SetDBActivity"
+            android:label="@string/title_activity_set_dbactivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.ixzyj.activity.main.OcrMainActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.ixzyj.activity.login.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+
+        </activity>
+        <activity
+            android:name="net.ixzyj.activity.login.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.result.ResultActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="net.ixzyj.activity.camera.CameraActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" /> <!-- to test MiniActivity, change this to net.ixzyj.demo.ocr.demo.MiniActivity -->
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" /> <!-- to test MiniActivity, change this to net.ixzyj.demo.ocr.demo.MiniActivity -->
         <activity
             android:name="net.ixzyj.activity.setting.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:label="Settings" />
+            android:label="Settings"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -6,4 +6,14 @@
     <color name="red">#B71C1C</color>
     <color name="white">#fff</color>
     <color name="black">#000000</color>
+    <color name="gray">#dddddd</color>
+    <color name="Blue_900">#0D47A1</color>
+    <color name="Blue_800">#1565C0</color>
+    <color name="Blue_700">#1976D2</color>
+    <color name="Blue_600">#1E88E5</color>
+    <color name="Blue_500">#2196F3</color>
+    <color name="Blue_400">#42A5F5</color>
+    <color name="Blue_300">#64B5F6</color>
+    <color name="Blue_200">#90CAF9</color>
+    <color name="Blue_100">#BBDEFB</color>
 </resources>

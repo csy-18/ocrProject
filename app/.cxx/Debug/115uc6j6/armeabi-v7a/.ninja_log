@@ -1,0 +1,18 @@
+# ninja log v5
+11	2037	1631865786	CMakeFiles/Native.dir/predictor_input.cpp.o	ba6ec3d8c12ab04f
+13	2138	1631865787	CMakeFiles/Native.dir/predictor_output.cpp.o	b9e52925199ab2b9
+9	3516	1631865788	CMakeFiles/Native.dir/ppredictor.cpp.o	19d446d8507d797c
+6	5771	1631865790	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	82755f405ee6c5
+1	6758	1631865791	CMakeFiles/Native.dir/ocr_clipper.cpp.o	d73540f85b574724
+16	6832	1631865791	CMakeFiles/Native.dir/preprocess.cpp.o	835e1a409054a016
+3	7106	1631865791	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	9f7cebc0d22640cb
+4	7222	1631865792	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	a236535ab49d01a9
+0	7605	1631865792	CMakeFiles/Native.dir/native.cpp.o	3a683020292ad64b
+7	7758	1631865792	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	1d996b48797c23e
+7758	8732	1631865793	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+33	1213	1631867182	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+5	858	1631867229	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+6	1013	1631868598	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+5	1196	1631870354	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+4	758	1631872105	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185
+5	1033	1631872500	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/armeabi-v7a/libNative.so	5116ffb6fe89e185

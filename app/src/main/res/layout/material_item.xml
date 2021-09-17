@@ -39,8 +39,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
+            android:lineSpacingExtra="1dp"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

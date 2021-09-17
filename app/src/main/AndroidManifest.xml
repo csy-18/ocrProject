@@ -20,52 +20,46 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="net.ixzyj.activity.main.MainActivity"
-            android:exported="true" >
+            android:name="net.ixzyj.activity.setting.SetDBActivity"
+            android:label="@string/title_activity_set_dbactivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="net.ixzyj.activity.main.OcrMainActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="net.ixzyj.activity.login.SplashActivity"
+            android:screenOrientation="fullSensor"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="net.ixzyj.activity.setting.SetDBActivity"
-            android:label="@string/title_activity_set_dbactivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="net.ixzyj.activity.main.OcrMainActivity"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="net.ixzyj.activity.login.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
 
-        </activity>
+
         <activity
             android:name="net.ixzyj.activity.login.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="net.ixzyj.activity.result.ResultActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="net.ixzyj.activity.camera.CameraActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" /> <!-- to test MiniActivity, change this to net.ixzyj.demo.ocr.demo.MiniActivity -->
-        <activity
-            android:name="net.ixzyj.activity.setting.SettingsActivity"
-            android:label="Settings"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

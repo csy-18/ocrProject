@@ -51,6 +51,55 @@ public class OdooUtils {
         return uid;
     }
 
+    // 读取当前数据库的公司
+    public static Map<String, String> getCorpName() throws MalformedURLException, XmlRpcException {
+        Map<String, String> info = new HashMap<>();
+        List<Object> list = new ArrayList<>();
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        list = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(
+                db, uid, password, "res.company", "search_read", Arrays.asList()
+        )));
+        info = (Map<String, String>) list.get(0);
+        return info;
+    }
+
+    //检测是否有权限显示物资管理和现场管理
+    public static boolean checkPermissions(String scenes) throws MalformedURLException, XmlRpcException {
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        return (Boolean) models.execute("execute_kw", Arrays.asList(
+                db, uid, password, "res.users", "user_has_groups",
+                Arrays.asList(scenes)
+        ));
+    }
+
+    // 检测二级菜单是否显示
+    public static String menuInvisible() throws MalformedURLException, XmlRpcException{
+        Map<String, String> info = new HashMap<>();
+        XmlRpcClient models = new XmlRpcClient() {{
+            setConfig(new XmlRpcClientConfigImpl() {{
+                setServerURL(new URL(String.format("%s/xmlrpc/2/object", url)));
+            }});
+        }};
+        List<Object> list = Arrays.asList((Object[]) models.execute("execute_kw", Arrays.asList(
+                db, uid, password, "ir.config_parameter", "search_read",
+                Arrays.asList(
+                        Arrays.asList(Arrays.asList("key", "=", "system_menu.invisible")),
+                        Arrays.asList("key", "value")
+                )
+        )));
+        info = (Map<String, String>) list.get(0);
+        final Gson gson = new Gson();
+        return gson.toJson(info);
+    }
+
     // 获取入库清单
     public static List<Object> getReceipts() throws MalformedURLException, XmlRpcException {
         List<Object> info = new ArrayList<>();
@@ -102,13 +151,13 @@ public class OdooUtils {
         }};
         info = Arrays.asList((Object[]) models.execute("execute_kw",
                 Arrays.asList(db, uid, password,
-                "wh.internal", "search_read",
-                Arrays.asList(
+                        "wh.internal", "search_read",
                         Arrays.asList(
-                                Arrays.asList("state", "=", "draft"),
-                                Arrays.asList("is_open", "=", true),
-                                Arrays.asList("origin", "=", "material_project_out")),
-                        Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
+                                Arrays.asList(
+                                        Arrays.asList("state", "=", "draft"),
+                                        Arrays.asList("is_open", "=", true),
+                                        Arrays.asList("origin", "=", "material_project_out")),
+                                Arrays.asList("state", "name", "date", "building_id", "warehouse_id")))));
         return info;
     }
 

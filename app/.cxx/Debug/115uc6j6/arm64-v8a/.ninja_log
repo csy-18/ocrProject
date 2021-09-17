@@ -1,0 +1,15 @@
+# ninja log v5
+5	1507	1631865795	CMakeFiles/Native.dir/predictor_input.cpp.o	5b514e3ff9714cca
+6	1533	1631865795	CMakeFiles/Native.dir/predictor_output.cpp.o	41e2f6647115c4d5
+5	2027	1631865795	CMakeFiles/Native.dir/ppredictor.cpp.o	f88a17e7dc0f76d2
+4	4027	1631865797	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	5ac27f5d11744721
+2	4768	1631865798	CMakeFiles/Native.dir/ocr_clipper.cpp.o	f4176d8b13fd3c62
+8	5372	1631865798	CMakeFiles/Native.dir/preprocess.cpp.o	7782e0525fd87334
+3	5621	1631865799	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	e21523ffab10ce88
+4	5684	1631865799	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	1592d049b4a85b56
+0	5916	1631865799	CMakeFiles/Native.dir/native.cpp.o	3d6cec6fcb255103
+5	5962	1631865799	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	a9d01a10c37e6641
+5962	7101	1631865800	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/arm64-v8a/libNative.so	bebad2ac75663128
+6	1193	1631867209	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/arm64-v8a/libNative.so	bebad2ac75663128
+4	1012	1631867230	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/arm64-v8a/libNative.so	bebad2ac75663128
+4	1316	1631871148	/Users/sychen/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/115uc6j6/obj/arm64-v8a/libNative.so	bebad2ac75663128

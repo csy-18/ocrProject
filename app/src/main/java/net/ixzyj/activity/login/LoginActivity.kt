@@ -24,6 +24,7 @@ import net.ixzyj.utils.MyApplication.Companion.showToast
 import net.ixzyj.utils.SharedPreferencesUtil
 import org.apache.xmlrpc.XmlRpcException
 import java.net.MalformedURLException
+import java.util.*
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -106,8 +107,7 @@ class LoginActivity : BaseActivity() {
         OdooUtils.uid = USER_ID.toString()
         OdooUtils.username = binding.userNameEdit.text.toString()
         OdooUtils.password = binding.pwdEdit.text.toString()
-        val checked = binding.checkBox.isChecked
-        when (checked) {
+        when (binding.checkBox.isChecked) {
             true -> checkedTrue()
             false -> checkedFalse()
         }

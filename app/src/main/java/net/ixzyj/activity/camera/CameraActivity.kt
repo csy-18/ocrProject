@@ -36,9 +36,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.sychen.basic.activity.ActivityCollector
 import com.sychen.basic.activity.BaseActivity
 import kotlinx.coroutines.launch
-import net.ixzyj.activity.receipts.ReceiptsActivity
+import net.ixzyj.activity.materiallist.MateriaListActivity
+import net.ixzyj.activity.receiptsin.ReceiptsInActivity
 import net.ixzyj.activity.receptioninscene.RecinSceneActivity
-import net.ixzyj.network.model.ReceptioninScene
 import net.ixzyj.ocr.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -86,18 +86,17 @@ class CameraActivity : BaseActivity() {
             setNavigationOnClickListener {
                 when (flagPage) {
                     1 -> {
-                        startActivity(Intent(this@CameraActivity, ReceiptsActivity::class.java))
+                        startActivity(Intent(this@CameraActivity, ReceiptsInActivity::class.java))
                         finish()
                     }
                     2 -> {
-                        startActivity(Intent(this@CameraActivity, RecinSceneActivity::class.java))
+                        startActivity(Intent(this@CameraActivity, MateriaListActivity::class.java))
                         finish()
                     }
                 }
             }
         }
         binding.cameraToolBar.text = intent.extras?.getString("TOOLBAR_TITLE")
-        binding.buildingToolBar.text = intent.extras?.getString("BUILDING_TITLE")
         cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
             startCamera()

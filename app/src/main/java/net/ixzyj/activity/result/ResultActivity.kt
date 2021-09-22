@@ -18,7 +18,7 @@ import net.ixzyj.activity.camera.CameraActivity
 import net.ixzyj.activity.login.LoginActivity
 import net.ixzyj.activity.main.OcrMainActivity
 import net.ixzyj.activity.setting.SetDBActivity
-import net.ixzyj.network.OdooUtils
+import net.ixzyj.network.OdooRepo
 import net.ixzyj.network.model.ResultModel
 import net.ixzyj.ocr.databinding.ActivityResultBinding
 import net.ixzyj.utils.CodeUtils.genElscodeCkCode
@@ -173,7 +173,7 @@ class ResultActivity : BaseActivity() {
                             stringBuffer.append(it).append("\n")
                         }
                         try {
-                            val uploadResult = OdooUtils.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
+                            val uploadResult = OdooRepo.uploadRecScene(orderId, stringBuffer.toString(), warehouseId)
                             "uploadResult$uploadResult".logi()
                             val message = Message()
                             message.obj = uploadResult
@@ -182,6 +182,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
+                            e.message?.logi()
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
@@ -208,7 +209,7 @@ class ResultActivity : BaseActivity() {
                             stringBuffer.append(it).append("\n")
                         }
                         try {
-                            val uploadResult = OdooUtils.uploadRec(receiptsId!!, stringBuffer.toString())
+                            val uploadResult = OdooRepo.uploadRec(receiptsId!!, stringBuffer.toString())
                             "uploadResult$uploadResult".logi()
                             val message = Message()
                             message.obj = uploadResult

@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import net.ixzyj.network.OdooUtils
+import net.ixzyj.network.OdooRepo
 import net.ixzyj.ocr.R
 
 class MyApplication : Application() {
@@ -74,8 +74,8 @@ class MyApplication : Application() {
             getString(R.string.DB_ADDRESS),
             getString(R.string.DB_ADDRESS_VALUE_DEFAULT)
         )
-        OdooUtils.url = server.toString()
-        OdooUtils.db = db.toString()
+        OdooRepo.serveUrl = server.toString()
+        OdooRepo.database = db.toString()
     }
 
     private fun initModel() {

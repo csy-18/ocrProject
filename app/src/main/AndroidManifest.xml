@@ -20,6 +20,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name="net.ixzyj.activity.materiallist.MateriaListActivity"
+            android:exported="true" />
+        <activity
             android:name="net.ixzyj.activity.setting.SetDBActivity"
             android:label="@string/title_activity_set_dbactivity"
             android:screenOrientation="fullSensor" />
@@ -28,7 +31,7 @@
             android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name="net.ixzyj.activity.receipts.ReceiptsActivity"
+            android:name="net.ixzyj.activity.receiptsin.ReceiptsInActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />
         <activity
@@ -37,8 +40,8 @@
             android:screenOrientation="fullSensor" />
         <activity
             android:name="net.ixzyj.activity.login.SplashActivity"
-            android:screenOrientation="fullSensor"
             android:exported="true"
+            android:screenOrientation="fullSensor"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,8 +49,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name="net.ixzyj.activity.login.LoginActivity"
             android:screenOrientation="fullSensor" />

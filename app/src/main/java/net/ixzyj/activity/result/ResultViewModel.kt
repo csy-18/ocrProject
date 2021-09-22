@@ -6,10 +6,4 @@ import androidx.lifecycle.ViewModel
 
 class ResultViewModel : ViewModel() {
 
-    var errorList = MutableLiveData<List<String>>()
-
-    fun getErrorList(): LiveData<List<String>> {
-        return errorList
-    }
-
 }

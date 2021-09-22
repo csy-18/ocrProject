@@ -29,6 +29,8 @@ object DialogUtil {
             dialogConfirm.setOnClickListener {
                 dismiss()
             }
+            create()
+            show()
         }
     }
 

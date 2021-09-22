@@ -58,9 +58,9 @@
 
     <!--    初始化服务器地址和数据库-->
     <string name="SERVER_ADDRESS">ServerAddress</string>
-    <string name="SERVER_ADDRESS_VALUE_DEFAULT">http://114.67.113.2:8069</string>
+    <string name="SERVER_ADDRESS_VALUE_DEFAULT">https://erp.ixzyj.net</string>
     <string name="DB_ADDRESS">DbAddress</string>
-    <string name="DB_ADDRESS_VALUE_DEFAULT">xinshengteng</string>
+    <string name="DB_ADDRESS_VALUE_DEFAULT">xst_apptest</string>
 
     <!-- 用户信息-->
     <string name="USER_NAME">UserName</string>

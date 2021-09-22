@@ -1,32 +1,25 @@
 package net.ixzyj.activity.main
 
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import net.ixzyj.network.OdooUtils
-import net.ixzyj.network.OdooUtils.checkPermissions
 import net.ixzyj.ocr.databinding.ActivityMainBinding
+import net.ixzyj.utils.MyApplication.Companion.logi
 import net.ixzyj.view.material.MaterialFragment
-import net.ixzyj.view.materialscene.MaterialSceneFragment
+import net.ixzyj.view.onsite.OnsiteFragment
 
 class OcrMainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
-    private lateinit var work: Handler
-
-    companion object {
-        val LOAD_RECEIPTS_FAILED: Int = 0
-        const val GO_TAB1 = 1
-        const val GO_TAB2 = 2
-        const val GO_TAB3 = 3
+    private val viewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,44 +31,34 @@ class OcrMainActivity : AppCompatActivity() {
 
     private fun initView() {
         initBinding()
-        initHandler()
         initBottomDBName()
         checkScenePermissions()
     }
 
-    private fun initHandler() {
-        work = object : Handler(mainLooper) {
-            override fun handleMessage(msg: Message) {
-                when (msg.what) {
-                    GO_TAB1 -> initViewPagerAndTab1()
-                    GO_TAB2 -> initViewPagerAndTab2()
-                    GO_TAB3 -> initViewPagerAndTab3()
-                }
-            }
-        }
-    }
-
     private fun checkScenePermissions() {
-        Thread {
-            val material = checkPermissions("gooderp_els.group_els_material")
-            val onsite = checkPermissions("gooderp_els.group_els_onsite")
-            if (material && onsite) {
-                work.sendEmptyMessage(GO_TAB1)
-            } else if (material) {
-                work.sendEmptyMessage(GO_TAB2)
-            } else if (onsite) {
-                work.sendEmptyMessage(GO_TAB3)
-            }
-        }.start()
+        viewModel.checkPermissions("gooderp_els.group_els_material", this)
+        viewModel.checkPermissions("gooderp_els.group_els_onsite", this)
+        viewModel.materialPermissions.observe(this, { material ->
+            viewModel.onsitePermissions.observe(this, { onsite ->
+                "物资管理-权限：$material 项目现场管理-权限：$onsite".logi()
+                if (material && onsite) {
+                    initViewPagerAndTab(
+                        listOf(MaterialFragment(), OnsiteFragment()),
+                        listOf("物资管理", "项目现场管理")
+                    )
+                } else if (material) {
+                    initViewPagerAndTab(listOf(MaterialFragment()), listOf("物资管理"))
+                } else if (onsite) {
+                    initViewPagerAndTab(listOf(OnsiteFragment()), listOf("项目现场管理"))
+                }
+            })
+        })
     }
 
     private fun initBottomDBName() {
-        Thread {
-            val corpName = OdooUtils.getCorpName().getValue("name")
-            Looper.prepare()
-            binding.corpName.text = "当前账套：$corpName"
-            Looper.loop()
-        }.start()
+        viewModel.getCorpName(this).observe(this, {
+            binding.corpName.text = "当前账套：$it"
+        })
     }
 
     private fun initBinding() {
@@ -83,51 +66,23 @@ class OcrMainActivity : AppCompatActivity() {
         viewPager = binding.viewPagerMain
     }
 
-    private fun initViewPagerAndTab1() {
+    private fun initViewPagerAndTab(listFragment: List<Fragment>, fragmentTitle: List<String>) {
         viewPager.apply {
             adapter = object : FragmentStateAdapter(this@OcrMainActivity) {
-                override fun getItemCount(): Int = 2
+                override fun getItemCount(): Int = listFragment.size
 
                 override fun createFragment(position: Int): Fragment = when (position) {
-                    0 -> MaterialFragment()
-                    else -> MaterialSceneFragment()
+                    0 -> listFragment[0]
+                    else -> listFragment[1]
                 }
             }
             setCurrentItem(0, false)
         }
         TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, i: Int ->
             tab.text = when (i) {
-                0 -> "物资管理"
-                else -> "项目现场管理"
+                0 -> fragmentTitle[0]
+                else -> fragmentTitle[1]
             }
-        }.attach()
-    }
-
-    private fun initViewPagerAndTab2() {
-        viewPager.apply {
-            adapter = object : FragmentStateAdapter(this@OcrMainActivity) {
-                override fun getItemCount(): Int = 1
-
-                override fun createFragment(position: Int): Fragment = MaterialFragment()
-            }
-            setCurrentItem(0, false)
-        }
-        TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = "物资管理"
-        }.attach()
-    }
-
-    private fun initViewPagerAndTab3() {
-        viewPager.apply {
-            adapter = object : FragmentStateAdapter(this@OcrMainActivity) {
-                override fun getItemCount(): Int = 1
-
-                override fun createFragment(position: Int): Fragment = MaterialSceneFragment()
-            }
-            setCurrentItem(0, false)
-        }
-        TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = "项目现场管理"
         }.attach()
     }
 

@@ -9,12 +9,11 @@ import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import net.ixzyj.network.OdooUtils
+import net.ixzyj.network.OdooRepo
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.SharedPreferencesUtil
 import com.sychen.basic.activity.BaseActivity
 import net.ixzyj.activity.login.LoginActivity
-import net.ixzyj.utils.MyApplication.Companion.logi
 
 class SetDBActivity : BaseActivity() {
 
@@ -71,12 +70,12 @@ class SetDBActivity : BaseActivity() {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { preference, newValue ->
+                        Preference.OnPreferenceChangeListener { _, newValue ->
                             SharedPreferencesUtil.sharedPreferencesSave(
                                 getString(R.string.SERVER_ADDRESS),
                                 newValue.toString()
                             )
-                            OdooUtils.url = newValue.toString()
+                            OdooRepo.serveUrl = newValue.toString()
                             true
                         }
                 })
@@ -90,12 +89,12 @@ class SetDBActivity : BaseActivity() {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { preference, newValue ->
+                        Preference.OnPreferenceChangeListener { _, newValue ->
                             SharedPreferencesUtil.sharedPreferencesSave(
                                 getString(R.string.DB_ADDRESS),
                                 newValue.toString()
                             )
-                            OdooUtils.db = newValue.toString()
+                            OdooRepo.database = newValue.toString()
                             true
                         }
                 })
@@ -105,7 +104,7 @@ class SetDBActivity : BaseActivity() {
         private fun addServer() {
             val serverEditText =
                 findPreference<EditTextPreference>(getString(R.string.add_server_editTextPerference_title))
-            serverEditText?.setOnPreferenceChangeListener { preference, newValue ->
+            serverEditText?.setOnPreferenceChangeListener { _, newValue ->
                 serverList.value?.add(newValue.toString())
                 loadServerData().observe(this, {
                     saveServerData(it)
@@ -117,7 +116,7 @@ class SetDBActivity : BaseActivity() {
 
         private fun addDb() {
             findPreference<EditTextPreference>(getString(R.string.add_db_editTextPerference_title))?.apply {
-                setOnPreferenceChangeListener { preference, newValue ->
+                setOnPreferenceChangeListener { _, newValue ->
                     dbList.value?.add(newValue.toString())
                     loadDbData().observe(this@SettingsFragment, {
                         saveDbData(it)
@@ -135,7 +134,7 @@ class SetDBActivity : BaseActivity() {
                 loadServerData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
-                    setOnPreferenceChangeListener { preference, newValue ->
+                    setOnPreferenceChangeListener { _, newValue ->
                         serverList.value?.remove(newValue.toString())
                         saveServerData(it)
                         listPreServer()
@@ -151,7 +150,7 @@ class SetDBActivity : BaseActivity() {
                 loadDbData().observe(this@SettingsFragment, {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
-                    setOnPreferenceChangeListener { preference, newValue ->
+                    setOnPreferenceChangeListener { _, newValue ->
                         dbList.value?.remove(newValue.toString())
                         saveDbData(it)
                         listPreDb()
@@ -166,7 +165,6 @@ class SetDBActivity : BaseActivity() {
             if (serverListSp.toString() == "[]") {
                 serverList.postValue(arrayListOf(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT)))
             } else {
-//                serverList.value?.remove(getString(R.string.SERVER_ADDRESS_VALUE_DEFAULT))
                 serverList.postValue(serverListSp)
             }
             return serverList

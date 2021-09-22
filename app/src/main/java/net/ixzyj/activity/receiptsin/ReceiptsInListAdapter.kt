@@ -1,4 +1,4 @@
-package net.ixzyj.activity.receipts
+package net.ixzyj.activity.receiptsin
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,8 +12,8 @@ import net.ixzyj.network.model.ReceiptsModelItem
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.MyApplication.Companion.flagPage
 
-class ReceiptsListAdapter(val resultList: List<ReceiptsModelItem>) :
-    RecyclerView.Adapter<ReceiptsListAdapter.ReceiptsListViewHolder>() {
+class ReceiptsInListAdapter(val resultList: List<ReceiptsModelItem>) :
+    RecyclerView.Adapter<ReceiptsInListAdapter.ReceiptsListViewHolder>() {
     private val bundle by lazy {
         Bundle()
     }
@@ -32,13 +32,12 @@ class ReceiptsListAdapter(val resultList: List<ReceiptsModelItem>) :
             this.findViewById<TextView>(R.id.building_id).text = result.building_id[1].toString()
             this.findViewById<TextView>(R.id.order_name).text = result.name
             this.findViewById<TextView>(R.id.order_id).text = result.order_id[1].toString()
-            this.findViewById<TextView>(R.id.partner_name).text = result.partner_id[1].toString()
+//            this.findViewById<TextView>(R.id.partner_name).text = result.partner_id[1].toString()
             this.findViewById<TextView>(R.id.date).text = result.date
             setOnClickListener {
                 bundle.apply {
                     putInt("RECEIPTS_ID", result.id)
-                    putString("TOOLBAR_TITLE","物资入库-")
-                    putString("BUILDING_TITLE",result.building_id[1].toString())
+                    putString("TOOLBAR_TITLE","物资入库-${result.building_id[1]}")
                     flagPage = 1
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)

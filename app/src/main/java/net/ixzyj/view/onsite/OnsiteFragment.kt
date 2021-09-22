@@ -1,4 +1,4 @@
-package net.ixzyj.view.material
+package net.ixzyj.view.onsite
 
 import android.os.Bundle
 import android.os.Handler
@@ -14,36 +14,31 @@ import com.google.gson.Gson
 import net.ixzyj.network.OdooRepo
 import net.ixzyj.network.model.MenuInvisible
 import net.ixzyj.ocr.R
-import net.ixzyj.ocr.databinding.FragmentMaterialBinding
+import net.ixzyj.ocr.databinding.FragmentMaterialSceneBinding
 import net.ixzyj.utils.MyApplication.Companion.logi
 import net.ixzyj.view.MenuViewModel
+import net.ixzyj.view.material.MaterialFragment
+import net.ixzyj.view.material.MaterialListAdapter
+import net.ixzyj.view.material.MaterialModel
 
-data class MaterialModel(
-    val title: String,
-    val color: Int
-)
-
-class MaterialFragment : Fragment() {
+class OnsiteFragment : Fragment() {
     private val materialModelList = arrayListOf(
-        MaterialModel("物资入库", R.color.Blue_900),
-        MaterialModel("补料出库", R.color.Blue_700),
-        MaterialModel("返场入库", R.color.Blue_500),
-        MaterialModel("退场入库", R.color.Blue_400),
-        MaterialModel("物资调拨", R.color.Blue_200),
-        MaterialModel("翻新出库", R.color.Blue_100),
-        MaterialModel("翻新入库", R.color.gray),
+        MaterialModel("项目入库清点", R.color.Blue_900),
+        MaterialModel("翻新入库清点", R.color.Blue_700),
+        MaterialModel("项目返场清点", R.color.Blue_500),
+        MaterialModel("项目退场清点", R.color.Blue_300),
     )
     private val viewModel by lazy {
         ViewModelProvider(this).get(MenuViewModel::class.java)
     }
-    private lateinit var binding: FragmentMaterialBinding
+    private lateinit var binding: FragmentMaterialSceneBinding
     private lateinit var materialListAdapter: MaterialListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMaterialBinding.inflate(layoutInflater)
+    ): View {
+        binding = FragmentMaterialSceneBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -57,36 +52,27 @@ class MaterialFragment : Fragment() {
             it["value"]?.split(",")?.forEach { value ->
                 "不显示的：$value".logi()
                 when (value.trim()) {
-                    "material.buy_receipt_in.invisible" -> {
+                    "onsite.material_project_out.invisible" -> {
                         materialModelList.removeAt(0)
                     }
-                    "material.material_supp_out.invisible" -> {
+                    "onsite.material_supp_out.invisible" -> {
                         materialModelList.removeAt(1)
                     }
-                    "material.material_project_back.invisible" -> {
+                    "onsite.material_project_back.invisible" -> {
                         materialModelList.removeAt(2)
                     }
-                    "material.material_project_return.invisible" -> {
+                    "onsite.material_project_return.invisible" -> {
                         materialModelList.removeAt(3)
                     }
-                    "material.wh_internal_dispatch.invisible" -> {
-                        materialModelList.removeAt(4)
-                    }
-                    "material.material_renew_out.invisible" -> {
-                        materialModelList.removeAt(5)
-                    }
-                    "material.material_renew_in.invisible" -> {
-                        materialModelList.removeAt(6)
-                    }
                 }
-                initView(materialModelList)
             }
+            initView(materialModelList)
         })
     }
 
     private fun initView(data: List<MaterialModel>) {
         materialListAdapter = MaterialListAdapter(data)
-        binding.recyclerViewMaterial.apply {
+        binding.recyclerViewMaterialScene.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = materialListAdapter
         }

@@ -51,6 +51,7 @@
     <!-- Reply Preference -->
     <string-array name="db_entries">
         <item>xinshengteng</item>
+        <item>xinshengteng</item>
     </string-array>
     <string-array name="server_entries">
         <item>http://114.67.113.2:8069</item>
@@ -59,6 +60,7 @@
     </string-array>
 
     <string-array name="db_values">
+        <item>xinshengteng</item>
         <item>xinshengteng</item>
     </string-array>
 

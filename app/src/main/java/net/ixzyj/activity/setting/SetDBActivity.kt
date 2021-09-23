@@ -180,7 +180,7 @@ class SetDBActivity : BaseActivity() {
         private fun loadDbData(): LiveData<ArrayList<String>> {
             val dbListSp = SharedPreferencesUtil.loadJson(getString(R.string.DB_LIST))
             if (dbListSp.toString() == "[]") {
-                dbList.postValue(arrayListOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT)))
+                dbList.postValue(arrayListOf(getString(R.string.DB_ADDRESS_VALUE_DEFAULT),"xst_xj"))
             } else {
                 dbList.postValue(dbListSp)
             }

@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/.cxx/Debug/6j1q2017/arm64-v8a'
+ninja: no work to do.

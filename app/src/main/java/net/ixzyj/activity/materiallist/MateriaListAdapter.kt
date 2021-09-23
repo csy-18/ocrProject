@@ -11,8 +11,9 @@ import net.ixzyj.activity.camera.CameraActivity
 import net.ixzyj.network.model.ReceptioninSceneItem
 import net.ixzyj.ocr.R
 import net.ixzyj.utils.MyApplication
+import net.ixzyj.utils.MyApplication.Companion.logi
 
-class MateriaListAdapter(private val resultList: List<ReceptioninSceneItem>) :
+class MateriaListAdapter(private val resultList: List<ReceptioninSceneItem>,private val title:String) :
     RecyclerView.Adapter<MateriaListAdapter.MateriaListViewHolder>() {
 
     class MateriaListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -38,9 +39,11 @@ class MateriaListAdapter(private val resultList: List<ReceptioninSceneItem>) :
             this.findViewById<TextView>(R.id.building_name).text = result.building_id[1].toString()
             setOnClickListener {
                 bundle.apply {
-                    putString("TOOLBAR_TITLE", "项目入库清点-${result.building_id[1]}")
+                    putString("TOOLBAR_TITLE", "${title}-${result.building_id[1]}")
                     putInt("ORDER_ID", result.id)
                     putInt("WAREHOUSE_ID", result.warehouse_id[0].toString().toFloat().toInt())
+                    "MateriaList-orderId:${result.id}".logi()
+                    "MateriaList-warehouseId:${result.warehouse_id[0]}".logi()
                     MyApplication.flagPage = 2
                     val intent = Intent(context, CameraActivity::class.java)
                     intent.putExtras(this)

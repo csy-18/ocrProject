@@ -113,6 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="技术支持网站：https://erp.tpxx.net/support"
+        android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

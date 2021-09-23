@@ -160,6 +160,8 @@ class ResultActivity : BaseActivity() {
         val bundle = intent.extras
         val orderId = bundle?.getInt("ORDER_ID")
         val warehouseId = bundle?.getInt("WAREHOUSE_ID")
+        "ResultActivity-orderId:$orderId".logi()
+        "ResultActivity-warehouseId:$warehouseId".logi()
         predictor.outputResult().observe(this, { outResult ->
             when (outResult.size) {
                 0 -> {
@@ -182,7 +184,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
-                            e.message?.logi()
+                            e.message?.showToast(this)
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
@@ -218,7 +220,7 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
-                            e.message?.logi()
+                            e.message?.showToast(this)
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)

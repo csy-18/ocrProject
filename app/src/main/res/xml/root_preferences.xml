@@ -5,7 +5,7 @@
     <PreferenceCategory android:title="@string/db_listPerference_title">
         <ListPreference
             android:icon="@drawable/ic_dbbrain"
-            app:defaultValue="xinshengteng"
+            app:defaultValue="@string/DB_ADDRESS_VALUE_DEFAULT"
             app:entries="@array/db_entries"
             app:entryValues="@array/db_values"
             app:key="@string/db_listPerference_title"
@@ -30,7 +30,7 @@
     <PreferenceCategory android:title="@string/server_listPerference_title">
         <ListPreference
             android:icon="@drawable/ic_server"
-            app:defaultValue="http://114.67.113.2:8069"
+            app:defaultValue="@string/SERVER_ADDRESS_VALUE_DEFAULT"
             app:key="@string/server_listPerference_title"
             app:title="@string/server_listPerference_title"
             app:useSimpleSummaryProvider="true" />

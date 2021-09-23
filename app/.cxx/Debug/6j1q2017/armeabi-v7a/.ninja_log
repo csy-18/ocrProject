@@ -1,0 +1,14 @@
+# ninja log v5
+8	1190	1632413577	CMakeFiles/Native.dir/predictor_input.cpp.o	187827446c9337d5
+9	1192	1632413577	CMakeFiles/Native.dir/predictor_output.cpp.o	cdeba471772e1184
+7	1759	1632413577	CMakeFiles/Native.dir/ppredictor.cpp.o	a4664fbbb48acdb1
+4	2848	1632413578	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	aed351701766b6b5
+2	3503	1632413579	CMakeFiles/Native.dir/ocr_clipper.cpp.o	a0adbca340c1c5ff
+11	3541	1632413579	CMakeFiles/Native.dir/preprocess.cpp.o	cf87d8e897926691
+3	3695	1632413579	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	e34a80a8bb50ec5a
+3	3784	1632413579	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	869cda451a7d3d25
+1	4038	1632413580	CMakeFiles/Native.dir/native.cpp.o	fbe5d86105b4b4c1
+5	4047	1632413580	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	ed4b0443b4640800
+4047	4841	1632413580	/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/6j1q2017/obj/armeabi-v7a/libNative.so	148ae2652b610194
+0	22	0	clean	60de0fe3c962b2d1
+0	11	0	clean	60de0fe3c962b2d1

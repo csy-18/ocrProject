@@ -48,7 +48,8 @@ object OdooRepo {
         init {
             serverURL = URL(String.format("%s/xmlrpc/2/common", serveUrl))
             connectionTimeout = 3000
-            "url地址:$serveUrl".logi()
+            "xmlRpcConfig-url地址:$serveUrl".logi()
+            "xmlRpcConfig-数据库：$database".logi()
         }
     }
 
@@ -57,6 +58,8 @@ object OdooRepo {
             setConfig(object : XmlRpcClientConfigImpl() {
                 init {
                     serverURL = URL(String.format("%s/xmlrpc/2/object", serveUrl))
+                    "models-url地址：$serveUrl".logi()
+                    "models-数据库：$database".logi()
                 }
             })
         }

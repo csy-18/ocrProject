@@ -39,7 +39,7 @@ class MateriaListActivity : AppCompatActivity() {
     }
 
     private fun initView(resultList: List<ReceptioninSceneItem>) {
-        materiaListAdapter = MateriaListAdapter(resultList)
+        materiaListAdapter = MateriaListAdapter(resultList,intent.extras?.get("ACTIVITY_TITLE").toString())
         binding.recyclerViewReceScene.apply {
             layoutManager =
                 LinearLayoutManager(this@MateriaListActivity, LinearLayoutManager.VERTICAL, false)

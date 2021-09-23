@@ -77,7 +77,7 @@ class LoginActivity : BaseActivity() {
         binding.textView6.setOnClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://erp.tpxx.net/suppor")
+            intent.data = Uri.parse("https://erp.tpxx.net/support")
             if (intent.resolveActivity(this.packageManager) != null) {
                 val componentName = intent.resolveActivity(this.packageManager)
                 this.startActivity(Intent.createChooser(intent, "请选择浏览器"))

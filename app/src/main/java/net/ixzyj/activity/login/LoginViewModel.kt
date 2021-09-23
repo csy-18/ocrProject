@@ -53,12 +53,10 @@ class LoginViewModel : ViewModel() {
                 }
 
                 override fun handleError(pRequest: XmlRpcRequest?, pError: Throwable?) {
-                    "用户登陆-请求失败:pError${pError?.suppressedExceptions}".logi()
-                    "用户登陆-请求失败:pRequest${pRequest?.methodName}".logi()
+                    "用户登陆-请求失败:pError${pError?.message}".logi()
+                    "用户登陆-请求失败:pRequest${pRequest?.config}".logi()
                     userId.postValue(-1)
-                    Looper.prepare()
                     doNetError(activity)
-                    Looper.loop()
                 }
             }
         )

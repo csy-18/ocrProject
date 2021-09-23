@@ -1,0 +1,3 @@
+/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/.cxx/Debug/6j1q2017/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/.cxx/Debug/6j1q2017/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/.cxx/Debug/6j1q2017/arm64-v8a/CMakeFiles/Native.dir

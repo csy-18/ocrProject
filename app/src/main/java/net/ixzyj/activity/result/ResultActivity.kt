@@ -43,6 +43,7 @@ class ResultActivity : BaseActivity() {
     lateinit var errorHandler: Handler
     lateinit var dialog: Dialog
     var resultModel = ResultModel("", "500")
+    val errorResultString = StringBuilder()
     val viewModel by lazy {
         ViewModelProvider(this).get(ResultViewModel::class.java)
     }
@@ -184,7 +185,6 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
-                            e.message?.showToast(this)
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
@@ -277,6 +277,11 @@ class ResultActivity : BaseActivity() {
         }
         binding.saveUploadBtn.setOnClickListener {
             dialog.show()
+            if(errorResultString.isNotEmpty()){
+                dialog.dismiss()
+                DialogUtil.alertDialog("列表中有不合格的编码，修改或删除或上传",this)
+                return@setOnClickListener
+            }
             when (flagPage) {
                 1 -> work.sendEmptyMessage(FROM_REC)
                 2 -> work.sendEmptyMessage(FROM_REC_SCENE)
@@ -327,7 +332,6 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun setErrorResult() {
-        val stringBuilder = StringBuilder()
         var index = 1
         val resultList = predictor.outputResult().value
         resultList?.forEach {
@@ -339,11 +343,11 @@ class ResultActivity : BaseActivity() {
             }
             if (it.length != 11 || !verify) {
                 index.toString().logi()
-                stringBuilder.append("$index").append(":").append(it).append("\n")
+                errorResultString.append("$index").append(":").append(it).append("\n")
             }
             index++
         }
-        binding.errorResult.text = stringBuilder
+        binding.errorResult.text = errorResultString
     }
 
     private fun uploadResult(resultModel: ResultModel) {

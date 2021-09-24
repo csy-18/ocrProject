@@ -261,6 +261,7 @@ class CameraActivity : BaseActivity() {
 
     fun onRunModelSuccessed() {
         "onRunModelSuccessed: ${predictor.outputResult()}".logi()
+        "flagPage$flagPage".logi()
         when (flagPage) {
             1 -> toResultActivityWithRec()
             2 -> toResultActivityWithRecScene()

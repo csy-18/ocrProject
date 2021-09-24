@@ -21,27 +21,28 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="net.ixzyj.activity.materiallist.MateriaListActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name="net.ixzyj.activity.setting.SetDBActivity"
             android:label="@string/title_activity_set_dbactivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.receptioninscene.RecinSceneActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.receiptsin.ReceiptsInActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.main.OcrMainActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.login.SplashActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,16 +52,16 @@
         </activity>
         <activity
             android:name="net.ixzyj.activity.login.LoginActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="net.ixzyj.activity.result.ResultActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="net.ixzyj.activity.camera.CameraActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

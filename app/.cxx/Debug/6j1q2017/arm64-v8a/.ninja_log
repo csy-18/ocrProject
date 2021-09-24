@@ -46,3 +46,16 @@
 7	11390	1632458932	CMakeFiles/Native.dir/native.cpp.o	72b455308fa60890
 18	11476	1632458932	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	73190a32b35daba1
 11476	13930	1632458934	/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/6j1q2017/obj/arm64-v8a/libNative.so	9f18d7c9a12140ad
+0	16	0	clean	60de0fe3c962b2d1
+1	10	0	clean	60de0fe3c962b2d1
+10	1439	1632487505	CMakeFiles/Native.dir/predictor_input.cpp.o	7dcae8f2cda4c41c
+12	1453	1632487505	CMakeFiles/Native.dir/predictor_output.cpp.o	65ef744cf17f0572
+8	1853	1632487505	CMakeFiles/Native.dir/ppredictor.cpp.o	b3da18d9a5a399dd
+6	3177	1632487507	CMakeFiles/Native.dir/ocr_db_post_process.cpp.o	ecfcbb4d16551322
+5	3692	1632487507	CMakeFiles/Native.dir/ocr_clipper.cpp.o	c7115e67088b3a92
+14	4126	1632487508	CMakeFiles/Native.dir/preprocess.cpp.o	d4a68862d34ca082
+5	4326	1632487508	CMakeFiles/Native.dir/ocr_cls_process.cpp.o	fe4d740cf8070af4
+5	4409	1632487508	CMakeFiles/Native.dir/ocr_crnn_process.cpp.o	ba1d41db5c247cf3
+4	4634	1632487508	CMakeFiles/Native.dir/native.cpp.o	72b455308fa60890
+7	4675	1632487508	CMakeFiles/Native.dir/ocr_ppredictor.cpp.o	73190a32b35daba1
+4675	5949	1632487509	/Users/sychen/Library/Mobile Documents/com~apple~CloudDocs/Documents/githubspace/android/ocrProject/app/build/intermediates/cxx/Debug/6j1q2017/obj/arm64-v8a/libNative.so	9f18d7c9a12140ad

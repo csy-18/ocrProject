@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.*
 import android.text.InputType
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +45,7 @@ class ResultActivity : BaseActivity() {
     lateinit var errorHandler: Handler
     lateinit var dialog: Dialog
     var resultModel = ResultModel("", "500")
-    val errorResultString = StringBuilder()
+    val errorResultString by lazy { MutableLiveData<StringBuffer>() }
     val viewModel by lazy {
         ViewModelProvider(this).get(ResultViewModel::class.java)
     }
@@ -132,8 +134,6 @@ class ResultActivity : BaseActivity() {
     private fun doSettingError() {
         val alertDialog =
             DialogUtil.alertDialog("上传失败\n失败原因:服务器或数据库地址出错\n请重新配置服务器和数据库", this)
-        alertDialog.create()
-        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, SetDBActivity::class.java))
             finish()
@@ -141,16 +141,12 @@ class ResultActivity : BaseActivity() {
     }
 
     private fun doNetError() {
-        val alertDialog = DialogUtil.alertDialog("上传失败\n失败原因:与服务器通讯失败\n请检查数据格式\n请检查手机网络", this)
-        alertDialog.create()
-        alertDialog.show()
+        DialogUtil.alertDialog("上传失败\n失败原因:与服务器通讯失败\n请检查数据格式\n请检查手机网络", this)
     }
 
     private fun doErrorWork() {
         val alertDialog =
             DialogUtil.alertDialog("上传失败\n请重新登录重试", this)
-        alertDialog.create()
-        alertDialog.show()
         alertDialog.setOnDismissListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -220,7 +216,6 @@ class ResultActivity : BaseActivity() {
                         } catch (e: MalformedURLException) {
                             errorHandler.sendEmptyMessage(MyApplication.SETTING_ERROR)
                         } catch (e: XmlRpcException) {
-                            e.message?.showToast(this)
                             errorHandler.sendEmptyMessage(MyApplication.NET_ERROR)
                         } catch (e: Exception) {
                             errorHandler.sendEmptyMessage(MyApplication.ERROR)
@@ -275,18 +270,21 @@ class ResultActivity : BaseActivity() {
             predictor.outputResult.value?.add(text)
             recyclerViewAdapter.notifyDataSetChanged()
         }
-        binding.saveUploadBtn.setOnClickListener {
-            dialog.show()
-            if(errorResultString.isNotEmpty()){
-                dialog.dismiss()
-                DialogUtil.alertDialog("列表中有不合格的编码，\n修改或删除或上传",this)
-                return@setOnClickListener
+        errorResultString.observe(this,{ errorResult->
+            binding.saveUploadBtn.setOnClickListener {
+                "errorResult-saveUploadBtn.setOnClickListener:$errorResult".logi()
+                dialog.show()
+                if(errorResult.isNotEmpty()){
+                    dialog.dismiss()
+                    DialogUtil.alertDialog("列表中有不合格的编码，\n修改或删除后上传",this)
+                    return@setOnClickListener
+                }
+                when (flagPage) {
+                    1 -> work.sendEmptyMessage(FROM_REC)
+                    2 -> work.sendEmptyMessage(FROM_REC_SCENE)
+                }
             }
-            when (flagPage) {
-                1 -> work.sendEmptyMessage(FROM_REC)
-                2 -> work.sendEmptyMessage(FROM_REC_SCENE)
-            }
-        }
+        })
         binding.outResult.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("退出扫码")
@@ -320,6 +318,7 @@ class ResultActivity : BaseActivity() {
                 "序号${viewHolder.adapterPosition}".logi()
                 predictor.outputResult.value?.removeAt(viewHolder.adapterPosition)
                 recyclerViewAdapter.notifyDataSetChanged()
+                setErrorResult()
             }
         }).attachToRecyclerView(recyclerView)
     }
@@ -333,21 +332,26 @@ class ResultActivity : BaseActivity() {
 
     private fun setErrorResult() {
         var index = 1
-        val resultList = predictor.outputResult().value
-        resultList?.forEach {
-            var verify = false
-            if (it.length > 10) {
-                val sequence = it.subSequence(0, 10).toString()
-                val genElscodeCkCode = genElscodeCkCode(sequence)
-                verify = genElscodeCkCode.equals(it)
+        predictor.outputResult().observe(this,{ resultList->
+            val stringBuffer = StringBuffer()
+            resultList?.forEach {
+                var verify = false
+                if (it.length > 10) {
+                    val sequence = it.subSequence(0, 10).toString()
+                    val genElscodeCkCode = genElscodeCkCode(sequence)
+                    verify = genElscodeCkCode.equals(it)
+                }
+                if (it.length != 11 || !verify) {
+                    index.toString().logi()
+                    stringBuffer.append("$index").append(":").append(it).append("\n")
+                }
+                index++
             }
-            if (it.length != 11 || !verify) {
-                index.toString().logi()
-                errorResultString.append("$index").append(":").append(it).append("\n")
-            }
-            index++
-        }
-        binding.errorResult.text = errorResultString
+            errorResultString.postValue(stringBuffer)
+            errorResultString.observe(this,{
+                binding.errorResult.text = it
+            })
+        })
     }
 
     private fun uploadResult(resultModel: ResultModel) {

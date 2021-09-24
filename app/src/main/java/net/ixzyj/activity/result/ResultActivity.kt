@@ -279,7 +279,7 @@ class ResultActivity : BaseActivity() {
             dialog.show()
             if(errorResultString.isNotEmpty()){
                 dialog.dismiss()
-                DialogUtil.alertDialog("列表中有不合格的编码，修改或删除或上传",this)
+                DialogUtil.alertDialog("列表中有不合格的编码，\n修改或删除或上传",this)
                 return@setOnClickListener
             }
             when (flagPage) {

@@ -18,7 +18,8 @@ class ReceiptsInViewModel : ViewModel() {
             "execute_kw", arrayListOf(
                 OdooRepo.database, OdooRepo.uid, OdooRepo.password, "buy.receipt", "search_read",
                 arrayListOf(
-                    arrayListOf(arrayListOf("state", "=", "draft")),
+                    arrayListOf(arrayListOf("state", "=", "draft"),
+                            arrayListOf("is_return", "=", "False")),
                     arrayListOf(
                         "id",
                         "state",

@@ -1,10 +1,10 @@
 package net.ixzyj.activity.main
 
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.ixzyj.network.OdooRepo
+import net.ixzyj.utils.CodeUtils
 import net.ixzyj.utils.MyApplication.Companion.logi
 import org.apache.xmlrpc.XmlRpcRequest
 import org.apache.xmlrpc.client.AsyncCallback
@@ -32,7 +32,11 @@ class MainViewModel : ViewModel() {
             "execute_kw", arrayListOf(
                 OdooRepo.database,
                 OdooRepo.uid,
-                OdooRepo.password, "res.company", "search_read", emptyList<Any>()
+                OdooRepo.password, "res.company", "search_read", emptyList<Any>(),
+                hashMapOf<String, Any>(
+                    "fields" to arrayListOf("id", "name", "code_regex_cc", "code_regex"),
+                    "limit" to 1
+                )
             ), object : AsyncCallback {
                 override fun handleResult(pRequest: XmlRpcRequest?, pResult: Any?) {
                     val data = arrayListOf(*pResult as Array<*>)
@@ -43,6 +47,8 @@ class MainViewModel : ViewModel() {
                         else -> {
                             val mapData = data[0] as Map<String, String>
                             corpName.postValue(mapData["name"])
+                            CodeUtils.CODE_REGEX_CC = mapData["code_regex_cc"]
+                            CodeUtils.CODE_REGEX = mapData["code_regex"]
                         }
                     }
                 }

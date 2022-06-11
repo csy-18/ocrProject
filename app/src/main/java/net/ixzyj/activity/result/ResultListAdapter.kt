@@ -1,7 +1,6 @@
 package net.ixzyj.activity.result
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.os.Handler
 import android.os.Message
@@ -62,18 +61,18 @@ class ResultListAdapter(val resultList: List<String>, val handler: Handler) :
                 }
             }
             var verify = false
-            if (result.length > 10) {
-                val sequence = result.subSequence(0, 10).toString()
-                val genElscodeCkCode = CodeUtils.genElscodeCkCode(sequence)
+            val sequence = CodeUtils.getSubstring(CodeUtils.CODE_REGEX_CC, result)
+            if (!sequence.isEmpty()) {
+                val genElscodeCkCode = CodeUtils.genElscodeCkCode(sequence.substring(0, sequence.length - 1))
                 verify = genElscodeCkCode.equals(result)
             }
-            if (result.length != 11 || !verify) {
+            if (sequence.isEmpty() || result.length != sequence.length || !verify) {
                 resultText.setTextColor(Color.parseColor("#dddddd"))
                 resultIndex.setTextColor(Color.parseColor("#dddddd"))
                 updateBtn.visibility = View.VISIBLE
                 val message = Message()
                 message.what = ResultActivity.RESULT_ADAPTER
-                message.obj = position+1
+                message.obj = position + 1
                 handler.sendMessage(message)
             }
         }

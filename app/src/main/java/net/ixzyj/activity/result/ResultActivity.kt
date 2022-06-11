@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.text.InputType
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,18 +25,14 @@ import net.ixzyj.activity.setting.SetDBActivity
 import net.ixzyj.network.OdooRepo
 import net.ixzyj.network.model.ResultModel
 import net.ixzyj.ocr.databinding.ActivityResultBinding
+import net.ixzyj.utils.*
 import net.ixzyj.utils.CodeUtils.genElscodeCkCode
-import net.ixzyj.utils.DialogUtil
-import net.ixzyj.utils.FileUtils
-import net.ixzyj.utils.MyApplication
 import net.ixzyj.utils.MyApplication.Companion.flagPage
 import net.ixzyj.utils.MyApplication.Companion.logi
 import net.ixzyj.utils.MyApplication.Companion.predictor
 import net.ixzyj.utils.MyApplication.Companion.showToast
-import net.ixzyj.utils.SharedPreferencesUtil
 import org.apache.xmlrpc.XmlRpcException
 import java.net.MalformedURLException
-import java.util.*
 
 class ResultActivity : BaseActivity() {
     lateinit var binding: ActivityResultBinding
@@ -95,7 +93,7 @@ class ResultActivity : BaseActivity() {
                             alertDialog.create()
                             alertDialog.show()
                             alertDialog.setOnDismissListener {
-                                startActivity(Intent(this@ResultActivity,OcrMainActivity::class.java))
+                                startActivity(Intent(this@ResultActivity, OcrMainActivity::class.java))
                                 finish()
                             }
                         }
@@ -270,13 +268,13 @@ class ResultActivity : BaseActivity() {
             predictor.outputResult.value?.add(text)
             recyclerViewAdapter.notifyDataSetChanged()
         }
-        errorResultString.observe(this,{ errorResult->
+        errorResultString.observe(this, { errorResult ->
             binding.saveUploadBtn.setOnClickListener {
                 "errorResult-saveUploadBtn.setOnClickListener:$errorResult".logi()
                 dialog.show()
-                if(errorResult.isNotEmpty()){
+                if (errorResult.isNotEmpty()) {
                     dialog.dismiss()
-                    DialogUtil.alertDialog("列表中有不合格的编码，\n修改或删除后上传",this)
+                    DialogUtil.alertDialog("列表中有不合格的编码，\n修改或删除后上传", this)
                     return@setOnClickListener
                 }
                 when (flagPage) {
@@ -313,7 +311,6 @@ class ResultActivity : BaseActivity() {
                 return false
             }
 
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 "序号${viewHolder.adapterPosition}".logi()
                 predictor.outputResult.value?.removeAt(viewHolder.adapterPosition)
@@ -332,23 +329,23 @@ class ResultActivity : BaseActivity() {
 
     private fun setErrorResult() {
         var index = 1
-        predictor.outputResult().observe(this,{ resultList->
+        predictor.outputResult().observe(this, { resultList ->
             val stringBuffer = StringBuffer()
             resultList?.forEach {
                 var verify = false
-                if (it.length > 10) {
-                    val sequence = it.subSequence(0, 10).toString()
-                    val genElscodeCkCode = genElscodeCkCode(sequence)
+                val sequence = CodeUtils.getSubstring(CodeUtils.CODE_REGEX_CC, it)
+                if (!sequence.isEmpty()) {
+                    val genElscodeCkCode = genElscodeCkCode(sequence.substring(0, sequence.length - 1))
                     verify = genElscodeCkCode.equals(it)
                 }
-                if (it.length != 11 || !verify) {
+                if (sequence.isEmpty() || it.length != sequence.length || !verify) {
                     index.toString().logi()
                     stringBuffer.append("$index").append(":").append(it).append("\n")
                 }
                 index++
             }
             errorResultString.postValue(stringBuffer)
-            errorResultString.observe(this,{
+            errorResultString.observe(this, {
                 binding.errorResult.text = it
             })
         })

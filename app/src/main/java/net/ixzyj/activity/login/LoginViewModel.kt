@@ -24,7 +24,7 @@ class LoginViewModel : ViewModel() {
     // 获取版本信息
     fun version(activity: Activity): LiveData<String>{
             OdooRepo.client.executeAsync(
-                OdooRepo.xmlRpcConfig,
+                OdooRepo.xmlRpcConfig(),
                 "version",
                 emptyList<Any>(),
                 object :
@@ -43,7 +43,7 @@ class LoginViewModel : ViewModel() {
     //用户登陆
     fun userLogin(username: String?, password: String?, activity: Activity): LiveData<Int> {
         OdooRepo.client.executeAsync(
-            OdooRepo.xmlRpcConfig, "authenticate", arrayListOf(
+            OdooRepo.xmlRpcConfig(), "authenticate", arrayListOf(
                 OdooRepo.database, username, password, emptyMap<Any, Any>()
             ), object : AsyncCallback {
                 override fun handleResult(pRequest: XmlRpcRequest?, pResult: Any?) {

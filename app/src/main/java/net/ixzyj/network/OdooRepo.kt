@@ -29,6 +29,10 @@ object OdooRepo {
             )
             return url.toString()
         }
+        set(value) {
+            field = value
+            notifyConfig()
+        }
 
     var database: String = ""
         get() {
@@ -38,13 +42,23 @@ object OdooRepo {
             )
             return db.toString()
         }
+        set(value) {
+            field = value
+            notifyConfig()
+        }
 
     var uid: Int = -1
     var username: String? = ""
     var password: String? = ""
-
     val client = XmlRpcClient()
-    val xmlRpcConfig = object : XmlRpcClientConfigImpl() {
+
+    fun notifyConfig() {
+        xmlRpcConfig()
+        models()
+    }
+
+
+    fun xmlRpcConfig() = object : XmlRpcClientConfigImpl() {
         init {
             serverURL = URL(String.format("%s/xmlrpc/2/common", serveUrl))
             connectionTimeout = 3000
@@ -53,7 +67,7 @@ object OdooRepo {
         }
     }
 
-    val models: XmlRpcClient = object : XmlRpcClient() {
+    fun models(): XmlRpcClient = object : XmlRpcClient() {
         init {
             setConfig(object : XmlRpcClientConfigImpl() {
                 init {
@@ -79,7 +93,7 @@ object OdooRepo {
         Looper.prepare()
         DialogUtil.alertDialog("网络异常\n或服务器、数据库错误\n请检查手机网络\n或重新配置服务器", activity).apply {
             setOnDismissListener {
-                activity.startActivity(Intent(activity,SetDBActivity::class.java))
+                activity.startActivity(Intent(activity, SetDBActivity::class.java))
             }
         }
         Looper.loop()
@@ -91,7 +105,7 @@ object OdooRepo {
 
     @Throws(XmlRpcException::class, MalformedURLException::class)
     fun uploadRec(receiptId: Int, result: String): String {
-        val resultMap: Map<String, String> = models.execute(
+        val resultMap: Map<String, String> = models().execute(
             "execute_kw", Arrays.asList(
                 database,
                 uid,
@@ -108,7 +122,7 @@ object OdooRepo {
     @Throws(MalformedURLException::class, XmlRpcException::class)
     fun uploadRecScene(orderId: Int?, content: String?, warehouseId: Int?): String {
         var resultMap: Map<String?, String?> = HashMap()
-        resultMap = models.execute(
+        resultMap = models().execute(
             "execute_kw",
             Arrays.asList(
                 database, uid, password,

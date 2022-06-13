@@ -13,7 +13,7 @@ class MenuViewModel : ViewModel() {
     }
 
     fun menuInvisible(): LiveData<Map<String, String>> {
-        OdooRepo.models.executeAsync(
+        OdooRepo.models().executeAsync(
             "execute_kw", arrayListOf(
                 OdooRepo.database, OdooRepo.uid, OdooRepo.password, "ir.config_parameter", "search_read",
                 arrayListOf(

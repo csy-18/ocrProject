@@ -66,7 +66,7 @@ class SetDBActivity : BaseActivity() {
         private fun listPreServer() {
             findPreference<ListPreference>(getString(R.string.server_listPerference_title))?.apply {
                 negativeButtonText = ""
-                loadServerData().observe(this@SettingsFragment, {
+                loadServerData().observe(this@SettingsFragment) {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     onPreferenceChangeListener =
@@ -78,14 +78,14 @@ class SetDBActivity : BaseActivity() {
                             OdooRepo.serveUrl = newValue.toString()
                             true
                         }
-                })
+                }
             }
         }
 
         private fun listPreDb() {
             findPreference<ListPreference>(getString(R.string.db_listPerference_title))?.apply {
                 negativeButtonText = ""
-                loadDbData().observe(this@SettingsFragment, {
+                loadDbData().observe(this@SettingsFragment) {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     onPreferenceChangeListener =
@@ -97,7 +97,7 @@ class SetDBActivity : BaseActivity() {
                             OdooRepo.database = newValue.toString()
                             true
                         }
-                })
+                }
             }
         }
 
@@ -106,9 +106,9 @@ class SetDBActivity : BaseActivity() {
                 findPreference<EditTextPreference>(getString(R.string.add_server_editTextPerference_title))
             serverEditText?.setOnPreferenceChangeListener { _, newValue ->
                 serverList.value?.add(newValue.toString())
-                loadServerData().observe(this, {
+                loadServerData().observe(this) {
                     saveServerData(it)
-                })
+                }
                 listPreServer()
                 true
             }
@@ -118,9 +118,9 @@ class SetDBActivity : BaseActivity() {
             findPreference<EditTextPreference>(getString(R.string.add_db_editTextPerference_title))?.apply {
                 setOnPreferenceChangeListener { _, newValue ->
                     dbList.value?.add(newValue.toString())
-                    loadDbData().observe(this@SettingsFragment, {
+                    loadDbData().observe(this@SettingsFragment) {
                         saveDbData(it)
-                    })
+                    }
                     listPreDb()
                     true
                 }
@@ -131,7 +131,7 @@ class SetDBActivity : BaseActivity() {
         private fun delServe() {
             findPreference<ListPreference>(getString(R.string.del_server_editTextPerference_title))?.apply {
                 negativeButtonText = ""
-                loadServerData().observe(this@SettingsFragment, {
+                loadServerData().observe(this@SettingsFragment) {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     setOnPreferenceChangeListener { _, newValue ->
@@ -140,14 +140,14 @@ class SetDBActivity : BaseActivity() {
                         listPreServer()
                         true
                     }
-                })
+                }
             }
         }
 
         private fun delDb() {
             findPreference<ListPreference>(getString(R.string.del_db_editTextPerference_title))?.apply {
                 negativeButtonText = ""
-                loadDbData().observe(this@SettingsFragment, {
+                loadDbData().observe(this@SettingsFragment) {
                     entryValues = it.toTypedArray()
                     entries = it.toTypedArray()
                     setOnPreferenceChangeListener { _, newValue ->
@@ -156,7 +156,7 @@ class SetDBActivity : BaseActivity() {
                         listPreDb()
                         true
                     }
-                })
+                }
             }
         }
 

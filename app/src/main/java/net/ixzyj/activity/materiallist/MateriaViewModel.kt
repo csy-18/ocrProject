@@ -15,7 +15,7 @@ class MateriaViewModel : ViewModel() {
     }
 
     fun getListData(scene: String): LiveData<String> {
-        OdooRepo.models.executeAsync("execute_kw", arrayListOf(
+        OdooRepo.models().executeAsync("execute_kw", arrayListOf(
             OdooRepo.database,
             OdooRepo.uid,
             OdooRepo.password, "wh.internal", "search_read",

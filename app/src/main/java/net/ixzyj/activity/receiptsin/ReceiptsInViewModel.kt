@@ -14,7 +14,7 @@ class ReceiptsInViewModel : ViewModel() {
     }
 
     fun getReceiptsInList(): LiveData<String> {
-        OdooRepo.models.executeAsync(
+        OdooRepo.models().executeAsync(
             "execute_kw", arrayListOf(
                 OdooRepo.database, OdooRepo.uid, OdooRepo.password, "buy.receipt", "search_read",
                 arrayListOf(

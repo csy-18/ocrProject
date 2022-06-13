@@ -28,7 +28,7 @@ class MainViewModel : ViewModel() {
 
     //获取主页面公司名称
     fun getCorpName(activity: OcrMainActivity): LiveData<String> {
-        OdooRepo.models.executeAsync(
+        OdooRepo.models().executeAsync(
             "execute_kw", arrayListOf(
                 OdooRepo.database,
                 OdooRepo.uid,
@@ -66,7 +66,7 @@ class MainViewModel : ViewModel() {
 
     //检查是否有权限显示一级菜单
     fun checkPermissions(scenes: String, activity: OcrMainActivity) {
-        OdooRepo.models.executeAsync(
+        OdooRepo.models().executeAsync(
             "execute_kw", arrayListOf(
                 OdooRepo.database, OdooRepo.uid, OdooRepo.password, "res.users", "user_has_groups",
                 arrayListOf(scenes)
